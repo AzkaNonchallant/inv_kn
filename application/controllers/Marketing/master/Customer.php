@@ -27,9 +27,9 @@ class Customer extends CI_Controller
 		$respon = $this->M_customer->add($data);
 
 		if ($respon) {
-			header('location:' . base_url('Marketing/Customer') . '?alert=success&msg=Selamat anda berhasil menambah Customer');
+			header('location:' . base_url('Marketing/master/Customer') . '?alert=success&msg=Selamat anda berhasil menambah Customer');
 		} else {
-			header('location:' . base_url('Marketing/Customer') . '?alert=error&msg=Maaf anda gagal menambah Customer');
+			header('location:' . base_url('Marketing/master/Customer') . '?alert=error&msg=Maaf anda gagal menambah Customer');
 		}
 	}
 	public function update()
@@ -42,9 +42,9 @@ class Customer extends CI_Controller
 		$respon = $this->M_customer->update($data);
 		// echo $respon;
 		if ($respon) {
-			header('location:' . base_url('Marketing/Customer') . '?alert=success&msg=Selamat anda berhasil meng-update Customer');
+			header('location:' . base_url('Marketing/master/Customer') . '?alert=success&msg=Selamat anda berhasil meng-update Customer');
 		} else {
-			header('location:' . base_url('Marketing/Customer') . '?alert=error&msg=Maaf anda gagal meng-update Customer');
+			header('location:' . base_url('Marketing/master/Customer') . '?alert=error&msg=Maaf anda gagal meng-update Customer');
 		}
 	}
 	public function delete($id_customer)
@@ -53,9 +53,9 @@ class Customer extends CI_Controller
 		$respon = $this->M_customer->delete($data);
 
 		if ($respon) {
-			header('location:' . base_url('Marketing/Customer') . '?alert=success&msg=Selamat anda berhasil menghapus Customer');
+			header('location:' . base_url('Marketing/master/Customer') . '?alert=success&msg=Selamat anda berhasil menghapus Customer');
 		} else {
-			header('location:' . base_url('Marketing/Customer') . '?alert=error&msg=Maaf anda gagal menghapus Customer');
+			header('location:' . base_url('Marketing/master/Customer') . '?alert=error&msg=Maaf anda gagal menghapus Customer');
 		}
 	}
 

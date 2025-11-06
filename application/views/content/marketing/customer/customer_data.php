@@ -73,7 +73,7 @@
                                                                         </button>
                                                                     </div>
                                                                     <div class="btn-group" role="group" aria-label="Basic example">
-                                                                        <a type="button" class="btn btn-danger btn-square text-light btn-sm" href="<?= base_url() ?>Marketing/Customer/delete/<?= $k['id_customer'] ?>" onclick="if (! confirm('Apakah Anda Yakin?')) { return false; }">
+                                                                        <a type="button" class="btn btn-danger btn-square text-light btn-sm" href="<?= base_url() ?>Marketing/master/Customer/delete/<?= $k['id_customer'] ?>" onclick="if (! confirm('Apakah Anda Yakin?')) { return false; }">
                                                                             <i class="feather icon-trash-2"></i>Hapus
                                                                         </a>
                                                                     </div>
@@ -105,7 +105,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="post" action="<?= base_url() ?>Marketing/Customer/add">
+            <form method="post" action="<?= base_url() ?>Marketing/master/Customer/add">
                 <div class="modal-body">
 
                     <div class="form-group">
@@ -166,6 +166,7 @@
 </script>
 
 <!-- Modal -->
+<!-- Modal Edit -->
 <div class="modal fade" id="edit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -175,15 +176,19 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="post" action="<?= base_url() ?>Marketing/Customer/update">
+            <form method="post" action="<?= base_url() ?>Marketing/master/Customer/update" id="form-edit">
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="kode">Kode Customer</label>
                         <input type="hidden" id="e_id_customer" name="id_customer">
-                        <input type="text" class="form-control text-uppercase" id="e_kode_customer" name="kode_customer" autocomplete="off"  required>
+                        <input type="text" class="form-control text-uppercase" id="e_kode_customer" name="kode_customer" autocomplete="off" required>
+                        <div id="validationServer03FeedbackEdit" class="invalid-feedback">
+                            Maaf Kode Customer sudah ada.
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label for="nama">Nama Customer</label>
-                        <input type="text" class="form-control text-uppercase" id="e_nama_customer" name="nama_customer" autocomplete="off"  required>
+                        <input type="text" class="form-control text-uppercase" id="e_nama_customer" name="nama_customer" autocomplete="off" required>
                     </div>
                     <div class="form-group">
                         <label for="negara">Negara</label>
@@ -191,12 +196,12 @@
                     </div>
                     <div class="form-group">
                         <label for="alamat">Alamat</label>
-                        <input type="text" class="form-control text-uppercase" id="e_alamat" name="alamat" autocomplete="off" required>
+                        <textarea class="form-control text-uppercase" id="e_alamat" name="alamat" rows="3" required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-info">Update</button>
+                    <button type="submit" class="btn btn-info" id="update-btn">Update</button>
                 </div>
             </form>
         </div>
@@ -204,23 +209,96 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
+        // Fungsi uppercase untuk semua input
+        uppercase('#kode_customer');
+        uppercase('#nama_customer');
+        uppercase('#negara');
+        uppercase('#alamat');
+
+        // Cek kode customer untuk tambah data
+        $("#kode_customer").keyup(function(){
+            var kode_customer = $("#kode_customer").val();
+            jQuery.ajax({
+                url: "<?= base_url() ?>marketing/customer/cek_kode_customer",
+                dataType: 'text',
+                type: "post",
+                data: {kode_customer: kode_customer},
+                success: function(response){
+                    if (response == "true") {
+                        $("#kode_customer").addClass("is-invalid");
+                        $("#simpan").attr("disabled", "disabled");
+                    } else {
+                        $("#kode_customer").removeClass("is-invalid");
+                        $("#simpan").removeAttr("disabled");
+                    }
+                }            
+            });
+        });
+
+        // Cek kode customer untuk edit data
+        $("#e_kode_customer").keyup(function(){
+            var kode_customer = $("#e_kode_customer").val();
+            var id_customer = $("#e_id_customer").val();
+            
+            jQuery.ajax({
+                url: "<?= base_url() ?>marketing/customer/cek_kode_customer_edit",
+                dataType: 'text',
+                type: "post",
+                data: {
+                    kode_customer: kode_customer,
+                    id_customer: id_customer
+                },
+                success: function(response){
+                    if (response == "true") {
+                        $("#e_kode_customer").addClass("is-invalid");
+                        $("#update-btn").attr("disabled", "disabled");
+                    } else {
+                        $("#e_kode_customer").removeClass("is-invalid");
+                        $("#update-btn").removeAttr("disabled");
+                    }
+                }            
+            });
+        });
+
+        // Modal edit show event
         $('#edit').on('show.bs.modal', function(event) {
-            var id_customer = $(event.relatedTarget).data('id_customer')
-            var kode_customer = $(event.relatedTarget).data('kode_customer')
-            var nama_customer = $(event.relatedTarget).data('nama_customer')
-            var negara = $(event.relatedTarget).data('negara')
-            var alamat = $(event.relatedTarget).data('alamat')
+            var button = $(event.relatedTarget);
+            var id_customer = button.data('id_customer');
+            var kode_customer = button.data('kode_customer');
+            var nama_customer = button.data('nama_customer');
+            var negara = button.data('negara');
+            var alamat = button.data('alamat');
 
-            $(this).find('#e_id_customer').val(id_customer)
-            $(this).find('#e_kode_customer').val(kode_customer)
-            $(this).find('#e_nama_customer').val(nama_customer)
-            $(this).find('#e_negara').val(negara)
-            $(this).find('#e_alamat').val(alamat)
+            var modal = $(this);
+            modal.find('#e_id_customer').val(id_customer);
+            modal.find('#e_kode_customer').val(kode_customer);
+            modal.find('#e_nama_customer').val(nama_customer);
+            modal.find('#e_negara').val(negara);
+            modal.find('#e_alamat').val(alamat);
 
+            // Reset validation state
+            modal.find('#e_kode_customer').removeClass("is-invalid");
+            modal.find('#update-btn').removeAttr("disabled");
+
+            // Apply uppercase
             uppercase('#e_kode_customer');
             uppercase('#e_nama_customer');
             uppercase('#e_negara');
             uppercase('#e_alamat');
-        })
-    })
+        });
+
+        // Reset form ketika modal edit ditutup
+        $('#edit').on('hidden.bs.modal', function() {
+            $(this).find('form')[0].reset();
+            $(this).find('.is-invalid').removeClass('is-invalid');
+            $(this).find('#update-btn').removeAttr('disabled');
+        });
+    });
+
+    // Fungsi uppercase
+    function uppercase(selector) {
+        $(selector).on('keyup', function() {
+            this.value = this.value.toUpperCase();
+        });
+    }
 </script>
