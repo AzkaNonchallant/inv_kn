@@ -46,7 +46,21 @@
                     <li data-username="basic components Button Alert Badges breadcrumb Paggination progress Tooltip popovers Carousel Cards Collapse Tabs pills Modal Grid System Typography Extra Shadows Embeds" class="nav-item pcoded-hasmenu">
                         <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="feather icon-tag"></i></span><span class="pcoded-mtext">Marketing</span></a>
                         <ul class="pcoded-submenu">
-                            <li class="nav-item <?= $uri == 'Customer' ? 'active' : '' ?>"><a href="<?= base_url('Marketing/Customer') ?>" class="">Customer</a></li>
+                            <li data-username="basic components Button Alert Badges breadcrumb Paggination progress Tooltip popovers Carousel Cards Collapse Tabs pills Modal Grid System Typography Extra Shadows Embeds" class="nav-item pcoded-hasmenu">
+                                <a href="javascript:" class="nav-link "><span class="pcoded-mtext">Master
+                                        
+                                    </span>
+                                </a>
+                                <ul class="pcoded-submenu">
+                                   <li class="nav-item <?= $uri == 'Customer' ? 'active' : '' ?>"><a href="<?= base_url('Marketing/master/Customer') ?>" class="">Customer</a></li>
+                                   <li class="nav-item <?= $uri == 'Kode_warna' ? 'active' : '' ?>"><a href="<?= base_url('Marketing/master/Kode_warna') ?>" class="">Kode Warna</a></li>
+                                   <li class="nav-item <?= $uri == 'Printing' ? 'active' : '' ?>"><a href="<?= base_url('Qa/Doc/Doc_printing/Printing') ?>" class="">Printing</a></li>      
+                                   <li class="nav-item <?= $uri == 'Stok Size' ? 'active' : '' ?>"><a href="<?= base_url('Marketing/master/Master_stock') ?>" class="">Stok Size</a></li>      
+                                    </li>
+                                </ul>
+                                </ul>
+                        <ul class="pcoded-submenu">
+                            
                             <li class="nav-item <?= $uri == 'Capsule_request' ? 'active' : '' ?>"><a href="<?= base_url('Marketing/Capsule_request/Marketing_cr') ?>" class="">Capsule Request</a></li>
                             <li class="nav-item <?= $uri == 'Tambah_schedule' ? 'active' : '' ?>"><a href="<?= base_url('Marketing/Tambah_schedule') ?>" class="">Tambah Schedule</a></li>
                             <li class="nav-item <?= $uri == 'Print_schedule' ? 'active' : '' ?>"><a href="<?= base_url('Marketing/Print_schedule') ?>" class="">Print Schedule</a></li>
@@ -222,7 +236,7 @@
                             <li data-username="basic components Button Alert Badges breadcrumb Paggination progress Tooltip popovers Carousel Cards Collapse Tabs pills Modal Grid System Typography Extra Shadows Embeds" class="nav-item pcoded-hasmenu">
                                 <a href="javascript:" class="nav-link "><span class="pcoded-mtext">Proses</span></a>
                                 <ul class="pcoded-submenu">
-                                    <li class="nav-item <?= $uri == 'Kode_warna' ? 'active' : '' ?>"><a href="<?= base_url('Marketing/Kode_warna') ?>" class="">Input Kode Warna</a></li>
+
                                     <li class="nav-item <?= $uri == 'penimbangan' ? 'active' : '' ?>"><a href="<?= base_url('lab/penimbangan') ?>" class="">Penimbangan</a></li>
                                     <li class="nav-item <?= $uri == 'masak_gelatin' ? 'active' : '' ?>"><a href="<?= base_url('melting/Masak_gelatin') ?>" class="">Masak Gelatin</a></li>
                                     <li class="nav-item <?= $uri == 'pembersihan' ? 'active' : '' ?>"><a href="<?= base_url('melting/pembersihan') ?>" class="">Pembersihan</a></li>

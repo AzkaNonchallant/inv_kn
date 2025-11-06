@@ -7,99 +7,134 @@ class M_kode_warna extends CI_Model
     {
         parent::__construct();
     }
+    
     function id_user()
     {
         return $this->session->userdata("id_user");
     }
+    
     public function getcap($id = null)
     {
         $sql = "
-        SELECT * FROM tb_mlt_kw_cap 
+        SELECT * FROM tb_mkt_master_kw_cap 
         WHERE is_deleted = 0 ORDER BY created_at ASC";
-
         return $this->db->query($sql);
     }
 
     public function getbody($id = null)
     {
         $sql = "
-        SELECT * FROM tb_mlt_kw_body 
+        SELECT * FROM tb_mkt_master_kw_body 
         WHERE is_deleted = 0 ORDER BY created_at ASC";
-
         return $this->db->query($sql);
     }
 
     public function add_cap($data)
     {
         $id_user = $this->id_user();
-        $sql = "
-        INSERT INTO `tb_mlt_kw_cap`(`id_kw_cap`, `kode_warna_cap`,`warna_cap`,`ti02`,`r1`,`r3`,`y5`,`b1`,`y10`,`sf`,`created_at`, `created_by`, `updated_at`, `updated_by`, `is_deleted`) 
-        VALUES ('$data[id_kw_cap]','$data[kode_warna]','$data[warna]','$data[ti02]','$data[r1]','$data[r3]','$data[y5]','$data[b1]','$data[y10]','$data[sf]',NOW(),'$id_user','0000-00-00 00:00:00','','0')
-        ";
-
-        return $this->db->query($sql);
+        
+        // Gunakan Active Record untuk keamanan
+        $insert_data = array(
+            'id_master_kw_cap' => $data['id_master_kw_cap'],
+            'kode_warna_cap' => $data['kode_warna'],
+            'warna_cap' => $data['warna'],
+            'f_ti02' => $data['ti02'],  
+            'f_r1' => $data['r1'],    
+            'f_r3' => $data['r3'],    
+            'f_y5' => $data['y5'],    
+            'f_b1' => $data['b1'],    
+            'f_y10' => $data['y10'],   
+            'f_sf' => $data['sf'],    
+            'created_at' => date('Y-m-d H:i:s'),
+            'created_by' => $id_user,
+            'updated_at' => '0000-00-00 00:00:00',
+            'updated_by' => '',
+            'is_deleted' => '0'
+        );
+        
+        return $this->db->insert('tb_mkt_master_kw_cap', $insert_data);
     }
 
     public function add_body($data)
     {
         $id_user = $this->id_user();
-        $sql = "
-        INSERT INTO `tb_mlt_kw_body`(`id_kw_body`, `kode_warna_body`,`warna_body`,`ti02`,`r1`,`r3`,`y5`,`b1`,`y10`,`sf`,`created_at`, `created_by`, `updated_at`, `updated_by`, `is_deleted`) 
-        VALUES ('$data[id_kw_body]','$data[kode_warna]','$data[warna]','$data[ti02]','$data[r1]','$data[r3]','$data[y5]','$data[b1]','$data[y10]','$data[sf]',NOW(),'$id_user','0000-00-00 00:00:00','','0')
-        ";
-
-        return $this->db->query($sql);
+        
+        // PERBAIKAN: Sesuaikan dengan struktur database yang benar
+        $insert_data = array(
+            'id_master_kw_body' => $data['id_master_kw_body'],
+            'kode_warna_body' => $data['kode_warna'],
+            'warna_body' => $data['warna'],
+            'f_ti02' => $data['ti02'],  // PERBAIKAN: f_t02 bukan f_ti02  
+            'f_r1' => $data['r1'],    
+            'f_r3' => $data['r3'],    
+            'f_y5' => $data['y5'],    
+            'f_b1' => $data['b1'],    
+            'f_y10' => $data['y10'],   
+            'f_sf' => $data['sf'],    
+            'created_at' => date('Y-m-d H:i:s'),
+            'created_by' => $id_user,
+            'updated_at' => '0000-00-00 00:00:00',
+            'updated_by' => '',
+            'is_deleted' => '0'
+        );
+        
+        return $this->db->insert('tb_mkt_master_kw_body', $insert_data);
     }
 
     public function update_cap($data)
     {
         $id_user = $this->id_user();
-        $sql = "
-            UPDATE `tb_mlt_kw_cap` 
-            SET `kode_warna_cap`='$data[kode_warna]',
-                `warna_cap`='$data[warna]',
-                `ti02`='$data[ti02]',
-                `r1`='$data[r1]',
-                `r3`='$data[r3]',
-                `y5`='$data[y5]',
-                `b1`='$data[b1]',
-                `y10`='$data[y10]',     
-                `sf`='$data[sf]',
-                `updated_at`= NOW(),`updated_by`='$id_user' 
-            WHERE `id_kw_cap`='$data[id_kw_cap]'
-        ";
-        return $this->db->query($sql);
-        // return $sql;
+        
+        $update_data = array(
+            'kode_warna_cap' => $data['kode_warna'],
+            'warna_cap' => $data['warna'],
+            'f_ti02' => $data['ti02'],  
+            'f_r1' => $data['r1'],    
+            'f_r3' => $data['r3'],    
+            'f_y5' => $data['y5'],    
+            'f_b1' => $data['b1'],    
+            'f_y10' => $data['y10'],   
+            'f_sf' => $data['sf'],    
+            'updated_at' => date('Y-m-d H:i:s'),
+            'updated_by' => $id_user
+        );
+        
+        $this->db->where('id_master_kw_cap', $data['id_master_kw_cap']);
+        return $this->db->update('tb_mkt_master_kw_cap', $update_data);
     }
 
     public function update_body($data)
     {
         $id_user = $this->id_user();
-        $sql = "
-            UPDATE `tb_mlt_kw_body` 
-            SET `kode_warna_body`='$data[kode_warna]',
-                `warna_body`='$data[warna]',
-                `ti02`='$data[ti02]',
-                `r1`='$data[r1]',
-                `r3`='$data[r3]',
-                `y5`='$data[y5]',
-                `b1`='$data[b1]',
-                `y10`='$data[y10]',     
-                `sf`='$data[sf]',
-                `updated_at`= NOW(),`updated_by`='$id_user' 
-            WHERE `id_kw_body`='$data[id_kw_body]'
-        ";
-        return $this->db->query($sql);
-        // return $sql;
+        
+        // PERBAIKAN: Sesuaikan dengan struktur database yang benar
+        $update_data = array(
+            'kode_warna_body' => $data['kode_warna'],
+            'warna_body' => $data['warna'],
+            'f_ti02' => $data['ti02'],  
+            'f_r1' => $data['r1'],    
+            'f_r3' => $data['r3'],    
+            'f_y5' => $data['y5'],    
+            'f_b1' => $data['b1'],    
+            'f_y10' => $data['y10'],   
+            'f_sf' => $data['sf'],    
+            'updated_at' => date('Y-m-d H:i:s'),
+            'updated_by' => $id_user
+        );
+        
+        $this->db->where('id_master_kw_body', $data['id_master_kw_body']);
+        return $this->db->update('tb_mkt_master_kw_body', $update_data);
     }
-
 
     public function delete_cap($data)
     {
         $id_user = $this->id_user();
         $sql = "
-        DELETE FROM `tb_mlt_kw_cap`
-         WHERE `id_kw_cap`='$data[id_kw_cap]'
+            UPDATE `tb_mkt_master_kw_cap` 
+            SET `is_deleted` = 1,
+                `updated_at` = NOW(),
+                `updated_by` = '$id_user'
+            WHERE `id_master_kw_cap` = '$data[id_master_kw_cap]'
         ";
         return $this->db->query($sql);
     }
@@ -108,21 +143,49 @@ class M_kode_warna extends CI_Model
     {
         $id_user = $this->id_user();
         $sql = "
-        DELETE FROM `tb_mlt_kw_body`
-         WHERE `id_kw_body`='$data[id_kw_body]'
+            UPDATE `tb_mkt_master_kw_body` 
+            SET `is_deleted` = 1,
+                `updated_at` = NOW(),
+                `updated_by` = '$id_user'
+            WHERE `id_master_kw_body` = '$data[id_master_kw_body]'
         ";
         return $this->db->query($sql);
     }
 
     public function findcap($kode_warna)
     {
-        $sql = "SELECT * FROM tb_mlt_kw_cap WHERE kode_warna = '$kode_warna'";
+        $sql = "SELECT * FROM tb_mkt_master_kw_cap WHERE kode_warna_cap = '$kode_warna' AND is_deleted = 0";
         return $this->db->query($sql);
     }
 
     public function findbody($kode_warna)
     {
-        $sql = "SELECT * FROM tb_mlt_kw_body WHERE kode_warna = '$kode_warna'";
+        $sql = "SELECT * FROM tb_mkt_master_kw_body WHERE kode_warna_body = '$kode_warna' AND is_deleted = 0";
+        return $this->db->query($sql);
+    }
+
+    // Cek duplikat kode warna
+    public function cek_kode_warna_cap($kode_warna, $id = null)
+    {
+        $sql = "SELECT COUNT(*) as count FROM tb_mkt_master_kw_cap 
+                WHERE kode_warna_cap = '$kode_warna' AND is_deleted = 0";
+        
+        if ($id) {
+            $sql .= " AND id_master_kw_cap != '$id'";
+        }
+        
+        return $this->db->query($sql);
+    }
+
+    public function cek_kode_warna_body($kode_warna, $id = null)
+    {
+        $sql = "SELECT COUNT(*) as count FROM tb_mkt_master_kw_body 
+                WHERE kode_warna_body = '$kode_warna' AND is_deleted = 0";
+        
+        if ($id) {
+            $sql .= " AND id_master_kw_body != '$id'";
+        }
+        
         return $this->db->query($sql);
     }
 }
