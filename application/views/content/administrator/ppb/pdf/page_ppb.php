@@ -114,42 +114,49 @@
             margin-top: 50px;
         }
 
-        .signature-section>.departement-info-card {
-            margin-top: 50px;
-        }
 
         .signature-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: center;
-        }
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* penting agar tiap kolom punya lebar sama */
+}
 
-        .signature-table td {
-            width: 25%;
-            text-align: center;
-            vertical-align: bottom;
-            padding: 10px;
-            position: relative;
-        }
+.signature-table th {
+    font-size: 10px;
+    font-weight: normal;
+    text-align: center;
+    padding-bottom: 10px;
+}
 
-        .signature-table img {
-            display: block;
-            margin: 0 auto;
-        }
+.signature-table td {
+    text-align: center;
+    vertical-align: bottom;
+    padding: 10px 5px;
+}
 
-        .signature-line {
-            border-bottom: 1px solid #000;
-            margin: 0 auto;
-            width: 90%;
-            height: 1px;
-        }
+.ttd-img {
+    width: 80px;
+    height: auto;
+    margin: 0 auto 5px;
+    display: block;
+}
 
+.ttd-space {
+    height: 60px; /* pengganti gambar */
+    display: block;
+}
 
-        .footer {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 10px;
-        }
+.signature-line {
+    border-bottom: 1px solid #000;
+    width: 90%;
+    margin: 5px auto 3px;
+}
+
+.ttd-name {
+    font-size: 10px;
+    margin-top: 2px;
+}
+
     </style>
 </head>
 
@@ -157,7 +164,7 @@
     <div class="container">
         <!-- Header Perusahaan -->
         <div class="company-header">
-            <img src="<?= FCPATH . 'assets/images/logokapsul.jpeg' ?>" alt="" width="200" class="company-logo">
+            <img src="<?= FCPATH . 'assets/images/logokapsul-removebg-preview.png' ?>" alt="" width="200" class="company-logo">
         </div>
 
         <!-- Info Form -->
@@ -227,79 +234,86 @@
 
         <!-- Bagian Penandatanganan -->
         <!-- Bagian Penandatanganan -->
-        <div class="signature-section">
-            <table class="signature-table">
-                <tr>
-                    <td>Diperiksa,</td>
-                    <td>Mengetahui,</td>
-                    <td>Menyetujui,</td>
-                    <?php if ($ppb->jenis_ppb == "Non-Budget"): ?>
-                        <td>Disetujui,</td>
+        <!-- Bagian Penandatanganan -->
+<div class="signature-section">
+    <table class="signature-table">
+        <thead>
+            <tr>
+                <th style="width:20%;">Cicadas, <?= date('d M Y', strtotime($ppb->tgl_ppb ?? date('Y-m-d'))) ?></th>
+                <th style="width:20%;">Diperiksa,</th>
+                <th style="width:20%;">Mengetahui,</th>
+                <th style="width:20%;">Menyetujui,</th>
+                <?php if ($ppb->jenis_ppb == "Non-Budget"): ?>
+                    <th style="width:20%;">Disetujui,</th>
+                <?php endif; ?>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <!-- Adm / Stock Keeper -->
+                <td>
+                    <?php if (file_exists(FCPATH . 'assets/tanda_tangan/adm.png')): ?>
+                        <img src="<?= FCPATH . 'assets/tanda_tangan/adm.png' ?>" alt="Ttd Adm" class="ttd-img">
+                    <?php else: ?>
+                        <div class="ttd-space"></div>
                     <?php endif; ?>
-                </tr>
-                <tr>
-                    <!-- Adm / Stock Keeper -->
-                    <td>
-                        <?php if (file_exists(FCPATH . 'assets/tanda_tangan/adm.png')): ?>
-                            <img src="<?= FCPATH . 'assets/tanda_tangan/adm.png' ?>" alt="Ttd Adm" style="width:80px; height:auto; margin-top:10px;">
-                        <?php else: ?>
-                            <div style="height:60px;">Sudah</div>
-                        <?php endif; ?>
-                        <div class="signature-line"></div>
-                        <div style="margin-top:3px;">( <?= $ppb->ttd_adm ?? 'Adm / Stock Keeper' ?> )</div>
-                    </td>
+                    <div class="signature-line"></div>
+                    <div class="ttd-name">( <?= $ppb->ttd_adm ?? 'Adm / Stock Keeper' ?> )</div>
+                </td>
 
-                    <!-- Supy / Kasie -->
-                    <td>
-                        <?php if (file_exists(FCPATH . 'assets/tanda_tangan/supy.png')): ?>
-                            <img src="<?= FCPATH . 'assets/tanda_tangan/supy.png' ?>" alt="Ttd Supy" style="width:80px; height:auto; margin-top:10px;">
-                        <?php else: ?>
-                            <div style="height:60px;"></div>
-                        <?php endif; ?>
-                        <div class="signature-line"></div>
-                        <div style="margin-top:3px;">( <?= $ppb->ttd_supy ?? 'Supv / Kasie' ?> )</div>
-                    </td>
+                <!-- Supy / Kasie -->
+                <td>
+                    <?php if (file_exists(FCPATH . 'assets/tanda_tangan/supy.png')): ?>
+                        <img src="<?= FCPATH . 'assets/tanda_tangan/supy.png' ?>" alt="Ttd Supy" class="ttd-img">
+                    <?php else: ?>
+                        <div class="ttd-space"></div>
+                    <?php endif; ?>
+                    <div class="signature-line"></div>
+                    <div class="ttd-name">( <?= $ppb->ttd_supy ?? 'Supv / Kasie' ?> )</div>
+                </td>
 
-                    <!-- Manager Dept -->
-                    <td>
-                        <?php if (file_exists(FCPATH . 'assets/tanda_tangan/manager.png')): ?>
-                            <img src="<?= FCPATH . 'assets/tanda_tangan/manager.png' ?>" alt="Ttd Manager" style="width:80px; height:auto; margin-top:10px;">
-                        <?php else: ?>
-                            <div style="height:60px;"></div>
-                        <?php endif; ?>
-                        <div class="signature-line"></div>
-                        <div style="margin-top:3px;">( <?= $ppb->ttd_manager ?? 'Manager Dept.' ?> )</div>
-                    </td>
+                <!-- Manager Dept -->
+                <td>
+                    <?php if (file_exists(FCPATH . 'assets/tanda_tangan/manager.png')): ?>
+                        <img src="<?= FCPATH . 'assets/tanda_tangan/manager.png' ?>" alt="Ttd Manager" class="ttd-img">
+                    <?php else: ?>
+                        <div class="ttd-space"></div>
+                    <?php endif; ?>
+                    <div class="signature-line"></div>
+                    <div class="ttd-name">( <?= $ppb->ttd_manager ?? 'Manager Dept.' ?> )</div>
+                </td>
 
-                    <!-- Plant Manager / Direktur -->
-                    <td>
-                        <?php if ($ppb->jenis_ppb == "Non-Budget"): ?>
-                            <?php if (file_exists(FCPATH . 'assets/tanda_tangan/direktur.png')): ?>
-                                <img src="<?= FCPATH . 'assets/tanda_tangan/direktur.png' ?>" alt="Ttd Direktur" style="width:80px; height:auto; margin-top:10px;">
-                            <?php else: ?>
-                                <div style="height:60px;"></div>
-                            <?php endif; ?>
-                            <div class="signature-line"></div>
-                            <div style="margin-top:3px;">( <?= $ppb->ttd_direktur ?? 'Direktur' ?> )</div>
-                        <?php else: ?>
-                            <?php if (file_exists(FCPATH . 'assets/tanda_tangan/plant.png')): ?>
-                                <img src="<?= FCPATH . 'assets/tanda_tangan/plant.png' ?>" alt="Ttd Plant" style="width:80px; height:auto; margin-top:10px;">
-                            <?php else: ?>
-                                <div style="height:60px;"></div>
-                            <?php endif; ?>
-                            <div class="signature-line"></div>
-                            <div style="margin-top:3px;">( <?= $ppb->ttd_plant ?? 'Plant Manager' ?> )</div>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-            </table>
-        </div>
+                <!-- Plant Manager -->
+                <td>
+                    <?php if (file_exists(FCPATH . 'assets/tanda_tangan/plant.png')): ?>
+                        <img src="<?= FCPATH . 'assets/tanda_tangan/plant.png' ?>" alt="Ttd Plant" class="ttd-img">
+                    <?php else: ?>
+                        <div class="ttd-space"></div>
+                    <?php endif; ?>
+                    <div class="signature-line"></div>
+                    <div class="ttd-name">( <?= $ppb->ttd_plant ?? 'Plant Manager' ?> )</div>
+                </td>
+
+                <!-- Direktur (hanya jika Non-Budget) -->
+                <?php if ($ppb->jenis_ppb == "Non-Budget"): ?>
+                <td>
+                    <?php if (file_exists(FCPATH . 'assets/tanda_tangan/direktur.png')): ?>
+                        <img src="<?= FCPATH . 'assets/tanda_tangan/direktur.png' ?>" alt="Ttd Direktur" class="ttd-img">
+                    <?php else: ?>
+                        <div class="ttd-space"></div>
+                    <?php endif; ?>
+                    <div class="signature-line"></div>
+                    <div class="ttd-name">( <?= $ppb->ttd_direktur ?? 'Direktur' ?> )</div>
+                </td>
+                <?php endif; ?>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
 
-        <!-- Footer -->
-        <div class="footer">
-            Cicadas, 5 Oktober 2016
-        </div>
+
+        
     </div>
 </body>
 

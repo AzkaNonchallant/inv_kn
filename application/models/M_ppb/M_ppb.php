@@ -110,10 +110,26 @@ class M_ppb extends CI_Model
 public function data_ppb_barang($no_ppb)
     {
         $sql = "
-            SELECT a.*, b.nama_barang, b.kode_barang, b.spek, b.satuan
-            FROM tb_prc_ppb a
-            LEFT JOIN tb_prc_master_barang b ON a.id_prc_master_barang = b.id_prc_master_barang
-            WHERE a.no_ppb = '$no_ppb' ORDER BY a.id_prc_ppb ASC";
+            SELECT 
+            a.*, 
+            b.nama_barang, 
+            b.kode_barang, 
+            b.spek, 
+            b.satuan,
+            COALESCE(b.`in`, 0) AS `in`,
+            COALESCE(b.`out`, 0) AS `out`,
+            (COALESCE(b.`in`, 0) - COALESCE(b.`out`, 0)) AS stok
+        FROM 
+            tb_prc_ppb a
+        LEFT JOIN 
+            tb_prc_master_barang b 
+        ON 
+            a.id_prc_master_barang = b.id_prc_master_barang
+        WHERE 
+            a.no_ppb = '$no_ppb'
+        ORDER BY 
+            a.id_prc_ppb ASC;
+";
         return $this->db->query($sql);
     }
 

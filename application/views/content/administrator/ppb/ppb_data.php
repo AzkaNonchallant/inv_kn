@@ -85,8 +85,8 @@
                                                                         </button>
                                                                     </div>
                                                                     <div class="btn-group" role="group" aria-label="Basic example">
-                                                                        <a type="button" class="btn btn-success btn-square text-light btn-sm" href="<?= base_url() ?>ppb/ppb/cetak/<?= $k['no_ppb'] ?>">
-                                                                            <i class="feather icon-trash-2"></i>Cetak
+                                                                        <a type="button" class="btn btn-success btn-square text-light btn-sm" href="<?= base_url() ?>administrator/ppb/cetak/<?= $k['no_ppb'] ?>">
+                                                                            <i class="feather icon-printer"></i>Cetak
                                                                         </a>
                                                                     </div>
                                                                     <div class="btn-group" role="group" aria-label="Basic example">
@@ -203,6 +203,7 @@
                         data-satuan="<?= $s['satuan'] ?>" 
                         data-spek="<?= $s['spek'] ?>" 
                         data-nama="<?= $s['nama_barang'] ?>"
+                        data-stok="<?= $s['stok'] ?>"
                         value="<?= $s['kode_barang'] ?>,<?= $s['nama_barang'] ?>,<?= $s['id_prc_master_barang']?>">
                         <?= $s['kode_barang'] ?> | <?= $s['nama_barang'] ?>
                       </option>
@@ -224,8 +225,17 @@
               </div>
               <div class="col-md-2">
                 <div class="form-group">
+                  <label for="Stok">Stok</label>
+                  <input type="text" class="form-control" id="stok" name="stok" placeholder="stok"  maxlength="15" autocomplete="off" readonly>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
                   <label for="jumlah">Jumlah</label>
-                  <input type="text" class="form-control" id="jumlah" name="jumlah" placeholder="Jumlah" onkeypress="return hanyaAngka(event)" maxlength="15" autocomplete="off" required>
+                  <input type="text" class="form-control" id="jumlah" name="jumlah" placeholder="Jumlah" autocomplete="off" aria-describedby="validationServer03Feedback" style="text-transform:uppercase" onkeyup="this.value = this.value.toUpperCase()" required>
+                  <div id="validationServer03Feedback" class="invalid-feedback">
+                  Maaf Jumlah tidak boleh lebih dari Stock.
+                </div>
                 </div>
               </div>
 
@@ -246,6 +256,7 @@
                     <th>Spek</th>
                     <th>Satuan</th>
                     <th>Jumlah</th>
+                    <th>Stok</th>
                     <th class="text-right">Hapus</th>
                   </tr>
                 </thead>
@@ -297,11 +308,11 @@
         const satuan = selected.attr('data-satuan'); 
         const spek = selected.attr('data-spek'); 
         const nama_barang = selected.attr('data-nama_barang'); 
-        const nama_po_supplier = selected.attr('data-nama_po_supplier'); 
+        const stok = selected.attr('data-stok'); 
 
         $('#satuan').val(satuan).prop('readonly', true);  
         $('#spek').val(spek).prop('readonly', true);  
-        $('#nama_po_supplier').val(nama_po_supplier).prop('readonly', true);  
+        $('#stok').val(stok).prop('readonly', true);  
         $('#nama_barang_add').val(nama_barang);  
         });
 
@@ -309,6 +320,7 @@
         if ($(this).val() === "") {
             $('#satuan').val("").prop('readonly', false); 
             $('#spek').val("").prop('readonly', false);  
+            $('#stok').val("").prop('readonly', false);  
             $('#nama_barang_add').val(""); 
         }
         });
@@ -336,6 +348,7 @@
         const satuan = $('#satuan').val();
         const unit = $('#unit').val();
         const jumlah = $('#jumlah').val();
+        const stok = $('#stok').val();
         const nextform = Date.now(); 
         const no_batch = 'Batch-' + nextform;
         const id_prc_master_barang = kode.split(",")[2];
@@ -354,6 +367,7 @@
             <td>${spek}</td>
             <td>${satuan}</td>
             <td>${jumlah}</td>
+            <td>${stok}</td>
             <td class="text-right">
               <a href="javascript:void(0)" class="text-danger btn-remove-row">
                 <i class="feather icon-trash-2"></i>
@@ -368,6 +382,19 @@
       $(document).on('click', '.btn-remove-row', function() {
         $(this).closest('tr').remove();
       });
+
+      
+    $("#jumlah").keyup(function() {
+      var jumlah = $("#jumlah").val().replaceAll('.', '');
+      var stok = $("#stok").val().replaceAll('.', '');
+      if (parseInt(jumlah) > parseInt(stok)) {
+        $("#jumlah").addClass("is-invalid");
+        $("#input").addClass("disabled");
+      } else {
+        $("#jumlah").removeClass("is-invalid");
+        $("#input").removeClass("disabled");
+      }
+    });
       
         $("#no_ppb").keyup(function() {
             var no_ppb = $("#no_ppb").val();
@@ -452,6 +479,7 @@
                     data-satuan="<?= $s['satuan'] ?>" 
                     data-spek="<?= $s['spek'] ?>" 
                     data-nama="<?= $s['nama_barang'] ?>"
+                    data-stok="<?= $s['stok'] ?>"
                     value="<?= $s['kode_barang'] ?>,<?= $s['nama_barang'] ?>,<?= $s['id_prc_master_barang'] ?>">
                     <?= $s['kode_barang'] ?> | <?= $s['nama_barang'] ?>
                   </option>
@@ -468,16 +496,23 @@
               <label>Satuan</label>
               <input type="text" class="form-control" id="e-satuan" readonly>
             </div>
+            <div class="col-md-2">
+              <label>Stok</label>
+              <input type="text" class="form-control" id="e-stok" readonly>
+            </div>
 
             <div class="col-md-2">
               <label>Jumlah</label>
-              <input type="number" class="form-control" id="e-jumlah" min="1" placeholder="Jumlah">
+              <input type="number" class="form-control" id="e-jumlah" placeholder="Jumlah" aria-describedby="validationServer03Feedback" style="text-transform:uppercase" onkeyup="this.value = this.value.toUpperCase()" required">
+              <div id="validationServer03Feedback" class="invalid-feedback">
+                  Maaf Jumlah tidak boleh lebih dari Stock.
+                </div>
             </div>
 
             <div class="col-md-2 text-right">
-              <button type="button" class="btn btn-primary mt-4" id="e-add-item">
+              <a href="javascript:void(0)" style="cursor: pointer;"  class="btn btn-primary mt-4" id="e-add-item">
                 <i class="feather icon-plus"></i> Tambah
-              </button>
+              </a>
             </div>
           </div>
 
@@ -491,6 +526,7 @@
                   <th>Spek</th>
                   <th>Satuan</th>
                   <th>Jumlah</th>
+                  <th>Stok</th>
                   <th width="60">Hapus</th>
                 </tr>
               </thead>
@@ -559,17 +595,17 @@ $(document).ready(function() {
       success: function(res) {
         if (res.length > 0) {
           res.forEach(item => {
-            $tbody.append(rowHTML(item.kode_barang, item.nama_barang, item.spek, item.satuan, item.jumlah_ppb, item.id_prc_master_barang));
+            $tbody.append(rowHTML(item.kode_barang, item.nama_barang, item.spek, item.satuan, item.jumlah_ppb, item.id_prc_master_barang, item.stok));
           });
         } else {
-          $tbody.html(`<tr><td colspan="6" class="text-center text-muted">Tidak ada data barang</td></tr>`);
+          $tbody.html(`<tr><td colspan="7" class="text-center text-muted">Tidak ada data barang</td></tr>`);
         }
       }
     });
   });
 
   // ========== FUNGSI BUAT ROW ==========
-  function rowHTML(kode, nama, spek, satuan, jumlah, id) {
+  function rowHTML(kode, nama, spek, satuan, jumlah, id, stok) {
     return `
       <tr>
         <td><input type="hidden" name="kode_barang[]" value="${kode}">${kode}</td>
@@ -577,7 +613,8 @@ $(document).ready(function() {
         <td><input type="hidden" name="spek[]" value="${spek}">${spek}</td>
         <td><input type="hidden" name="satuan[]" value="${satuan}">${satuan}</td>
         <input type="hidden" name="id_prc_master_barang[]" value="${id}">
-        <td><input type="number" class="form-control form-control-sm" name="jumlah[]" value="${jumlah}" min="1"></td>
+        <td><input type="number" class="form-control" name="jumlah[]" value="${jumlah}"></td>
+        <td>${stok}</td>
         <td class="text-center">
           <a href="javascript:void(0)" class="btn btn-sm btn-danger btn-remove-row">
             <i class="feather icon-trash-2"></i>
@@ -587,11 +624,24 @@ $(document).ready(function() {
     `;
   }
 
+  $("#e-jumlah").keyup(function() {
+      var jumlah = $("#e-jumlah").val().replaceAll('.', '');
+      var stok = $("#e-stok").val().replaceAll('.', '');
+      if (parseInt(jumlah) > parseInt(stok)) {
+        $("#e-jumlah").addClass("is-invalid");
+        $("#e-add-item").addClass("disabled");
+      } else {
+        $("#e-jumlah").removeClass("is-invalid");
+        $("#e-add-item").removeClass("disabled");
+      }
+    });
+
   // ========== SAAT PILIH BARANG BARU ==========
   $('#e-kode_barang').on('change', function() {
     const selected = $(this).find(':selected');
     $('#e-spek').val(selected.data('spek'));
     $('#e-satuan').val(selected.data('satuan'));
+    $('#e-stok').val(selected.data('stok'));
   });
 
   // ========== TAMBAH BARANG BARU ==========
@@ -603,16 +653,17 @@ $(document).ready(function() {
     const spek = $('#e-spek').val();
     const satuan = $('#e-satuan').val();
     const jumlah = $('#e-jumlah').val();
+    const stok = $('#e-stok').val();
 
     if (!jumlah || jumlah <= 0) return alert('Isi jumlah dengan benar');
 
-    $('#e-ppb_barang_det').append(rowHTML(kode, nama, spek, satuan, jumlah, id));
-
+    $('#e-ppb_barang_det').append(rowHTML(kode, nama, spek, satuan, jumlah, id, stok));
     // reset input
     $('#e-kode_barang').val('').trigger('chosen:updated');
     $('#e-spek').val('');
     $('#e-satuan').val('');
     $('#e-jumlah').val('');
+    $('#e-stok').val('');
   });
 
   // ========== HAPUS BARIS ==========

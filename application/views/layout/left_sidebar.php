@@ -34,6 +34,28 @@
                     <a href="<?= base_url() ?>" class="nav-link "><span class="pcoded-micon"><i
                                 class="feather icon-home"></i></span><span class="pcoded-mtext">Dashboard</span></a>
                 </li>
+                <?php if ($level === "admin" || $level === "admin") { ?>
+                    <li data-username="basic components Button Alert Badges breadcrumb Paggination progress Tooltip popovers Carousel Cards Collapse Tabs pills Modal Grid System Typography Extra Shadows Embeds"
+                        class="nav-item pcoded-hasmenu">
+                        <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
+                                    class="feather icon-clipboard"></i></span><span
+                                class="pcoded-mtext">Administrasi</span></a>
+                        <ul class="pcoded-submenu">
+                            <li class="nav-item <?= $uri == 'Stock_keeper' ? 'active' : '' ?>"><a
+                                    href="<?= base_url('administrator/stok_barang') ?>" class="">Stok Barang</a></li>
+                            <li class="nav-item <?= $uri == 'Stock_keeper' ? 'active' : '' ?>"><a
+                                    href="<?= base_url('administrator/ppb') ?>" class="">PPB</a></li>
+                            <li class="nav-item <?= $uri == 'PPB' ? 'active' : '' ?>"><a
+                                    href="<?= base_url('accounting/accounting_ppb') ?>" class="">ACC Supervisor</a></li>
+                            <li class="nav-item <?= $uri == 'PPB' ? 'active' : '' ?>"><a
+                                    href="<?= base_url('accounting/accounting_ppb') ?>" class="">ACC Manager</a></li>
+                            <li class="nav-item <?= $uri == 'PPB' ? 'active' : '' ?>"><a
+                                    href="<?= base_url('accounting/accounting_ppb') ?>" class="">ACC Plant Manager</a></li>
+                            <li class="nav-item <?= $uri == 'PPB' ? 'active' : '' ?>"><a
+                                    href="<?= base_url('accounting/accounting_ppb') ?>" class="">ACC Direktur</a></li>
+                        </ul>
+                    </li>
+                <?php } ?>
                 <?php if ($level === "admin" || $level === "accounting") { ?>
                     <li data-username="basic components Button Alert Badges breadcrumb Paggination progress Tooltip popovers Carousel Cards Collapse Tabs pills Modal Grid System Typography Extra Shadows Embeds"
                         class="nav-item pcoded-hasmenu">

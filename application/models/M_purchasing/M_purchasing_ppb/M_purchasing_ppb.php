@@ -15,7 +15,7 @@ class M_purchasing_ppb extends CI_Model
 
     public function get_filter_brng()
     {
-        $sql = "SELECT DISTINCT id_prc_master_barang FROM tb_prc_ppb ORDER BY id_accounting_ppb ASC";
+        $sql = "SELECT DISTINCT id_prc_master_barang, id_prc_ppb FROM tb_prc_ppb ORDER BY id_prc_ppb ASC";
         return $this->db->query($sql)->result_array();
     }
 
@@ -85,14 +85,14 @@ class M_purchasing_ppb extends CI_Model
     public function get($id = null)
     {
         $sql = " 
-            SELECT a.*, b.jumlah
+            SELECT a.*, b.jumlah_ppb
             FROM tb_prc_ppb_tf a 
-            LEFT JOIN tb_prc_ppb b ON a.no_ppb_accounting = b.no_ppb_accounting
+            LEFT JOIN tb_prc_ppb b ON a.no_ppb = b.no_ppb
             WHERE a.is_deleted = 0 
                 AND a.acc_spv = 'Approved'
                 AND a.acc_manager = 'Approved'
                 AND a.acc_pm = 'Approved'
-            ORDER BY a.id_accounting_ppb_tf ASC
+            ORDER BY a.id_prc_ppb_tf ASC
         ";
     
         return $this->db->query($sql);
