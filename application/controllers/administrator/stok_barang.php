@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Prc_ppb_masterbarang extends CI_Controller
+class stok_barang extends CI_Controller
 {
     function __construct()
     {
@@ -26,7 +26,7 @@ class Prc_ppb_masterbarang extends CI_Controller
     $data['name'] = 'Nama Barang yang Terpilih'; // Setel ini sesuai dengan kebutuhan
 
     // Memuat view dengan data yang diperlukan
-    $this->template->load('template', 'content/purchasing/prc_ppb/prc_ppb_masterbarang', $data);
+    $this->template->load('template', 'content/administrator/stok_barang', $data);
 }
 
 
@@ -54,19 +54,18 @@ class Prc_ppb_masterbarang extends CI_Controller
             $data['mesh'] = $this->input->post('mesh', TRUE);
             $data['bloom'] = $this->input->post('bloom', TRUE);
             $data['satuan'] = $this->input->post('satuan', TRUE);
-            $data['departement'] = $this->input->post('departement', TRUE);
 
             // Menambahkan data barang ke database
             $respon = $this->M_prc_ppb_masterbarang->add($data);
 
             if ($respon) {
                 // Redirect setelah berhasil
-        	header('location:'.base_url('Purchasing/prc_ppb/prc_ppb_masterbarang').'?alert=success&msg=Selamat anda berhasil menambah Barang');
-                   
+                $this->session->set_flashdata('success', 'Selamat, Anda berhasil menambah barang.');
+                redirect('purchasing/prc_ppb/prc_ppb_masterbarang');
             } else {
                 // Redirect jika gagal
-            header('location:'.base_url('Purchasing/prc_ppb/prc_ppb_masterbarang').'?alert=error&msg=Maaf anda gagal menambah Barang');
-
+                $this->session->set_flashdata('error', 'Maaf, Anda gagal menambah barang.');
+                redirect('purchasing/prc_ppb/prc_ppb_masterbarang');
             }
         }
     }
@@ -96,18 +95,18 @@ class Prc_ppb_masterbarang extends CI_Controller
             $data['bloom'] = $this->input->post('bloom', TRUE);
             $data['spek'] = $this->input->post('spek', TRUE);
             $data['satuan'] = $this->input->post('satuan', TRUE);
-            $data['departement'] = $this->input->post('departement', TRUE);
 
             // Memperbarui data barang di database
             $respon = $this->M_prc_ppb_masterbarang->update($data);
 
             if ($respon) {
                 // Redirect setelah berhasil
-            header('location:'.base_url('Purchasing/prc_ppb/prc_ppb_masterbarang').'?alert=success&msg=Selamat anda berhasil Mengupdated Barang');
+                $this->session->set_flashdata('success', 'Selamat, Anda berhasil meng-update barang.');
+                redirect('purchasing/prc_ppb/prc_ppb_masterbarang');
             } else {
                 // Redirect jika gagal
-            header('location:'.base_url('Purchasing/prc_ppb/prc_ppb_masterbarang').'?alert=error&msg=Maaf anda gagal Mengupdated Barang');
-
+                $this->session->set_flashdata('error', 'Maaf, Anda gagal meng-update barang.');
+                redirect('purchasing/prc_ppb/prc_ppb_masterbarang');
             }
         }
     }
@@ -119,10 +118,12 @@ class Prc_ppb_masterbarang extends CI_Controller
 
         if ($respon) {
             // Redirect setelah berhasil
-            header('location:'.base_url('Purchasing/prc_ppb/prc_ppb_masterbarang').'?alert=success&msg=Selamat anda berhasil menghapus Barang');
+            $this->session->set_flashdata('success', 'Selamat, Anda berhasil menghapus barang.');
+            redirect('purchasing/prc_ppb/prc_ppb_masterbarang');
         } else {
             // Redirect jika gagal
-            header('location:'.base_url('Purchasing/prc_ppb/prc_ppb_masterbarang').'?alert=error&msg=Maaf anda gagal menghapus Barang');
+            $this->session->set_flashdata('error', 'Maaf, Anda gagal menghapus barang.');
+            redirect('purchasing/prc_ppb/prc_ppb_masterbarang');
         }
     }
 

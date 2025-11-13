@@ -137,6 +137,11 @@
               <option value="packing">Packing</option>
               <option value="utility">Utility</option>
               <option value="stockkeeper">Stock Keeper</option>
+              <option value="ppic">PPIC</option>
+              <option value="forming">Forming</option>
+              <option value="finishing">Finishing</option>
+              <option value="maintenance">Maintenance</option>
+              <option value="workshop">Workshop</option>
             </select>
           </div>
           <div class="form-group">
@@ -195,6 +200,7 @@
               <option value="packing">Packing</option>
               <option value="utility">Utility</option>
               <option value="stockkeeper">Stock Keeper</option>
+              <option value="ppic">PPIC</option>
             </select>
           </div>
           <div class="form-group">

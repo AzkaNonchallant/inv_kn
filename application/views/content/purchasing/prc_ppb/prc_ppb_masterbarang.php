@@ -107,7 +107,8 @@
                                     data-mesh="<?=$k['mesh']?>" data-bloom="<?=$k['bloom']?>" 
                                     data-tipe_barang="<?= $k['tipe_barang'] ?>"
                                     data-spek="<?= $k['spek'] ?>" 
-                                    data-satuan="<?= $k['satuan'] ?>">
+                                    data-satuan="<?= $k['satuan'] ?>"
+                                    data-departement="<?= $k['departement'] ?>">
                                       <i class="feather icon-edit-2"></i>Edit
                                     </button>
                                   </div>
@@ -281,6 +282,30 @@
                   <option value="" disabled selected hidden>- Pilih Tipe Barang -</option>
                   <option value="Import">Import</option>
                   <option value="Non Import">Non Import</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="departement">Departement</label>
+                <select class="form-control chosen-select" id="departement" name="departement" required>
+                  <option value="" disabled selected hidden>- Pilih Departement -</option>
+                  <option value="admin">Admin</option>
+                  <option value="accounting">Accounting</option>
+                  <option value="gudang_bahan_baku">Gudang Bahan Baku</option>
+                  <option value="gudang_distribusi">Gudang Distribusi</option>
+                  <option value="lab">Lab</option>
+                  <option value="melting">Melting</option>
+                  <option value="marketing">Marketing</option>
+                  <option value="packing">Packing</option>
+                  <option value="utility">Utility</option>
+                  <option value="stockkeeper">Stock Keeper</option>
+                  <option value="ppic">PPIC</option>
+                  <option value="forming">Forming</option>
+                  <option value="finishing">Finishing</option>
+                  <option value="maintenance">Maintenance</option>
+                  <option value="workshop">Workshop</option>
                 </select>
               </div>
             </div>
@@ -462,6 +487,29 @@
                 </select>
               </div>
             </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="departement">Departement</label>
+                <select class="form-control chosen-select" id="e-departement" name="departement" required>
+                  <option value="" disabled selected hidden>- Pilih Departement -</option>
+                  <option value="admin">Admin</option>
+                  <option value="accounting">Accounting</option>
+                  <option value="gudang_bahan_baku">Gudang Bahan Baku</option>
+                  <option value="gudang_distribusi">Gudang Distribusi</option>
+                  <option value="lab">Lab</option>
+                  <option value="melting">Melting</option>
+                  <option value="marketing">Marketing</option>
+                  <option value="packing">Packing</option>
+                  <option value="utility">Utility</option>
+                  <option value="stockkeeper">Stock Keeper</option>
+                  <option value="ppic">PPIC</option>
+                  <option value="forming">Forming</option>
+                  <option value="finishing">Finishing</option>
+                  <option value="maintenance">Maintenance</option>
+                  <option value="workshop">Workshop</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -489,6 +537,7 @@
       var satuan = button.data('satuan');
       var mesh = button.data('mesh');
       var bloom = button.data('bloom');
+      var departement = button.data('departement');
 
       var modal = $(this);
       modal.find('#e-id_prc_master_barang').val(id_prc_master_barang);
@@ -501,11 +550,13 @@
       modal.find('#e-satuan').val(satuan);
       modal.find('#e-mesh').val(mesh);
       modal.find('#e-bloom').val(bloom);
+      modal.find('#e-departement').val(departement);
 
       modal.find('#e-id_prc_ppb_supplier').trigger("chosen:updated");
       modal.find('#e-satuan').trigger("chosen:updated");
       modal.find('#e-jenis_barang').trigger("chosen:updated");
       modal.find('#e-tipe_barang').trigger("chosen:updated");
+      modal.find('#e-departement').trigger("chosen:updated");
 
        $('#e-mesh').on('input', function() {
             this.value = this.value.replace(/[^0-9+]/g, ''); // hanya boleh angka & +
