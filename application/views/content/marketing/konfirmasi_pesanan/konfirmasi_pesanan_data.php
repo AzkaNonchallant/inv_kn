@@ -8,11 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css" rel="stylesheet">
-    <!-- Tambahkan link Bootstrap Datepicker -->
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
     <style>
-        /* CSS tetap sama seperti sebelumnya */
         :root {
             --primary: #4361ee;
             --barang: #436;
@@ -147,7 +145,6 @@
             color: white;
         }
 
-        /* PERBAIKAN: Tambahkan scroll horizontal */
         .table-responsive {
             border-radius: 0 0 var(--border-radius) var(--border-radius);
             overflow: hidden;
@@ -160,7 +157,7 @@
             border-collapse: separate;
             border-spacing: 0;
             width: 100%;
-            min-width: 1200px; /* Lebar minimum untuk scroll */
+            min-width: 1200px;
         }
 
         .table thead th {
@@ -197,7 +194,6 @@
             border-bottom: none;
         }
 
-        /* Style untuk scrollbar */
         .table-responsive::-webkit-scrollbar {
             height: 8px;
         }
@@ -373,7 +369,6 @@
             white-space: nowrap;
         }
 
-        /* Chosen Select Styling */
         .chosen-container {
             width: 100% !important;
         }
@@ -392,7 +387,6 @@
             box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
         }
 
-        /* Datepicker Styling */
         .datepicker {
             z-index: 9999 !important;
         }
@@ -417,7 +411,6 @@
             background-color: var(--gray) !important;
         }
 
-        /* Style untuk checkbox */
         .form-check {
             margin-bottom: 15px;
         }
@@ -577,7 +570,7 @@
                                                         <th>No KP</th>
                                                         <th>Customer</th>
                                                         <th>Jumlah KP</th>
-                                                        <th>Harga KP</th>
+                                                        <th>Tanggal Kirim</th>
                                                         <th class="text-center">Aksi</th>
                                                     </tr>
                                                 </thead>
@@ -587,10 +580,15 @@
                                                     $no = 1;
                                                     if (isset($result) && is_array($result) && count($result) > 0) {
                                                         foreach ($result as $k) {
-                                                            // Format tanggal yang aman
-                                                            $tgl_kp = isset($k['tgl_kp']) && !empty($k['tgl_kp']) ? date('d/m/Y', strtotime($k['tgl_kp'])) : '';
-                                                            $tgl_po = isset($k['tgl_po']) && !empty($k['tgl_po']) ? date('d/m/Y', strtotime($k['tgl_po'])) : '';
-                                                            $tgl_kirim = isset($k['tgl_kirim']) && !empty($k['tgl_kirim']) ? date('d/m/Y', strtotime($k['tgl_kirim'])) : '';
+                                                            // PERBAIKAN: Format tanggal dengan pengecekan yang lebih baik
+                                                            $tgl_kp = (!empty($k['tgl_kp']) && $k['tgl_kp'] != '0000-00-00') ?
+                                                                date('d/m/Y', strtotime($k['tgl_kp'])) : '';
+
+                                                            $tgl_po = (!empty($k['tgl_po']) && $k['tgl_po'] != '0000-00-00') ?
+                                                                date('d/m/Y', strtotime($k['tgl_po'])) : '';
+
+                                                            $tgl_kirim = (!empty($k['tgl_kirim']) && $k['tgl_kirim'] != '0000-00-00') ?
+                                                                date('d/m/Y', strtotime($k['tgl_kirim'])) : '';
 
                                                             // Default values untuk field yang mungkin kosong
                                                             $id_mkt_kp = isset($k['Id_mkt_kp']) ? $k['Id_mkt_kp'] : '';
@@ -601,7 +599,6 @@
                                                             $spek_kapsul = isset($k['spek_kapsul']) ? $k['spek_kapsul'] : '';
                                                             $kode_print = isset($k['kode_print']) ? $k['kode_print'] : '';
                                                             $logo_print = isset($k['logo_print']) ? $k['logo_print'] : '';
-                                                            $stok_master = isset($k['stok_master']) ? $k['stok_master'] : '';
                                                             $kode_warna_cap = isset($k['kode_warna_cap']) ? $k['kode_warna_cap'] : '';
                                                             $warna_cap = isset($k['warna_cap']) ? $k['warna_cap'] : '';
                                                             $warna_body = isset($k['warna_body']) ? $k['warna_body'] : '';
@@ -612,7 +609,7 @@
                                                             $jenis_pack = isset($k['jenis_pack']) ? $k['jenis_pack'] : '';
                                                             $ket_kp = isset($k['ket_kp']) ? $k['ket_kp'] : '';
                                                             $created_by = isset($k['created_by']) ? $k['created_by'] : '';
-                                                            
+
                                                             ?>
                                                             <tr>
                                                                 <th scope="row"><?= $no++ ?></th>
@@ -621,21 +618,20 @@
                                                                     <span style="cursor: pointer;" class="badge badge-primary"
                                                                         data-toggle="modal" data-target="#detail"
                                                                         data-id_mkt_kp="<?= $id_mkt_kp ?>"
-                                                                        data-no_kp="<?= $no_kp ?>" 
-                                                                        data-tgl_kp="<?= $tgl_kp ?>"
+                                                                        data-no_kp="<?= $no_kp ?>" data-tgl_kp="<?= $tgl_kp ?>"
                                                                         data-id_customer="<?= $id_customer ?>"
                                                                         data-nama_customer="<?= $nama_customer ?>"
                                                                         data-kode_customer="<?= $kode_customer ?>"
                                                                         data-spek_kapsul="<?= $spek_kapsul ?>"
                                                                         data-kode_print="<?= $kode_print ?>"
                                                                         data-logo_print="<?= $logo_print ?>"
-                                                                        data-stok_master="<?= $stok_master ?>"
-                                                                        data-kode_warna_cap="<?= $kode_warna_cap ?> | <?= $warna_cap ?>"
-                                                                        data-kode_warna_body="<?= $kode_warna_body ?> | <?= $warna_body ?>"
+                                                                        data-kode_warna_cap="<?= $kode_warna_cap ?>"
+                                                                        data-warna_cap="<?= $warna_cap ?>"
+                                                                        data-kode_warna_body="<?= $kode_warna_body ?>"
+                                                                        data-warna_body="<?= $warna_body ?>"
                                                                         data-jumlah_kp="<?= $jumlah_kp ?>"
                                                                         data-harga_kp="<?= $harga_kp ?>"
-                                                                        data-no_po="<?= $no_po ?>" 
-                                                                        data-tgl_po="<?= $tgl_po ?>"
+                                                                        data-no_po="<?= $no_po ?>" data-tgl_po="<?= $tgl_po ?>"
                                                                         data-jenis_pack="<?= $jenis_pack ?>"
                                                                         data-tgl_kirim="<?= $tgl_kirim ?>"
                                                                         data-ket_kp="<?= $ket_kp ?>"
@@ -647,10 +643,8 @@
                                                                 <td class="text-right">
                                                                     <?= number_format($jumlah_kp, 0, ",", ".") ?> pcs
                                                                 </td>
-                                                                <td class="text-right">Rp
-                                                                    <?= number_format($harga_kp, 0, ",", ".") ?>
-                                                                </td>
-                                                                
+                                                                <td><?= $tgl_kirim ?></td>
+
                                                                 <td class="text-center">
                                                                     <div class="action-buttons">
                                                                         <?php if ($level === "admin" || $level == "marketing") { ?>
@@ -674,8 +668,7 @@
                                                                                 data-jenis_pack="<?= $jenis_pack ?>"
                                                                                 data-tgl_kirim="<?= $tgl_kirim ?>"
                                                                                 data-ket_kp="<?= $ket_kp ?>"
-                                                                                data-created_by="<?= $created_by ?>"
-                                                                                data-stok_master="<?= $stok_master ?>">
+                                                                                data-created_by="<?= $created_by ?>">
                                                                                 <i class="fas fa-edit"></i> Edit
                                                                             </button>
                                                                             <a href="<?= base_url() ?>marketing/konfirmasi_pesanan/delete/<?= $id_mkt_kp ?>"
@@ -721,6 +714,21 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
+                                    <label class="form-label">No PO</label>
+                                    <input type="text" class="form-control" id="no_po" name="no_po" placeholder="No PO"
+                                        autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Tanggal PO</label>
+                                    <input type="text" class="form-control datepicker" id="tgl_po" name="tgl_po"
+                                        placeholder="Tanggal PO" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
                                     <label class="form-label">No KP</label>
                                     <input type="text" class="form-control" id="no_kp" name="no_kp" placeholder="No KP"
                                         autocomplete="off" style="text-transform:uppercase"
@@ -739,20 +747,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Tanggal PO</label>
-                                    <input type="text" class="form-control datepicker" id="tgl_po" name="tgl_po"
-                                        placeholder="Tanggal PO" autocomplete="off">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Tanggal Kirim</label>
-                                    <input type="text" class="form-control datepicker" id="tgl_kirim" name="tgl_kirim"
-                                        placeholder="Tanggal Kirim" autocomplete="off">
-                                </div>
-                            </div>
+
 
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -764,6 +759,14 @@
                                             <option value="<?= $c['id_customer'] ?>"><?= $c['nama_customer'] ?></option>
                                         <?php } ?>
                                     </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Tanggal Kirim</label>
+                                    <input type="text" class="form-control datepicker" id="tgl_kirim" name="tgl_kirim"
+                                        placeholder="Tanggal Kirim" autocomplete="off">
                                 </div>
                             </div>
 
@@ -811,51 +814,8 @@
                                 </div>
                             </div>
 
-                            <!-- DROPDOWN BULAN STOK - PERBAIKAN: Filter stok > 0 -->
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">
-                                        <i class="fas fa-calendar"></i>
-                                        <span>Bulan Stok</span>
-                                    </label>
-                                    <select class="form-control chosen-select" id="id_bulan_stok" name="id_bulan_stok"
-                                        autocomplete="off" required>
-                                        <option value="">- Pilih Bulan Stok -</option>
-                                        <?php 
-                                        // Filter hanya bulan stok yang memiliki stok > 0
-                                        $filtered_bulan_stok = array_filter($res_bulan_stok, function($bulan) {
-                                            return isset($bulan['stok_master']) && $bulan['stok_master'] > 0;
-                                        });
-                                        
-                                        if (count($filtered_bulan_stok) > 0) {
-                                            foreach ($filtered_bulan_stok as $bulan) { ?>
-                                                <option value="<?= $bulan['id_master_stok_size'] ?>" 
-                                                    data-stok="<?= $bulan['stok_master'] ?>">
-                                                    <?= $bulan['stok_bulan'] ?> - <?= $bulan['stok_tahun'] ?> - <?= $bulan['size_machine'] ?> (Stok: <?= number_format($bulan['stok_master'], 0, ',', '.') ?>)
-                                                </option>
-                                            <?php }
-                                        } else { ?>
-                                            <option value="" disabled>Tidak ada stok tersedia</option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- TAMBAHKAN STOK SIZE DI MODAL TAMBAH -->
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">
-                                        <i class="fas fa-boxes"></i>
-                                        <span>Stok Size</span>
-                                    </label>
-                                    <input type="text" class="form-control" id="stok_master" name="stok_master"
-                                        placeholder="Stok akan terisi " autocomplete="off" readonly required>
-                                    <small class="form-text text-muted" id="stok-info"></small>
-                                </div>
-                            </div>
-
                             <!-- Kode Warna Cap - langsung dari master -->
-                            <div class="col-3">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Kode Warna Cap</label>
                                     <select class="form-control chosen-select" id="id_master_kw_cap"
@@ -873,7 +833,7 @@
                             </div>
 
                             <!-- Kode Warna Body - langsung dari master -->
-                            <div class="col-3">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Kode Warna Body</label>
                                     <select class="form-control chosen-select" id="id_master_kw_body"
@@ -892,22 +852,14 @@
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">No PO</label>
-                                    <input type="text" class="form-control" id="no_po" name="no_po" placeholder="No PO"
-                                        autocomplete="off">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Jumlah KP</label>
+                                    <label class="form-label">Jumlah Pesanan</label>
                                     <input type="text" class="form-control" id="jumlah_kp" name="jumlah_kp"
                                         placeholder="Jumlah KP" autocomplete="off" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Harga KP</label>
+                                    <label class="form-label">Harga Per pcs</label>
                                     <input type="text" class="form-control" id="harga_kp" name="harga_kp"
                                         placeholder="Harga KP" autocomplete="off" required>
                                 </div>
@@ -938,7 +890,7 @@
                                 <div class="form-group">
                                     <label class="form-label">Created By</label>
                                     <input type="text" class="form-control" id="created_by" name="created_by"
-                                        value="<?= $this->session->userdata('nama') ?>" autocomplete="off" readonly>
+                                        value="<?= $this->session->userdata('id_user') ?>" autocomplete="off" readonly>
                                 </div>
                             </div>
                         </div>
@@ -1014,14 +966,6 @@
                             <div class="form-group">
                                 <label class="form-label">Logo Print</label>
                                 <input type="text" class="form-control" id="v-logo_print" readonly>
-                            </div>
-                        </div>
-
-                        <!-- TAMBAHKAN STOK SIZE DI MODAL DETAIL -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Stok Size</label>
-                                <input type="text" class="form-control" id="v-stok_master" readonly>
                             </div>
                         </div>
 
@@ -1120,6 +1064,21 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
+                                    <label class="form-label">No PO</label>
+                                    <input type="text" class="form-control" id="e-no_po" name="no_po"
+                                        placeholder="No PO" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Tanggal PO</label>
+                                    <input type="text" class="form-control datepicker" id="e-tgl_po" name="tgl_po"
+                                        placeholder="Tanggal PO" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
                                     <label class="form-label">No KP</label>
                                     <input type="text" class="form-control" id="e-no_kp" name="no_kp"
                                         placeholder="No KP" autocomplete="off" style="text-transform:uppercase"
@@ -1135,6 +1094,14 @@
                                     <label class="form-label">Tanggal KP</label>
                                     <input type="text" class="form-control datepicker" id="e-tgl_kp" name="tgl_kp"
                                         placeholder="Tanggal KP" autocomplete="off" required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Tanggal Kirim</label>
+                                    <input type="text" class="form-control datepicker" id="e-tgl_kirim" name="tgl_kirim"
+                                        placeholder="Tanggal Kirim" autocomplete="off">
                                 </div>
                             </div>
 
@@ -1167,7 +1134,8 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="e-use_print" name="use_print">
+                                        <input type="checkbox" class="form-check-input" id="e-use_print"
+                                            name="use_print">
                                         <label class="form-check-label" for="e-use_print">
                                             <i class="fas fa-print"></i> Gunakan Kode Print
                                         </label>
@@ -1192,49 +1160,6 @@
                                     <label class="form-label">Logo Print</label>
                                     <input type="text" class="form-control" id="e-logo_print" name="logo_print"
                                         placeholder="Logo Print" autocomplete="off" readonly>
-                                </div>
-                            </div>
-
-                            <!-- DROPDOWN BULAN STOK DI EDIT - PERBAIKAN: Filter stok > 0 -->
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">
-                                        <i class="fas fa-calendar"></i>
-                                        <span>Bulan Stok</span>
-                                    </label>
-                                    <select class="form-control chosen-select" id="e-id_bulan_stok" name="id_bulan_stok"
-                                        autocomplete="off" required>
-                                        <option value="">- Pilih Bulan Stok -</option>
-                                        <?php 
-                                        // Filter hanya bulan stok yang memiliki stok > 0
-                                        $filtered_bulan_stok = array_filter($res_bulan_stok, function($bulan) {
-                                            return isset($bulan['stok_master']) && $bulan['stok_master'] > 0;
-                                        });
-                                        
-                                        if (count($filtered_bulan_stok) > 0) {
-                                            foreach ($filtered_bulan_stok as $bulan) { ?>
-                                                <option value="<?= $bulan['id_master_stok_size'] ?>" 
-                                                    data-stok="<?= $bulan['stok_master'] ?>">
-                                                    <?= $bulan['stok_bulan'] ?> - <?= $bulan['stok_tahun'] ?> (Stok: <?= number_format($bulan['stok_master'], 0, ',', '.') ?>)
-                                                </option>
-                                            <?php }
-                                        } else { ?>
-                                            <option value="" disabled>Tidak ada stok tersedia</option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- TAMBAHKAN STOK SIZE DI MODAL EDIT -->
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">
-                                        <i class="fas fa-boxes"></i>
-                                        <span>Stok Size</span>
-                                    </label>
-                                    <input type="text" class="form-control" id="e-stok_master" name="stok_master"
-                                        placeholder="Stok akan terisi otomatis" autocomplete="off" readonly required>
-                                    <small class="form-text text-muted" id="e-stok-info"></small>
                                 </div>
                             </div>
 
@@ -1266,7 +1191,7 @@
                                         <?php foreach ($res_warna_body as $warna) { ?>
                                             <option value="<?= $warna['id_master_kw_body'] ?>"
                                                 data-kode="<?= $warna['kode_warna_body'] ?>">
-                                               <?= $warna['kode_warna_body'] ?> | <?= $warna['warna_body'] ?>
+                                                <?= $warna['kode_warna_body'] ?> | <?= $warna['warna_body'] ?>
                                             </option>
                                         <?php } ?>
                                     </select>
@@ -1292,22 +1217,6 @@
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">No PO</label>
-                                    <input type="text" class="form-control" id="e-no_po" name="no_po"
-                                        placeholder="No PO" autocomplete="off">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Tanggal PO</label>
-                                    <input type="text" class="form-control datepicker" id="e-tgl_po" name="tgl_po"
-                                        placeholder="Tanggal PO" autocomplete="off">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
                                     <label class="form-label">Jenis Packing</label>
                                     <select class="form-control chosen-select" id="e-jenis_pack" name="jenis_pack"
                                         autocomplete="off">
@@ -1316,14 +1225,6 @@
                                         <option value="Bratako">Bratako</option>
                                         <option value="Loss">Loss</option>
                                     </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Tanggal Kirim</label>
-                                    <input type="text" class="form-control datepicker" id="e-tgl_kirim" name="tgl_kirim"
-                                        placeholder="Tanggal Kirim" autocomplete="off">
                                 </div>
                             </div>
 
@@ -1346,7 +1247,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                        <button type="submit" id="simpan" class="btn btn-primary">
+                        <button type="submit" id="update" class="btn btn-primary">
                             <i class="fas fa-save"></i> Update
                         </button>
                     </div>
@@ -1363,10 +1264,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.id.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        // Variabel global untuk menyimpan stok master
-        var currentStokMaster = 0;
-        var currentStokMasterEdit = 0;
-
+        // ========== INISIALISASI KOMPONEN ==========
+        
         // Initialize chosen select
         $('.chosen-select').chosen({
             width: '100%',
@@ -1380,6 +1279,215 @@
             todayHighlight: true,
             language: 'id',
             orientation: 'bottom auto'
+        });
+
+        // ========== FUNGSI UTILITAS ==========
+
+        // Format Rupiah yang benar
+        function formatRupiah(angka) {
+            if (!angka) return '0';
+            // Hapus semua karakter non-digit
+            let number_string = angka.toString().replace(/[^,\d]/g, '');
+            // Jika kosong, return 0
+            if (number_string === '') return '0';
+            // Konversi ke number
+            let number = parseInt(number_string);
+            // Format dengan separator ribuan
+            return number.toLocaleString('id-ID');
+        }
+
+        function unformatRupiah(angka) {
+            if (!angka) return 0;
+            // Hapus semua karakter non-digit dan konversi ke number
+            return parseInt(angka.toString().replace(/[^0-9]/g, ''));
+        }
+
+        // Format tanggal untuk input (dd/mm/yyyy)
+        function formatDateForInput(date) {
+            var day = String(date.getDate()).padStart(2, '0');
+            var month = String(date.getMonth() + 1).padStart(2, '0');
+            var year = date.getFullYear();
+            return day + '/' + month + '/' + year;
+        }
+
+        // Format tanggal untuk Date object dari string dd/mm/yyyy
+        function parseDateFromInput(dateString) {
+            if (!dateString || dateString === '01/01/1970' || dateString === '00/00/0000') return null;
+            var parts = dateString.split('/');
+            if (parts.length !== 3) return null;
+            
+            // Validasi tanggal
+            var day = parseInt(parts[0]);
+            var month = parseInt(parts[1]);
+            var year = parseInt(parts[2]);
+            
+            if (day < 1 || day > 31 || month < 1 || month > 12 || year < 1900 || year > 2100) {
+                return null;
+            }
+            
+            return new Date(year, month - 1, day);
+        }
+
+        // Fungsi untuk menampilkan notifikasi
+        function showNotification(message, type) {
+            // Hapus notifikasi sebelumnya jika ada
+            $('.auto-update-notification').remove();
+            
+            // Buat elemen notifikasi
+            var notification = $('<div class="alert alert-' + type + ' alert-dismissible fade show auto-update-notification" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;">' +
+                                '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+                                '<i class="fas fa-info-circle"></i> ' + message +
+                                '</div>');
+            
+            // Tambahkan ke body
+            $('body').append(notification);
+            
+            // Hapus otomatis setelah 5 detik
+            setTimeout(function() {
+                notification.alert('close');
+            }, 5000);
+        }
+
+        // Validasi tanggal
+        function isValidDate(dateString) {
+            if (!dateString || dateString === '01/01/1970' || dateString === '00/00/0000') return false;
+            var dateObj = parseDateFromInput(dateString);
+            return dateObj !== null && dateObj instanceof Date && !isNaN(dateObj);
+        }
+
+        // ========== FUNGSI TANGGAL KIRIM OTOMATIS ==========
+
+        // Fungsi untuk mengupdate tanggal kirim otomatis jika sudah lewat
+        function updateDeliveryDateIfPassed() {
+            var today = new Date();
+            var todayFormatted = formatDateForInput(today);
+            var updatedCount = 0;
+            
+            console.log('Memulai pengecekan tanggal kirim...');
+            
+            // Loop melalui semua data di tabel
+            $('.table tbody tr').each(function() {
+                var deliveryDateCell = $(this).find('td:eq(5)'); // Kolom tanggal kirim (index 5)
+                var deliveryDateText = deliveryDateCell.text().trim();
+                var idMktKp = $(this).find('.badge-primary').data('id_mkt_kp');
+                
+                console.log('Cek data ID:', idMktKp, 'Tanggal:', deliveryDateText);
+                
+                if (deliveryDateText && isValidDate(deliveryDateText) && idMktKp) {
+                    var deliveryDate = parseDateFromInput(deliveryDateText);
+                    
+                    // Reset waktu untuk perbandingan yang akurat
+                    today.setHours(0, 0, 0, 0);
+                    deliveryDate.setHours(0, 0, 0, 0);
+                    
+                    if (deliveryDate && deliveryDate < today) {
+                        console.log('Tanggal kirim sudah lewat untuk ID:', idMktKp);
+                        
+                        // Update tampilan di tabel
+                        deliveryDateCell.text(todayFormatted);
+                        updatedCount++;
+                        
+                        // Update di database via AJAX
+                        updateDeliveryDateInDatabase(idMktKp, todayFormatted);
+                    }
+                }
+            });
+            
+            if (updatedCount > 0) {
+                showNotification(updatedCount + ' tanggal kirim telah disesuaikan ke hari ini', 'info');
+            }
+        }
+
+        // Fungsi untuk update tanggal kirim di database
+        function updateDeliveryDateInDatabase(idMktKp, newDate) {
+            console.log('Update database untuk ID:', idMktKp, 'dengan tanggal:', newDate);
+            
+            $.ajax({
+                url: "<?= base_url() ?>marketing/konfirmasi_pesanan/update_delivery_date",
+                type: "POST",
+                data: {
+                    id_mkt_kp: idMktKp,
+                    tgl_kirim: newDate,
+                    updated_by: "<?= $this->session->userdata('nama') ?>"
+                },
+                dataType: "json",
+                success: function(response) {
+                    if (response.success) {
+                        console.log('Tanggal kirim berhasil diupdate untuk ID: ' + idMktKp);
+                    } else {
+                        console.error('Gagal update tanggal kirim:', response.message);
+                        showNotification('Gagal update tanggal kirim: ' + response.message, 'danger');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error update tanggal kirim:', error);
+                    showNotification('Error update tanggal kirim: ' + error, 'danger');
+                }
+            });
+        }
+
+        // Fungsi untuk mengatur tanggal kirim otomatis di form input
+        function setAutoDeliveryDate(inputElement) {
+            var selectedDate = $(inputElement).val();
+            
+            if (isValidDate(selectedDate)) {
+                var selectedDateObj = parseDateFromInput(selectedDate);
+                var today = new Date();
+                
+                if (selectedDateObj) {
+                    // Reset waktu untuk perbandingan yang akurat
+                    today.setHours(0, 0, 0, 0);
+                    selectedDateObj.setHours(0, 0, 0, 0);
+                    
+                    // Jika tanggal yang dipilih sudah lewat dari hari ini
+                    if (selectedDateObj < today) {
+                        // Set ke tanggal hari ini
+                        var formattedDate = formatDateForInput(new Date());
+                        $(inputElement).val(formattedDate);
+                        
+                        // Beri notifikasi kepada user
+                        showNotification('Tanggal kirim telah disesuaikan ke tanggal hari ini karena tanggal yang dipilih sudah lewat.', 'info');
+                    }
+                }
+            } else if (selectedDate && !isValidDate(selectedDate)) {
+                // Jika tanggal tidak valid, set ke hari ini
+                var formattedDate = formatDateForInput(new Date());
+                $(inputElement).val(formattedDate);
+                showNotification('Tanggal kirim tidak valid, telah disesuaikan ke tanggal hari ini.', 'warning');
+            }
+        }
+
+        // ========== JALANKAN AUTO UPDATE ==========
+
+        // Jalankan auto-update saat page load
+        setTimeout(function() {
+            updateDeliveryDateIfPassed();
+        }, 1000);
+        
+        // Juga jalankan saat filter diubah
+        $('#lihat').click(function() {
+            setTimeout(function() {
+                updateDeliveryDateIfPassed();
+            }, 1500);
+        });
+
+        // ========== EVENT HANDLER TANGGAL KIRIM ==========
+
+        // Event handler untuk tanggal kirim di form tambah
+        $('#tgl_kirim').on('change', function() {
+            setAutoDeliveryDate(this);
+        });
+
+        // Event handler untuk tanggal kirim di form edit
+        $('#e-tgl_kirim').on('change', function() {
+            setAutoDeliveryDate(this);
+        });
+
+        // Set default tanggal kirim saat modal tambah dibuka
+        $('#add').on('show.bs.modal', function() {
+            // Set default tanggal kirim ke hari ini
+            var formattedDate = formatDateForInput(new Date());
+            $('#tgl_kirim').val(formattedDate);
         });
 
         // ========== FUNGSI CHECKBOX KODE PRINT ==========
@@ -1420,137 +1528,11 @@
             }
         });
 
-        // Format Rupiah yang benar
-        function formatRupiah(angka) {
-            if (!angka) return '0';
-            // Hapus semua karakter non-digit
-            let number_string = angka.toString().replace(/[^,\d]/g, '');
-            // Jika kosong, return 0
-            if (number_string === '') return '0';
-            // Konversi ke number
-            let number = parseInt(number_string);
-            // Format dengan separator ribuan
-            return number.toLocaleString('id-ID');
-        }
-
-        function unformatRupiah(angka) {
-            if (!angka) return 0;
-            // Hapus semua karakter non-digit dan konversi ke number
-            return parseInt(angka.toString().replace(/[^0-9]/g, ''));
-        }
-
         // Format input angka dengan benar
-        $('#jumlah_kp, #harga_kp').on('input', function () {
+        $('#jumlah_kp, #harga_kp, #e-jumlah_kp, #e-harga_kp').on('input', function () {
             let value = this.value.replace(/[^0-9]/g, '');
             this.value = formatRupiah(value);
         });
-
-        // ========== FUNGSI BULAN STOK ==========
-
-        // Handle perubahan bulan stok untuk tambah
-        $('#id_bulan_stok').change(function() {
-            var selectedOption = $(this).find('option:selected');
-            var stok = selectedOption.data('stok');
-            
-            if (stok) {
-                $('#stok_master').val(formatRupiah(stok));
-                currentStokMaster = unformatRupiah(stok);
-                validateStokMaster('', $('#jumlah_kp').val());
-            } else {
-                $('#stok_master').val('');
-                currentStokMaster = 0;
-            }
-        });
-
-        // Handle perubahan bulan stok untuk edit
-        $('#e-id_bulan_stok').change(function() {
-            var selectedOption = $(this).find('option:selected');
-            var stok = selectedOption.data('stok');
-            
-            if (stok) {
-                $('#e-stok_master').val(formatRupiah(stok));
-                currentStokMasterEdit = unformatRupiah(stok);
-                validateStokMaster('e-', $('#e-jumlah_kp').val());
-            } else {
-                $('#e-stok_master').val('');
-                currentStokMasterEdit = 0;
-            }
-        });
-
-        // ========== VALIDASI STOK MASTER ==========
-
-        // Tampilkan info stok master saat modal tambah dibuka
-        $('#add').on('show.bs.modal', function() {
-            // Reset current stok
-            currentStokMaster = 0;
-            $('#stok-info').text('Pilih Bulan Stok terlebih dahulu').removeClass('text-danger');
-        });
-
-        // Tampilkan info stok master saat modal edit dibuka
-        $('#edit').on('show.bs.modal', function(event) {
-            // Reset current stok
-            currentStokMasterEdit = 0;
-            $('#e-stok-info').text('Pilih Bulan Stok terlebih dahulu').removeClass('text-danger');
-        });
-
-        // Validasi input jumlah KP untuk tambah
-        $('#jumlah_kp').on('input', function() {
-            validateStokMaster('', $(this).val());
-        });
-
-        // Validasi input jumlah KP untuk edit
-        $('#e-jumlah_kp').on('input', function() {
-            validateStokMaster('e-', $(this).val());
-        });
-
-        // Fungsi validasi stok master
-        function validateStokMaster(prefix, jumlahInput) {
-            var jumlahValue = unformatRupiah(jumlahInput) || 0;
-            var stokInfo = $('#' + prefix + 'stok-info');
-            var simpanBtn = $('#' + prefix + 'simpan');
-            var currentStok = prefix === '' ? currentStokMaster : currentStokMasterEdit;
-
-            // Jika belum memilih bulan stok
-            if (currentStok === 0) {
-                stokInfo.text('Pilih Bulan Stok terlebih dahulu').removeClass('text-danger');
-                if (simpanBtn.length) {
-                    simpanBtn.attr('disabled', 'disabled');
-                }
-                return;
-            }
-
-            if (jumlahValue > 0) {
-                if (jumlahValue > currentStok) {
-                    // Jika melebihi stok master
-                    stokInfo.addClass('text-danger');
-                    stokInfo.text('Melebihi stok master! Stok tersedia: ' + formatRupiah(currentStok));
-                    
-                    // Disable tombol simpan
-                    if (simpanBtn.length) {
-                        simpanBtn.attr('disabled', 'disabled');
-                    }
-                } else {
-                    // Jika stok mencukupi
-                    stokInfo.removeClass('text-danger');
-                    stokInfo.text('Stok mencukupi. Stok master: ' + formatRupiah(currentStok));
-                    
-                    // Enable tombol simpan
-                    if (simpanBtn.length) {
-                        simpanBtn.removeAttr('disabled');
-                    }
-                }
-            } else {
-                stokInfo.text('Masukkan jumlah KP. Stok master: ' + formatRupiah(currentStok));
-                stokInfo.removeClass('text-danger');
-                
-                // Disable tombol simpan jika kosong
-                if (simpanBtn.length && jumlahValue === 0) {
-                    simpanBtn.attr('disabled', 'disabled');
-                }
-            }
-        }
-
-        // ========== END VALIDASI STOK MASTER ==========
 
         // Load data kode print berdasarkan customer (Tambah)
         $('#id_customer').change(function () {
@@ -1591,6 +1573,7 @@
                     },
                     error: function (xhr, status, error) {
                         console.log("Error loading prints data: " + error);
+                        showNotification('Gagal memuat data kode print', 'danger');
                     }
                 });
             }
@@ -1603,7 +1586,7 @@
             var logoPrint = selectedOption.data('logo');
 
             $('#kode_print').val(kodePrint);
-            $('#logo_print').val(logoPrint);
+            $('#logo_print').val(logoPrint || '');
         });
 
         // Handle perubahan kode print (Edit)
@@ -1613,7 +1596,7 @@
             var logoPrint = selectedOption.data('logo');
 
             $('#e-kode_print').val(kodePrint);
-            $('#e-logo_print').val(logoPrint);
+            $('#e-logo_print').val(logoPrint || '');
         });
 
         // Handle perubahan kode warna cap (Tambah)
@@ -1644,6 +1627,8 @@
             $('#e-kode_warna_body').val(kodeWarna);
         });
 
+        // ========== FUNGSI FILTER ==========
+
         // Filter functionality
         $('#lihat').click(function () {
             var filter_customer = $('#filter_customer').find(':selected').val();
@@ -1664,7 +1649,9 @@
             }
         });
 
-        // PERBAIKAN: Detail modal functionality - Tampilkan kode warna dan nama warna
+        // ========== MODAL FUNCTIONALITY ==========
+
+        // Detail modal functionality
         $('#detail').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var id_mkt_kp = button.data('id_mkt_kp');
@@ -1674,15 +1661,14 @@
             var kode_customer = button.data('kode_customer');
             var spek_kapsul = button.data('spek_kapsul');
             var kode_print = button.data('kode_print');
-            
-            // PERBAIKAN: Ambil data lengkap kode warna cap dan body
-            var kode_warna_cap_full = button.data('kode_warna_cap'); // Format: "KODE | NAMA_WARNA"
-            var kode_warna_body_full = button.data('kode_warna_body'); // Format: "KODE | NAMA_WARNA"
-            
+            var logo_print = button.data('logo_print');
+            var kode_warna_cap = button.data('kode_warna_cap');
+            var warna_cap = button.data('warna_cap');
+            var kode_warna_body = button.data('kode_warna_body');
+            var warna_body = button.data('warna_body');
             var jumlah_kp = button.data('jumlah_kp');
             var harga_kp = button.data('harga_kp');
             var no_po = button.data('no_po');
-            var stok_master = button.data('stok_master');
             var tgl_po = button.data('tgl_po');
             var jenis_pack = button.data('jenis_pack');
             var tgl_kirim = button.data('tgl_kirim');
@@ -1692,29 +1678,33 @@
             var modal = $(this);
             modal.find('#v-id_mkt_kp').val(id_mkt_kp);
             modal.find('#v-no_kp').val(no_kp);
-            modal.find('#v-tgl_kp').val(tgl_kp);
-            modal.find('#v-nama_customer').val(nama_customer);
-            modal.find('#v-kode_customer').val(kode_customer);
-            modal.find('#v-spek_kapsul').val(spek_kapsul);
-            modal.find('#v-kode_print').val(kode_print);
-            modal.find('#v-logo_print').val(button.data('logo_print') || '-');
-            modal.find('#v-stok_master').val(formatRupiah(stok_master.toString()));
             
-            // PERBAIKAN: Tampilkan kode warna cap dan body dengan format lengkap
-            modal.find('#v-kode_warna_cap').val(kode_warna_cap_full || '-');
-            modal.find('#v-kode_warna_body').val(kode_warna_body_full || '-');
+            // Handle tanggal dengan validasi
+            modal.find('#v-tgl_kp').val(isValidDate(tgl_kp) ? tgl_kp : '-');
+            modal.find('#v-tgl_po').val(isValidDate(tgl_po) ? tgl_po : '-');
+            modal.find('#v-tgl_kirim').val(isValidDate(tgl_kirim) ? tgl_kirim : '-');
             
-            modal.find('#v-jumlah_kp').val(formatRupiah(jumlah_kp.toString()));
-            modal.find('#v-harga_kp').val(formatRupiah(harga_kp.toString()));
-            modal.find('#v-no_po').val(no_po);
-            modal.find('#v-tgl_po').val(tgl_po);
-            modal.find('#v-jenis_pack').val(jenis_pack);
-            modal.find('#v-tgl_kirim').val(tgl_kirim);
-            modal.find('#v-ket_kp').val(ket_kp);
-            modal.find('#v-created_by').val(created_by);
+            modal.find('#v-nama_customer').val(nama_customer || '-');
+            modal.find('#v-kode_customer').val(kode_customer || '-');
+            modal.find('#v-spek_kapsul').val(spek_kapsul || '-');
+            modal.find('#v-kode_print').val(kode_print || '-');
+            modal.find('#v-logo_print').val(logo_print || '-');
+            
+            // Format kode warna dengan nama warna
+            var kodeWarnaCap = (kode_warna_cap && warna_cap) ? kode_warna_cap + ' - ' + warna_cap : '-';
+            var kodeWarnaBody = (kode_warna_body && warna_body) ? kode_warna_body + ' - ' + warna_body : '-';
+            modal.find('#v-kode_warna_cap').val(kodeWarnaCap);
+            modal.find('#v-kode_warna_body').val(kodeWarnaBody);
+            
+            modal.find('#v-jumlah_kp').val(formatRupiah(jumlah_kp.toString()) + ' pcs');
+            modal.find('#v-harga_kp').val('Rp ' + formatRupiah(harga_kp.toString()));
+            modal.find('#v-no_po').val(no_po || '-');
+            modal.find('#v-jenis_pack').val(jenis_pack || '-');
+            modal.find('#v-ket_kp').val(ket_kp || '-');
+            modal.find('#v-created_by').val(created_by || '-');
         });
 
-        // Edit modal functionality
+        // Edit modal functionality dengan penanganan tanggal yang lebih baik
         $('#edit').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var id_mkt_kp = button.data('id_mkt_kp');
@@ -1735,144 +1725,300 @@
             var tgl_kirim = button.data('tgl_kirim');
             var ket_kp = button.data('ket_kp');
             var created_by = button.data('created_by');
-            var stok_master = button.data('stok_master');
 
             var modal = $(this);
             modal.find('#e-id_mkt_kp').val(id_mkt_kp);
             modal.find('#e-no_kp').val(no_kp);
-            modal.find('#e-tgl_kp').val(tgl_kp);
+            
+            // Handle tanggal KP
+            if (isValidDate(tgl_kp)) {
+                modal.find('#e-tgl_kp').val(tgl_kp);
+            } else {
+                modal.find('#e-tgl_kp').val(formatDateForInput(new Date()));
+            }
+            
             modal.find('#e-id_customer').val(id_customer).trigger("chosen:updated");
+            modal.find('#e-no_po').val(no_po || '');
+            
+            // Handle tanggal PO
+            if (isValidDate(tgl_po)) {
+                modal.find('#e-tgl_po').val(tgl_po);
+            } else {
+                modal.find('#e-tgl_po').val('');
+            }
             
             modal.find('#e-spek_kapsul').val(spek_kapsul).trigger("chosen:updated");
             
+            // Handle tanggal kirim dengan lebih baik
+            if (isValidDate(tgl_kirim)) {
+                var today = new Date();
+                var deliveryDate = parseDateFromInput(tgl_kirim);
+                
+                if (deliveryDate) {
+                    today.setHours(0, 0, 0, 0);
+                    deliveryDate.setHours(0, 0, 0, 0);
+                    
+                    if (deliveryDate < today) {
+                        // Jika tanggal kirim sudah lewat, set ke hari ini
+                        modal.find('#e-tgl_kirim').val(formatDateForInput(new Date()));
+                        showNotification('Tanggal kirim telah disesuaikan ke tanggal hari ini karena tanggal sebelumnya sudah lewat.', 'info');
+                    } else {
+                        // Jika masih valid, gunakan tanggal asli
+                        modal.find('#e-tgl_kirim').val(tgl_kirim);
+                    }
+                } else {
+                    // Jika parsing gagal, set default hari ini
+                    modal.find('#e-tgl_kirim').val(formatDateForInput(new Date()));
+                }
+            } else {
+                // Jika tidak ada tanggal kirim atau tanggal invalid, set default hari ini
+                modal.find('#e-tgl_kirim').val(formatDateForInput(new Date()));
+            }
+            
             // Set checkbox kode print berdasarkan apakah ada kode print
-            if (kode_print && kode_print !== '') {
+            if (kode_print && kode_print !== '' && kode_print !== '-') {
                 $('#e-use_print').prop('checked', true);
                 $('.e-print-section').show();
                 modal.find('#e-kode_print').val(kode_print);
                 // Load data kode print untuk edit
-                loadPrintsByCustomer(id_customer, 'e-');
+                setTimeout(function() {
+                    loadPrintsByCustomer(id_customer, 'e-');
+                    // Set nilai yang dipilih setelah data dimuat
+                    setTimeout(function() {
+                        $('#e-id_master_print').val(kode_print).trigger('chosen:updated');
+                    }, 500);
+                }, 300);
             } else {
                 $('#e-use_print').prop('checked', false);
                 $('.e-print-section').hide();
             }
             
-            modal.find('#e-kode_warna_cap').val(kode_warna_cap);
-            modal.find('#e-kode_warna_body').val(kode_warna_body);
-            modal.find('#e-jumlah_kp').val(jumlah_kp);
-            modal.find('#e-harga_kp').val(harga_kp);
-            modal.find('#e-no_po').val(no_po);
-            modal.find('#e-tgl_po').val(tgl_po);
-            modal.find('#e-jenis_pack').val(jenis_pack).trigger("chosen:updated");
-            modal.find('#e-tgl_kirim').val(tgl_kirim);
-            modal.find('#e-ket_kp').val(ket_kp);
-            modal.find('#e-updated_by').val(created_by);
-
-            // Set nilai stok master untuk edit
-            if (stok_master) {
-                $('#e-stok_master').val(formatRupiah(stok_master.toString()));
-                currentStokMasterEdit = unformatRupiah(stok_master);
+            // Set kode warna
+            modal.find('#e-kode_warna_cap').val(kode_warna_cap || '');
+            modal.find('#e-kode_warna_body').val(kode_warna_body || '');
+            
+            // Set nilai dropdown kode warna jika ada
+            if (kode_warna_cap) {
+                $('#e-id_master_kw_cap').val(kode_warna_cap).trigger('chosen:updated');
             }
+            if (kode_warna_body) {
+                $('#e-id_master_kw_body').val(kode_warna_body).trigger('chosen:updated');
+            }
+            
+            modal.find('#e-jumlah_kp').val(formatRupiah(jumlah_kp.toString()));
+            modal.find('#e-harga_kp').val(formatRupiah(harga_kp.toString()));
+            modal.find('#e-jenis_pack').val(jenis_pack).trigger("chosen:updated");
+            modal.find('#e-ket_kp').val(ket_kp || '');
+            modal.find('#e-updated_by').val(created_by);
         });
+
+        // ========== VALIDASI NO KP ==========
 
         // Cek No KP untuk tambah
         $("#no_kp").keyup(function () {
             var no_kp = $("#no_kp").val();
-            jQuery.ajax({
-                url: "<?= base_url() ?>marketing/konfirmasi_pesanan/cek_no_kp",
-                dataType: 'text',
-                type: "post",
-                data: { no_kp: no_kp },
-                success: function (response) {
-                    if (response == "true") {
-                        $("#no_kp").addClass("is-invalid");
-                        $("#simpan").attr("disabled", "disabled");
-                    } else {
+            if (no_kp.length > 0) {
+                jQuery.ajax({
+                    url: "<?= base_url() ?>marketing/konfirmasi_pesanan/cek_no_kp",
+                    dataType: 'text',
+                    type: "post",
+                    data: { no_kp: no_kp },
+                    success: function (response) {
+                        if (response == "true") {
+                            $("#no_kp").addClass("is-invalid");
+                            $("#simpan").attr("disabled", "disabled");
+                        } else {
+                            $("#no_kp").removeClass("is-invalid");
+                            $("#simpan").removeAttr("disabled");
+                        }
+                    },
+                    error: function() {
                         $("#no_kp").removeClass("is-invalid");
                         $("#simpan").removeAttr("disabled");
                     }
-                }
-            });
+                });
+            } else {
+                $("#no_kp").removeClass("is-invalid");
+                $("#simpan").removeAttr("disabled");
+            }
         });
 
         // Cek No KP untuk edit
         $("#e-no_kp").keyup(function () {
             var no_kp = $("#e-no_kp").val();
-            jQuery.ajax({
-                url: "<?= base_url() ?>marketing/konfirmasi_pesanan/cek_no_kp",
-                dataType: 'text',
-                type: "post",
-                data: { no_kp: no_kp },
-                success: function (response) {
-                    if (response == "true") {
-                        $("#e-no_kp").addClass("is-invalid");
-                        $("#simpan").attr("disabled", "disabled");
-                    } else {
+            if (no_kp.length > 0) {
+                jQuery.ajax({
+                    url: "<?= base_url() ?>marketing/konfirmasi_pesanan/cek_no_kp",
+                    dataType: 'text',
+                    type: "post",
+                    data: { no_kp: no_kp },
+                    success: function (response) {
+                        if (response == "true") {
+                            $("#e-no_kp").addClass("is-invalid");
+                            $("#update").attr("disabled", "disabled");
+                        } else {
+                            $("#e-no_kp").removeClass("is-invalid");
+                            $("#update").removeAttr("disabled");
+                        }
+                    },
+                    error: function() {
                         $("#e-no_kp").removeClass("is-invalid");
-                        $("#simpan").removeAttr("disabled");
+                        $("#update").removeAttr("disabled");
                     }
-                }
-            });
+                });
+            } else {
+                $("#e-no_kp").removeClass("is-invalid");
+                $("#update").removeAttr("disabled");
+            }
         });
+
+        // ========== RESET FORM ==========
 
         // Reset form saat modal tambah ditutup
         $('#add').on('hidden.bs.modal', function () {
             $(this).find('form')[0].reset();
             $('.chosen-select').trigger('chosen:updated');
-            $('#stok-info').text('').removeClass('text-danger');
             $('#simpan').removeAttr('disabled');
-            currentStokMaster = 0;
             // Reset checkbox dan sembunyikan section kode print
             $('#use_print').prop('checked', false);
             $('.print-section').hide();
+            // Hapus class invalid
+            $('#no_kp').removeClass('is-invalid');
         });
 
         // Reset form saat modal edit ditutup
         $('#edit').on('hidden.bs.modal', function () {
-            $('#e-stok-info').text('').removeClass('text-danger');
-            $('#simpan').removeAttr('disabled');
-            currentStokMasterEdit = 0;
+            $('#update').removeAttr('disabled');
             // Reset checkbox dan sembunyikan section kode print
             $('#e-use_print').prop('checked', false);
             $('.e-print-section').hide();
-        });
-
-        // Format input stok master otomatis
-        $('#stok_master, #e-stok_master').on('input', function() {
-            let value = this.value.replace(/[^0-9]/g, '');
-            this.value = formatRupiah(value);
+            // Hapus class invalid
+            $('#e-no_kp').removeClass('is-invalid');
         });
 
         // ========== KONFIRMASI SUBMIT ==========
 
-        // Konfirmasi submit untuk form tambah
+        // Konfirmasi submit untuk form tambah dengan validasi tanggal
         $('#form-add').submit(function(e) {
-            var jumlahKP = unformatRupiah($('#jumlah_kp').val());
-            var stokMaster = currentStokMaster;
+            // Validasi field wajib
+            var no_kp = $('#no_kp').val();
+            var tgl_kp = $('#tgl_kp').val();
+            var id_customer = $('#id_customer').val();
+            var jumlah_kp = $('#jumlah_kp').val();
+            var harga_kp = $('#harga_kp').val();
             
-            if (jumlahKP > stokMaster) {
-                e.preventDefault();
-                alert('Jumlah KP melebihi stok master yang tersedia!');
+            if (!no_kp || !tgl_kp || !id_customer || !jumlah_kp || !harga_kp) {
+                alert('Harap lengkapi semua field yang wajib diisi!');
+                return false;
+            }
+            
+            // Validasi tanggal
+            if (!isValidDate(tgl_kp)) {
+                alert('Tanggal KP tidak valid!');
+                $('#tgl_kp').focus();
+                return false;
+            }
+            
+            var tgl_kirim = $('#tgl_kirim').val();
+            if (tgl_kirim && !isValidDate(tgl_kirim)) {
+                alert('Tanggal Kirim tidak valid!');
+                $('#tgl_kirim').focus();
+                return false;
+            }
+            
+            var tgl_po = $('#tgl_po').val();
+            if (tgl_po && !isValidDate(tgl_po)) {
+                alert('Tanggal PO tidak valid!');
+                $('#tgl_po').focus();
                 return false;
             }
             
             return confirm('Apakah Anda yakin ingin menyimpan data Konfirmasi Pesanan ini?');
         });
 
-        // Konfirmasi submit untuk form edit
+        // Konfirmasi submit untuk form edit dengan validasi tanggal
         $('#form-edit').submit(function(e) {
-            var jumlahKP = unformatRupiah($('#e-jumlah_kp').val());
-            var stokMaster = currentStokMasterEdit;
+            // Validasi field wajib
+            var no_kp = $('#e-no_kp').val();
+            var tgl_kp = $('#e-tgl_kp').val();
+            var id_customer = $('#e-id_customer').val();
+            var jumlah_kp = $('#e-jumlah_kp').val();
+            var harga_kp = $('#e-harga_kp').val();
             
-            if (jumlahKP > stokMaster) {
-                e.preventDefault();
-                alert('Jumlah KP melebihi stok master yang tersedia!');
+            if (!no_kp || !tgl_kp || !id_customer || !jumlah_kp || !harga_kp) {
+                alert('Harap lengkapi semua field yang wajib diisi!');
+                return false;
+            }
+            
+            // Validasi tanggal
+            if (!isValidDate(tgl_kp)) {
+                alert('Tanggal KP tidak valid!');
+                $('#e-tgl_kp').focus();
+                return false;
+            }
+            
+            var tgl_kirim = $('#e-tgl_kirim').val();
+            if (tgl_kirim && !isValidDate(tgl_kirim)) {
+                alert('Tanggal Kirim tidak valid!');
+                $('#e-tgl_kirim').focus();
+                return false;
+            }
+            
+            var tgl_po = $('#e-tgl_po').val();
+            if (tgl_po && !isValidDate(tgl_po)) {
+                alert('Tanggal PO tidak valid!');
+                $('#e-tgl_po').focus();
                 return false;
             }
             
             return confirm('Apakah Anda yakin ingin mengupdate data Konfirmasi Pesanan ini?');
         });
+
+        // ========== EKSPORT FUNCTIONALITY ==========
+
+        // Export functionality
+        $('#export').click(function () {
+            var filter_customer = $('#filter_customer').find(':selected').val();
+            var filter_tgl = $('#filter_tgl').val();
+            var filter_tgl2 = $('#filter_tgl2').val();
+
+            if (filter_tgl == '' && filter_tgl2 != '') {
+                alert('Dari tanggal belum diisi');
+            } else if (filter_tgl != '' && filter_tgl2 == '') {
+                alert('Sampai tanggal belum diisi');
+            } else {
+                const query = new URLSearchParams({
+                    nama_customer: filter_customer,
+                    date_from: filter_tgl,
+                    date_until: filter_tgl2,
+                    export: 'true'
+                })
+                window.location = "<?= base_url() ?>marketing/konfirmasi_pesanan/export?" + query.toString()
+            }
+        });
+
+        // ========== INISIALISASI TAMBAHAN ==========
+
+        // Auto-focus pada input pertama di modal tambah
+        $('#add').on('shown.bs.modal', function () {
+            $('#no_kp').focus();
+        });
+
+        // Auto-focus pada input pertama di modal edit
+        $('#edit').on('shown.bs.modal', function () {
+            $('#e-no_kp').focus();
+        });
+
+        // Handle escape key untuk close modal
+        $(document).keyup(function(e) {
+            if (e.key === "Escape") {
+                $('.modal').modal('hide');
+            }
+        });
+
+        console.log('JavaScript Konfirmasi Pesanan loaded successfully');
     });
 </script>
 </body>
+
 </html>
