@@ -14,6 +14,9 @@ class Konfirmasi_pesanan extends CI_Controller {
     }
     
     public function index() {
+        // Panggil fungsi auto update tanggal kirim terlebih dahulu
+        $this->auto_update_delivery_dates();
+        
         // Ambil parameter filter
         $nama_customer = $this->input->get('nama_customer');
         $date_from = $this->input->get('date_from');
@@ -25,7 +28,7 @@ class Konfirmasi_pesanan extends CI_Controller {
         // Data untuk kode warna (langsung dari master)
         $data['res_warna_cap'] = $this->M_kode_warna->getcap()->result_array();
         $data['res_warna_body'] = $this->M_kode_warna->getbody()->result_array();
-        $data['res_bulan_stok'] = $this->M_master_stok->get()->result_array();
+        
         // Data untuk tabel
         $data['result'] = $this->M_konfirmasi_pesanan->get_all($nama_customer, $date_from, $date_until);
         
@@ -40,165 +43,190 @@ class Konfirmasi_pesanan extends CI_Controller {
         $this->template->load('template', 'content/marketing/konfirmasi_pesanan/konfirmasi_pesanan_data', $data);
     }
     
-    public function add() {
-    if ($_POST) {
-        // Format angka (hapus titik)
-        $jumlah_kp = str_replace('.', '', $this->input->post('jumlah_kp'));
-        $harga_kp = str_replace('.', '', $this->input->post('harga_kp'));
-        $id_bulan_stok = $this->input->post('id_bulan_stok');
+    /**
+     * Fungsi untuk auto update tanggal kirim yang sudah lewat
+     */
+    private function auto_update_delivery_dates() {
+        $today = date('Y-m-d');
         
-        // Validasi stok cukup - PAKAI METHOD YANG SUDAH ADA
-        $stok_master_data = $this->M_master_stok->get()->result_array();
-        $stok_master = null;
+        // Cari data yang tanggal kirimnya sudah lewat dari hari ini
+        $this->db->where('tgl_kirim <', $today);
+        $this->db->where('is_deleted', 0);
+        $overdue_deliveries = $this->db->get('tb_mkt_kp')->result_array();
         
-        // Cari stok berdasarkan id_bulan_stok
-        foreach ($stok_master_data as $stok) {
-            if ($stok['id_master_stok_size'] == $id_bulan_stok) {
-                $stok_master = $stok;
-                break;
+        if (!empty($overdue_deliveries)) {
+            foreach ($overdue_deliveries as $delivery) {
+                // Update tanggal kirim menjadi hari ini
+                $this->db->where('id_mkt_kp', $delivery['id_mkt_kp']);
+                $this->db->update('tb_mkt_kp', [
+                    'tgl_kirim' => $today,
+                    'updated_by' => 'system_auto_update',
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]);
             }
         }
-        
-        if (!$stok_master || $stok_master['stok_master'] < $jumlah_kp) {
-            $stok_tersedia = $stok_master ? $stok_master['stok_master'] : 0;
-            $this->session->set_flashdata('error', 'Stok tidak mencukupi! Stok tersedia: ' . number_format($stok_tersedia, 0, ',', '.'));
+    }
+    
+    public function add() {
+        if ($_POST) {
+            // Format angka (hapus titik)
+            $jumlah_kp = str_replace('.', '', $this->input->post('jumlah_kp'));
+            $harga_kp = str_replace('.', '', $this->input->post('harga_kp'));
+            
+            $tgl_kp = $this->convertDateToDb($this->input->post('tgl_kp'));
+            $tgl_po = $this->input->post('tgl_po') ? $this->convertDateToDb($this->input->post('tgl_po')) : null;
+            $tgl_kirim = $this->input->post('tgl_kirim') ? $this->convertDateToDb($this->input->post('tgl_kirim')) : null;
+            
+            // Validasi tanggal kirim - jika sudah lewat, set ke hari ini
+            if ($tgl_kirim && $tgl_kirim < date('Y-m-d')) {
+                $tgl_kirim = date('Y-m-d');
+            }
+            
+            $data = array(
+                'No_kp' => $this->input->post('no_kp'),
+                'Tgl_kp' => $tgl_kp,
+                'Id_customer' => $this->input->post('id_customer'),
+                'spek_kapsul' => $this->input->post('spek_kapsul'),
+                'id_user' => $this->session->userdata('id_user'),
+                'id_master_print' => $this->input->post('id_master_print'),
+                'kode_print' => $this->input->post('kode_print'),
+                'logo_print' => $this->input->post('logo_print'),
+                'id_master_kw_cap' => $this->input->post('id_master_kw_cap'),
+                'kode_warna_cap' => $this->input->post('kode_warna_cap'),
+                'id_master_kw_body' => $this->input->post('id_master_kw_body'),
+                'kode_warna_body' => $this->input->post('kode_warna_body'),
+                'jumlah_kp' => $jumlah_kp,
+                'harga_kp' => $harga_kp,
+                'no_po' => $this->input->post('no_po'),
+                'tgl_po' => $tgl_po,
+                'jenis_pack' => $this->input->post('jenis_pack'),
+                'Tgl_kirim' => $tgl_kirim,
+                'ket_kp' => $this->input->post('ket_kp'),
+                'created_by' => $this->session->userdata('id_user'),
+                'created_at' => date('Y-m-d H:i:s')
+            );
+            
+            // Insert data konfirmasi pesanan
+            if ($this->M_konfirmasi_pesanan->insert($data)) {
+                $this->session->set_flashdata('success', 'Data berhasil disimpan');
+            } else {
+                $this->session->set_flashdata('error', 'Data gagal disimpan');
+            }
             redirect('marketing/konfirmasi_pesanan');
         }
-        
-        $data = array(
-            'No_kp' => $this->input->post('no_kp'),
-            'Tgl_kp' => date('Y-m-d', strtotime($this->input->post('tgl_kp'))),
-            'Id_customer' => $this->input->post('id_customer'),
-            'id_master_stok_size' => $id_bulan_stok,
-            'spek_kapsul' => $this->input->post('spek_kapsul'),
-            'id_master_print' => $this->input->post('id_master_print'),
-            'kode_print' => $this->input->post('kode_print'),
-            'logo_print' => $this->input->post('logo_print'),
-            'id_master_kw_cap' => $this->input->post('id_master_kw_cap'),
-            'kode_warna_cap' => $this->input->post('kode_warna_cap'),
-            'id_master_kw_body' => $this->input->post('id_master_kw_body'),
-            'kode_warna_body' => $this->input->post('kode_warna_body'),
-            'jumlah_kp' => $jumlah_kp,
-            'harga_kp' => $harga_kp,
-            'no_po' => $this->input->post('no_po'),
-            'tgl_po' => $this->input->post('tgl_po') ? date('Y-m-d', strtotime($this->input->post('tgl_po'))) : null,
-            'jenis_pack' => $this->input->post('jenis_pack'),
-            'Tgl_kirim' => $this->input->post('tgl_kirim') ? date('Y-m-d', strtotime($this->input->post('tgl_kirim'))) : null,
-            'ket_kp' => $this->input->post('ket_kp'),
-            'created_by' => $this->session->userdata('nama'),
-            'created_at' => date('Y-m-d H:i:s')
-        );
-        
-        // Insert data konfirmasi pesanan
-        if ($this->M_konfirmasi_pesanan->insert($data)) {
-            // Kurangi stok di master stok size
-            $this->M_konfirmasi_pesanan->update_stok_size($id_bulan_stok, $jumlah_kp);
-            
-            $this->session->set_flashdata('success', 'Data berhasil disimpan dan stok master terupdate');
-        } else {
-            $this->session->set_flashdata('error', 'Data gagal disimpan');
-        }
-        redirect('marketing/konfirmasi_pesanan');
     }
-}
 
-public function update() {
-    if ($_POST) {
-        $id = $this->input->post('id_mkt_kp');
-        $id_bulan_stok_baru = $this->input->post('id_bulan_stok');
-        
-        // Format angka (hapus titik)
-        $jumlah_kp_baru = str_replace('.', '', $this->input->post('jumlah_kp'));
-        $harga_kp = str_replace('.', '', $this->input->post('harga_kp'));
-        
-        // Get data lama
-        $data_lama = $this->M_konfirmasi_pesanan->get_by_id($id);
-        $id_bulan_stok_lama = $data_lama['id_master_stok_size'];
-        $jumlah_kp_lama = $data_lama['jumlah_kp'];
-        
-        // Validasi stok cukup jika ganti bulan stok atau jumlah berubah
-        if ($id_bulan_stok_baru != $id_bulan_stok_lama || $jumlah_kp_baru != $jumlah_kp_lama) {
-            // PAKAI METHOD YANG SUDAH ADA
-            $stok_master_data = $this->M_master_stok->get()->result_array();
-            $stok_master = null;
-            
-            // Cari stok berdasarkan id_bulan_stok_baru
-            foreach ($stok_master_data as $stok) {
-                if ($stok['id_master_stok_size'] == $id_bulan_stok_baru) {
-                    $stok_master = $stok;
-                    break;
-                }
-            }
-            
-            if (!$stok_master || $stok_master['stok_master'] < $jumlah_kp_baru) {
-                $stok_tersedia = $stok_master ? $stok_master['stok_master'] : 0;
-                $this->session->set_flashdata('error', 'Stok tidak mencukupi! Stok tersedia: ' . number_format($stok_tersedia, 0, ',', '.'));
-                redirect('marketing/konfirmasi_pesanan');
-            }
+    /**
+     * Convert date from dd/mm/yyyy to Y-m-d for database
+     */
+    private function convertDateToDb($date) {
+        if (empty($date) || $date == '00/00/0000' || $date == '01/01/1970') {
+            return null;
         }
         
-        $data = array(
-            'No_kp' => $this->input->post('no_kp'),
-            'Tgl_kp' => date('Y-m-d', strtotime($this->input->post('tgl_kp'))),
-            'Id_customer' => $this->input->post('id_customer'),
-            'id_master_stok_size' => $id_bulan_stok_baru,
-            'spek_kapsul' => $this->input->post('spek_kapsul'),
-            'id_master_print' => $this->input->post('id_master_print'),
-            'kode_print' => $this->input->post('kode_print'),
-            'logo_print' => $this->input->post('logo_print'),
-            'id_master_kw_cap' => $this->input->post('id_master_kw_cap'),
-            'kode_warna_cap' => $this->input->post('kode_warna_cap'),
-            'id_master_kw_body' => $this->input->post('id_master_kw_body'),
-            'kode_warna_body' => $this->input->post('kode_warna_body'),
-            'jumlah_kp' => $jumlah_kp_baru,
-            'harga_kp' => $harga_kp,
-            'no_po' => $this->input->post('no_po'),
-            'tgl_po' => $this->input->post('tgl_po') ? date('Y-m-d', strtotime($this->input->post('tgl_po'))) : null,
-            'jenis_pack' => $this->input->post('jenis_pack'),
-            'Tgl_kirim' => $this->input->post('tgl_kirim') ? date('Y-m-d', strtotime($this->input->post('tgl_kirim'))) : null,
-            'ket_kp' => $this->input->post('ket_kp'),
-            'updated_by' => $this->session->userdata('nama'),
-            'updated_at' => date('Y-m-d H:i:s')
-        );
-        
-        // Update data konfirmasi pesanan
-        if ($this->M_konfirmasi_pesanan->update($id, $data)) {
-            // Update stok master
-            if ($id_bulan_stok_baru != $id_bulan_stok_lama) {
-                // Kembalikan stok lama, kurangi stok baru
-                $this->M_konfirmasi_pesanan->restore_stok($id_bulan_stok_lama, $jumlah_kp_lama);
-                $this->M_konfirmasi_pesanan->update_stok_size($id_bulan_stok_baru, $jumlah_kp_baru);
-            } else if ($jumlah_kp_baru != $jumlah_kp_lama) {
-                // Update stok dengan selisih
-                $selisih = $jumlah_kp_baru - $jumlah_kp_lama;
-                if ($selisih > 0) {
-                    $this->M_konfirmasi_pesanan->update_stok_size($id_bulan_stok_baru, $selisih);
-                } else {
-                    $this->M_konfirmasi_pesanan->restore_stok($id_bulan_stok_baru, abs($selisih));
-                }
-            }
-            
-            $this->session->set_flashdata('success', 'Data berhasil diupdate dan stok master terupdate');
-        } else {
-            $this->session->set_flashdata('error', 'Data gagal diupdate');
+        // Split tanggal dd/mm/yyyy
+        $parts = explode('/', $date);
+        if (count($parts) === 3) {
+            // Reformat ke Y-m-d
+            return $parts[2] . '-' . $parts[1] . '-' . $parts[0];
         }
-        redirect('marketing/konfirmasi_pesanan');
+        
+        return null;
     }
-}
 
-// Fungsi get_current_stok juga sesuaikan
-public function get_current_stok() {
-    $stok_terbaru = $this->M_master_stok->get()->row_array();
-    echo json_encode(['stok_master' => $stok_terbaru ? $stok_terbaru['stok_master'] : 0]);
-}
-    
+    /**
+     * Convert date from Y-m-d to dd/mm/yyyy for display
+     */
+    private function convertDateToDisplay($date) {
+        if (empty($date) || $date == '0000-00-00' || $date == '1970-01-01') {
+            return '';
+        }
+        
+        return date('d/m/Y', strtotime($date));
+    }
+
+    public function update_delivery_date() {
+        // Cek AJAX request
+        if (!$this->input->is_ajax_request()) {
+            show_404();
+        }
+
+        $id_mkt_kp = $this->input->post('id_mkt_kp');
+        $tgl_kirim = $this->input->post('tgl_kirim');
+        $updated_by = $this->input->post('updated_by');
+
+        // Validasi input
+        if (empty($id_mkt_kp) || empty($tgl_kirim)) {
+            echo json_encode(['success' => false, 'message' => 'Data tidak lengkap']);
+            return;
+        }
+
+        // Format tanggal dari dd/mm/yyyy ke yyyy-mm-dd
+        $tgl_kirim_db = $this->convertDateToDb($tgl_kirim);
+
+        // Update database
+        $data = [
+            'tgl_kirim' => $tgl_kirim_db,
+            'updated_by' => $updated_by,
+            'updated_date' => date('Y-m-d H:i:s')
+        ];
+
+        $this->db->where('Id_mkt_kp', $id_mkt_kp);
+        $result = $this->db->update('tb_mkt_kp', $data);
+
+        if ($result) {
+            echo json_encode(['success' => true, 'message' => 'Tanggal kirim berhasil diupdate']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Gagal update tanggal kirim']);
+        }
+    }
+
+    public function update() {
+        if ($_POST) {
+            $id = $this->input->post('id_mkt_kp');
+            
+            $tgl_kirim = $this->input->post('tgl_kirim') ? $this->convertDateToDb($this->input->post('tgl_kirim')) : null;
+            
+            // Validasi tanggal kirim - jika sudah lewat, set ke hari ini
+            if ($tgl_kirim && $tgl_kirim < date('Y-m-d')) {
+                $tgl_kirim = date('Y-m-d');
+            }
+            
+            $data = array(
+                'no_kp' => $this->input->post('no_kp'),
+                'tgl_kp' => $this->convertDateToDb($this->input->post('tgl_kp')),
+                'id_customer' => $this->input->post('id_customer'),
+                'spek_kapsul' => $this->input->post('spek_kapsul'),
+                'id_master_print' => $this->input->post('id_master_print') ?: null,
+                'kode_print' => $this->input->post('kode_print'),
+                'logo_print' => $this->input->post('logo_print'),
+                'id_master_kw_cap' => $this->input->post('id_master_kw_cap') ?: null,
+                'kode_warna_cap' => $this->input->post('kode_warna_cap'), 
+                'id_master_kw_body' => $this->input->post('id_master_kw_body') ?: null,
+                'kode_warna_body' => $this->input->post('kode_warna_body'),
+                'jumlah_kp' => str_replace('.', '', $this->input->post('jumlah_kp')),
+                'harga_kp' => str_replace('.', '', $this->input->post('harga_kp')),
+                'no_po' => $this->input->post('no_po'),
+                'tgl_po' => $this->input->post('tgl_po') ? $this->convertDateToDb($this->input->post('tgl_po')) : null,
+                'jenis_pack' => $this->input->post('jenis_pack'),
+                'tgl_kirim' => $tgl_kirim,
+                'ket_kp' => $this->input->post('ket_kp'),
+                'updated_by' => $this->input->post('updated_by'),
+                'updated_at' => date('Y-m-d H:i:s')
+            );
+            
+            if ($this->M_konfirmasi_pesanan->update($id, $data)) {
+                $this->session->set_flashdata('success', 'Data berhasil diupdate');
+            } else {
+                $this->session->set_flashdata('error', 'Data gagal diupdate');
+            }
+            redirect('marketing/konfirmasi_pesanan');
+        }
+    }
+
     public function delete($id) {
-        $data = $this->M_konfirmasi_pesanan->get_by_id($id);
-        
         if ($this->M_konfirmasi_pesanan->delete($id)) {
-            // Kembalikan stok ke master
-            $this->M_konfirmasi_pesanan->restore_stok($data['id_master_stok_size'], $data['jumlah_kp']);
-            $this->session->set_flashdata('success', 'Data berhasil dihapus dan stok dikembalikan');
+            $this->session->set_flashdata('success', 'Data berhasil dihapus');
         } else {
             $this->session->set_flashdata('error', 'Data gagal dihapus');
         }
@@ -210,14 +238,6 @@ public function get_current_stok() {
         $cek = $this->M_konfirmasi_pesanan->cek_no_kp($no_kp);
         echo $cek ? "true" : "false";
     }
-    
-    /**
-     * Get stok master saat ini
-     */
-    // public function get_current_stok() {
-    //     $stok_terbaru = $this->M_master_stok->get()->row_array();
-    //     echo json_encode(['stok_master' => $stok_terbaru ? $stok_terbaru['stok_master'] : 0]);
-    // }
     
     // Fungsi AJAX untuk mendapatkan data kode print berdasarkan customer
     public function get_prints_by_customer() {

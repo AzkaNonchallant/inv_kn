@@ -8,7 +8,7 @@ class M_tambah_schedule extends CI_Model
         parent::__construct();
     }
     
-    function id_user()
+     function id_user()
     {
         return $this->session->userdata("id_user");
     }
@@ -166,6 +166,7 @@ class M_tambah_schedule extends CI_Model
         
         return $this->db->query($sql, $params);
     }
+    
 
     public function cek_no_cr($no_cr)
     {

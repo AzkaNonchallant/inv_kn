@@ -6,58 +6,64 @@ class M_konfirmasi_pesanan extends CI_Model {
     public function __construct() {
         parent::__construct();
     }
-    
-    // Get all data dengan join customer - DIPERBAIKI
-    public function get_all($nama_customer = null, $date_from = null, $date_until = null) {
-        $sql = "
-            SELECT 
-                a.*,
-                b.id_master_print, 
-                b.kode_print,
-                b.logo_print,
-                c.nama_customer,
-                c.kode_customer,
-                c.id_customer, 
-                d.id_master_kw_cap, 
-                d.kode_warna_cap,
-                e.id_master_kw_body,
-                e.kode_warna_body,
-                f.id_master_stok_size,
-                f.stok_master,
-                f.stok_bulan,
-                f.stok_tahun
-            FROM tb_mkt_kp a
-            LEFT JOIN tb_mkt_master_customer c ON a.id_customer = c.id_customer
-            LEFT JOIN tb_mkt_master_print b ON a.id_master_print = b.id_master_print
-            LEFT JOIN tb_mkt_master_kw_cap d ON a.id_master_kw_cap = d.id_master_kw_cap
-            LEFT JOIN tb_mkt_master_kw_body e ON a.id_master_kw_body = e.id_master_kw_body
-            LEFT JOIN tb_mkt_master_stok f ON a.id_master_stok_size = f.id_master_stok_size
-            WHERE a.is_deleted = 0 
-        ";
-        
-        // Apply filters
-        if ($nama_customer && $nama_customer != '') {
-            $sql .= " AND c.nama_customer = '" . $this->db->escape_str($nama_customer) . "'";
-        }
-        
-        if ($date_from && $date_until && $date_from != '' && $date_until != '') {
-            $tgl_mulai = date('Y-m-d', strtotime($date_from));
-            $tgl_akhir = date('Y-m-d', strtotime($date_until));
-            $sql .= " AND a.tgl_kp >= '" . $tgl_mulai . "' AND a.tgl_kp <= '" . $tgl_akhir . "'";
-        }
-        
-        $sql .= " ORDER BY a.tgl_kp DESC";
-        
-        return $this->db->query($sql)->result_array();
-    }
 
-    // public function get_stok_by_id($id_master_stok_size) {
-    //     $this->db->select('*');
-    //     $this->db->from('tb_mkt_master_stok');
-    //     $this->db->where('id_master_stok_size', $id_master_stok_size);
-    //     $this->db->where('is_deleted', 0);
-    //     return $this->db->get()->row_array();
-    // }
+    function id_user()
+    {
+        return $this->session->userdata("id_user");
+    }
+    
+    // Get all data dengan join customer - DIPERBAIKI (tanpa stok)
+    public function get_all($nama_customer = null, $date_from = null, $date_until = null) {
+    $sql = "
+        SELECT 
+            a.*,
+            b.id_master_print, 
+            b.kode_print,
+            b.logo_print,
+            c.nama_customer,
+            c.kode_customer,
+            c.id_customer, 
+            d.id_master_kw_cap, 
+            d.kode_warna_cap,
+            d.warna_cap,
+            e.id_master_kw_body,
+            e.kode_warna_body,
+            e.warna_body
+        FROM tb_mkt_kp a
+        LEFT JOIN tb_mkt_master_customer c ON a.id_customer = c.id_customer
+        LEFT JOIN tb_mkt_master_print b ON a.id_master_print = b.id_master_print
+        LEFT JOIN tb_mkt_master_kw_cap d ON a.id_master_kw_cap = d.id_master_kw_cap
+        LEFT JOIN tb_mkt_master_kw_body e ON a.id_master_kw_body = e.id_master_kw_body
+        WHERE a.is_deleted = 0 
+    ";
+    
+    // Apply filters
+    if ($nama_customer && $nama_customer != '') {
+        $sql .= " AND c.nama_customer = '" . $this->db->escape_str($nama_customer) . "'";
+    }
+    
+    // PERBAIKAN: Konversi tanggal filter dari dd/mm/yyyy ke Y-m-d
+    if ($date_from && $date_until && $date_from != '' && $date_until != '') {
+        $tgl_mulai = $this->convertFilterDate($date_from);
+        $tgl_akhir = $this->convertFilterDate($date_until);
+        $sql .= " AND a.tgl_kp >= '" . $tgl_mulai . "' AND a.tgl_kp <= '" . $tgl_akhir . "'";
+    }
+    
+    $sql .= " ORDER BY a.tgl_kp DESC";
+    
+    return $this->db->query($sql)->result_array();
+}
+
+/**
+ * Convert filter date from dd/mm/yyyy to Y-m-d
+ */
+private function convertFilterDate($date) {
+    $parts = explode('/', $date);
+    if (count($parts) === 3) {
+        return $parts[2] . '-' . $parts[1] . '-' . $parts[0];
+    }
+    return $date; // fallback
+}
     
     // Get customers untuk dropdown
     public function get_customers() {
@@ -68,7 +74,7 @@ class M_konfirmasi_pesanan extends CI_Model {
         return $this->db->get()->result_array();
     }
     
-    // Get by ID dengan join
+    // Get by ID dengan join - DIPERBAIKI (tanpa stok)
     public function get_by_id($id) {
         $sql = "
             SELECT 
@@ -81,16 +87,15 @@ class M_konfirmasi_pesanan extends CI_Model {
                 c.id_customer, 
                 d.id_master_kw_cap, 
                 d.kode_warna_cap,
+                d.warna_cap,
                 e.id_master_kw_body,
                 e.kode_warna_body,
-                f.id_master_stok_size,
-                f.stok_master
+                e.warna_body
             FROM tb_mkt_kp a
             LEFT JOIN tb_mkt_master_customer c ON a.id_customer = c.id_customer
             LEFT JOIN tb_mkt_master_print b ON a.id_master_print = b.id_master_print
             LEFT JOIN tb_mkt_master_kw_cap d ON a.id_master_kw_cap = d.id_master_kw_cap
             LEFT JOIN tb_mkt_master_kw_body e ON a.id_master_kw_body = e.id_master_kw_body
-            LEFT JOIN tb_mkt_master_stok f ON a.id_master_stok_size = f.id_master_stok_size
             WHERE a.Id_mkt_kp = ? AND a.is_deleted = 0
         ";
         return $this->db->query($sql, [$id])->row_array();
@@ -98,6 +103,7 @@ class M_konfirmasi_pesanan extends CI_Model {
     
     // Insert data
     public function insert($data) {
+        $id_user = $this->id_user();
         return $this->db->insert('tb_mkt_kp', $data);
     }
     
@@ -125,55 +131,32 @@ class M_konfirmasi_pesanan extends CI_Model {
         return $query->num_rows() > 0;
     }
     
-    // ========== FUNGSI STOK MANAGEMENT ==========
-    
-    // Update stok size (kurangi stok)
-    public function update_stok_size($id_master_stok_size, $jumlah_kp) {
-        $sql = "UPDATE tb_mkt_master_stok 
-                SET stok_master = stok_master - ?,
-                    updated_at = NOW(),
-                    updated_by = ?
-                WHERE id_master_stok_size = ?";
-        
-        return $this->db->query($sql, [
-            $jumlah_kp,
-            $this->session->userdata('id_user'),
-            $id_master_stok_size
-        ]);
-    }
-    
-    // Get stok size by ID
-    public function get_stok_size($id_master_stok_size) {
-        $this->db->select('stok_master');
-        $this->db->from('tb_mkt_master_stok');
-        $this->db->where('id_master_stok_size', $id_master_stok_size);
+    // Get prints by customer
+    public function get_prints_by_customer($id_customer) {
+        $this->db->select('id_master_print, kode_print, logo_print');
+        $this->db->from('tb_mkt_master_print');
+        $this->db->where('id_customer', $id_customer);
         $this->db->where('is_deleted', 0);
-        return $this->db->get()->row_array();
-    }
-    
-    // Get all stok size untuk dropdown
-    public function get_all_stok_size() {
-        $this->db->select('id_master_stok_size, stok_bulan, stok_tahun, stok_master');
-        $this->db->from('tb_mkt_master_stok');
-        $this->db->where('is_deleted', 0);
-        $this->db->where('stok_master >', 0);
-        $this->db->order_by('stok_tahun DESC, stok_bulan DESC');
+        $this->db->order_by('kode_print', 'ASC');
         return $this->db->get()->result_array();
     }
     
-    // Kembalikan stok saat delete
-    public function restore_stok($id_master_stok_size, $jumlah_kp) {
-        $sql = "UPDATE tb_mkt_master_stok 
-                SET stok_master = stok_master + ?,
-                    updated_at = NOW(),
-                    updated_by = ?
-                WHERE id_master_stok_size = ?";
-        
-        return $this->db->query($sql, [
-            $jumlah_kp,
-            $this->session->userdata('id_user'),
-            $id_master_stok_size
-        ]);
+    // Get warna cap untuk dropdown
+    public function get_warna_cap() {
+        $this->db->select('id_master_kw_cap, kode_warna_cap, warna_cap');
+        $this->db->from('tb_mkt_master_kw_cap');
+        $this->db->where('is_deleted', 0);
+        $this->db->order_by('kode_warna_cap', 'ASC');
+        return $this->db->get()->result_array();
+    }
+    
+    // Get warna body untuk dropdown
+    public function get_warna_body() {
+        $this->db->select('id_master_kw_body, kode_warna_body, warna_body');
+        $this->db->from('tb_mkt_master_kw_body');
+        $this->db->where('is_deleted', 0);
+        $this->db->order_by('kode_warna_body', 'ASC');
+        return $this->db->get()->result_array();
     }
 }
 ?>
