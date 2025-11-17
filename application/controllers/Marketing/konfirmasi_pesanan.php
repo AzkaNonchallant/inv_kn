@@ -67,54 +67,7 @@ class Konfirmasi_pesanan extends CI_Controller {
         }
     }
     
-    public function add() {
-        if ($_POST) {
-            // Format angka (hapus titik)
-            $jumlah_kp = str_replace('.', '', $this->input->post('jumlah_kp'));
-            $harga_kp = str_replace('.', '', $this->input->post('harga_kp'));
-            
-            $tgl_kp = $this->convertDateToDb($this->input->post('tgl_kp'));
-            $tgl_po = $this->input->post('tgl_po') ? $this->convertDateToDb($this->input->post('tgl_po')) : null;
-            $tgl_kirim = $this->input->post('tgl_kirim') ? $this->convertDateToDb($this->input->post('tgl_kirim')) : null;
-            
-            // Validasi tanggal kirim - jika sudah lewat, set ke hari ini
-            if ($tgl_kirim && $tgl_kirim < date('Y-m-d')) {
-                $tgl_kirim = date('Y-m-d');
-            }
-            
-            $data = array(
-                'No_kp' => $this->input->post('no_kp'),
-                'Tgl_kp' => $tgl_kp,
-                'Id_customer' => $this->input->post('id_customer'),
-                'spek_kapsul' => $this->input->post('spek_kapsul'),
-                'id_user' => $this->session->userdata('id_user'),
-                'id_master_print' => $this->input->post('id_master_print'),
-                'kode_print' => $this->input->post('kode_print'),
-                'logo_print' => $this->input->post('logo_print'),
-                'id_master_kw_cap' => $this->input->post('id_master_kw_cap'),
-                'kode_warna_cap' => $this->input->post('kode_warna_cap'),
-                'id_master_kw_body' => $this->input->post('id_master_kw_body'),
-                'kode_warna_body' => $this->input->post('kode_warna_body'),
-                'jumlah_kp' => $jumlah_kp,
-                'harga_kp' => $harga_kp,
-                'no_po' => $this->input->post('no_po'),
-                'tgl_po' => $tgl_po,
-                'jenis_pack' => $this->input->post('jenis_pack'),
-                'Tgl_kirim' => $tgl_kirim,
-                'ket_kp' => $this->input->post('ket_kp'),
-                'created_by' => $this->session->userdata('id_user'),
-                'created_at' => date('Y-m-d H:i:s')
-            );
-            
-            // Insert data konfirmasi pesanan
-            if ($this->M_konfirmasi_pesanan->insert($data)) {
-                $this->session->set_flashdata('success', 'Data berhasil disimpan');
-            } else {
-                $this->session->set_flashdata('error', 'Data gagal disimpan');
-            }
-            redirect('marketing/konfirmasi_pesanan');
-        }
-    }
+    
 
     /**
      * Convert date from dd/mm/yyyy to Y-m-d for database
@@ -168,10 +121,10 @@ class Konfirmasi_pesanan extends CI_Controller {
         $data = [
             'tgl_kirim' => $tgl_kirim_db,
             'updated_by' => $updated_by,
-            'updated_date' => date('Y-m-d H:i:s')
+            'updated_at' => date('Y-m-d H:i:s')
         ];
 
-        $this->db->where('Id_mkt_kp', $id_mkt_kp);
+        $this->db->where('id_mkt_kp', $id_mkt_kp);
         $result = $this->db->update('tb_mkt_kp', $data);
 
         if ($result) {
@@ -181,10 +134,14 @@ class Konfirmasi_pesanan extends CI_Controller {
         }
     }
 
-    public function update() {
+    public function add() {
         if ($_POST) {
-            $id = $this->input->post('id_mkt_kp');
+            // Format angka (hapus titik)
+            $jumlah_kp = str_replace('.', '', $this->input->post('jumlah_kp'));
+            $harga_kp = str_replace('.', '', $this->input->post('harga_kp'));
             
+            $tgl_kp = $this->convertDateToDb($this->input->post('tgl_kp'));
+            $tgl_po = $this->input->post('tgl_po') ? $this->convertDateToDb($this->input->post('tgl_po')) : null;
             $tgl_kirim = $this->input->post('tgl_kirim') ? $this->convertDateToDb($this->input->post('tgl_kirim')) : null;
             
             // Validasi tanggal kirim - jika sudah lewat, set ke hari ini
@@ -193,39 +150,104 @@ class Konfirmasi_pesanan extends CI_Controller {
             }
             
             $data = array(
-                'no_kp' => $this->input->post('no_kp'),
-                'tgl_kp' => $this->convertDateToDb($this->input->post('tgl_kp')),
+                'No_kp' => $this->input->post('no_kp'),
+                'Tgl_kp' => $tgl_kp,
                 'id_customer' => $this->input->post('id_customer'),
                 'spek_kapsul' => $this->input->post('spek_kapsul'),
-                'id_master_print' => $this->input->post('id_master_print') ?: null,
+                'size_machine' => $this->input->post('size_machine'),
+                'id_user' => $this->session->userdata('id_user'),
+                'id_master_print' => $this->input->post('id_master_print'),
                 'kode_print' => $this->input->post('kode_print'),
                 'logo_print' => $this->input->post('logo_print'),
-                'id_master_kw_cap' => $this->input->post('id_master_kw_cap') ?: null,
-                'kode_warna_cap' => $this->input->post('kode_warna_cap'), 
-                'id_master_kw_body' => $this->input->post('id_master_kw_body') ?: null,
+                'id_master_kw_cap' => $this->input->post('id_master_kw_cap'),
+                'kode_warna_cap' => $this->input->post('kode_warna_cap'),
+                'id_master_kw_body' => $this->input->post('id_master_kw_body'),
                 'kode_warna_body' => $this->input->post('kode_warna_body'),
-                'jumlah_kp' => str_replace('.', '', $this->input->post('jumlah_kp')),
-                'harga_kp' => str_replace('.', '', $this->input->post('harga_kp')),
+                'jumlah_kp' => $jumlah_kp,
+                'harga_kp' => $harga_kp,
                 'no_po' => $this->input->post('no_po'),
-                'tgl_po' => $this->input->post('tgl_po') ? $this->convertDateToDb($this->input->post('tgl_po')) : null,
+                'tgl_po' => $tgl_po,
                 'jenis_pack' => $this->input->post('jenis_pack'),
-                'tgl_kirim' => $tgl_kirim,
+                'Tgl_kirim' => $tgl_kirim,
                 'ket_kp' => $this->input->post('ket_kp'),
-                'updated_by' => $this->input->post('updated_by'),
-                'updated_at' => date('Y-m-d H:i:s')
+                'created_by' => $this->session->userdata('id_user'),
+                'created_at' => date('Y-m-d H:i:s')
             );
             
-            if ($this->M_konfirmasi_pesanan->update($id, $data)) {
-                $this->session->set_flashdata('success', 'Data berhasil diupdate');
+            // Insert data konfirmasi pesanan
+            if ($this->M_konfirmasi_pesanan->insert($data)) {
+                $this->session->set_flashdata('success', 'Data berhasil disimpan');
             } else {
-                $this->session->set_flashdata('error', 'Data gagal diupdate');
+                $this->session->set_flashdata('error', 'Data gagal disimpan');
             }
             redirect('marketing/konfirmasi_pesanan');
         }
     }
 
-    public function delete($id) {
-        if ($this->M_konfirmasi_pesanan->delete($id)) {
+   public function update() {
+    if ($_POST) {
+        $id = $this->input->post('id_mkt_kp');
+        
+        // Validasi ID
+        if (empty($id)) {
+            $this->session->set_flashdata('error', 'ID tidak valid');
+            redirect('marketing/konfirmasi_pesanan');
+            return;
+        }
+
+        $jumlah_kp = str_replace('.', '', $this->input->post('jumlah_kp'));
+        $harga_kp = str_replace('.', '', $this->input->post('harga_kp'));
+
+        $tgl_kp = $this->convertDateToDb($this->input->post('tgl_kp'));
+        $tgl_po = $this->input->post('tgl_po') ? $this->convertDateToDb($this->input->post('tgl_po')) : null;
+        $tgl_kirim = $this->input->post('tgl_kirim') ? $this->convertDateToDb($this->input->post('tgl_kirim')) : null;
+        
+        // Validasi tanggal kirim - jika sudah lewat, set ke hari ini
+        if ($tgl_kirim && $tgl_kirim < date('Y-m-d')) {
+            $tgl_kirim = date('Y-m-d');
+        }
+        
+        $data = array(
+            'no_kp' => $this->input->post('no_kp'),
+            'tgl_kp' => $tgl_kp,
+            'id_customer' => $this->input->post('id_customer'),
+            'spek_kapsul' => $this->input->post('spek_kapsul'),
+            'id_user' => $this->session->userdata('id_user'),
+            'id_master_print' => $this->input->post('id_master_print') ?: null,
+            'kode_print' => $this->input->post('kode_print') ?: null,
+            'logo_print' => $this->input->post('logo_print') ?: null,
+            'id_master_kw_cap' => $this->input->post('id_master_kw_cap') ?: null,
+            'kode_warna_cap' => $this->input->post('kode_warna_cap') ?: null, 
+            'id_master_kw_body' => $this->input->post('id_master_kw_body') ?: null,
+            'kode_warna_body' => $this->input->post('kode_warna_body') ?: null,
+            'jumlah_kp' => $jumlah_kp,
+            'harga_kp' => $harga_kp,
+            'no_po' => $this->input->post('no_po') ?: null,
+            'tgl_po' => $tgl_po,
+            'jenis_pack' => $this->input->post('jenis_pack') ?: null,
+            'tgl_kirim' => $tgl_kirim,
+            'ket_kp' => $this->input->post('ket_kp') ?: null
+        );
+        
+        // Debug data sebelum update
+        echo "<pre style='background: #f0f0f0; padding: 20px; border: 1px solid blue;'>";
+        echo "=== DEBUG CONTROLLER UPDATE ===\n";
+        echo "ID: " . $id . "\n";
+        echo "Data: " . print_r($data, true) . "\n";
+        echo "=== END DEBUG ===\n";
+        echo "</pre>";
+        
+        if ($this->M_konfirmasi_pesanan->update($id, $data)) {
+            $this->session->set_flashdata('success', 'Data berhasil diupdate');
+        } else {
+            $this->session->set_flashdata('error', 'Data gagal diupdate');
+        }
+        redirect('marketing/konfirmasi_pesanan');
+    }
+}
+
+    public function delete($id, $data) {
+        if ($this->M_konfirmasi_pesanan->delete($data)) {
             $this->session->set_flashdata('success', 'Data berhasil dihapus');
         } else {
             $this->session->set_flashdata('error', 'Data gagal dihapus');

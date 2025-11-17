@@ -19,11 +19,11 @@ class M_print_schedule extends CI_Model
             $where = "AND a.tgl_sch >= '$tgl' AND a.tgl_sch <= '$tgl2'";
         }
         $sql = "
-        SELECT a.*,b.kode_warna_cap,b.warna_cap,c.kode_warna_body,c.warna_body,d.nama_customer,d.negara FROM tb_mkt_schedulemarketing a
-            LEFT JOIN tb_mlt_kw_cap b ON a.id_kw_cap = b.id_kw_cap
-            LEFT JOIN tb_mlt_kw_body c ON a.id_kw_body = c.id_kw_body
-            LEFT JOIN tb_mkt_customer d ON a.id_customer = d.id_customer
-            WHERE a.is_deleted = 0 $where ORDER BY a.mesin ASC";
+        SELECT a.*,b.kode_warna_cap,b.warna_cap,c.kode_warna_body,c.warna_body,d.nama_customer,d.negara FROM tb_mkt_schedule a
+            LEFT JOIN tb_mkt_master_kw_cap b ON a.id_master_kw_cap = b.id_master_kw_cap
+            LEFT JOIN tb_mkt_master_kw_body c ON a.id_master_kw_body = c.id_master_kw_body
+            LEFT JOIN tb_mkt_master_customer d ON a.id_customer = d.id_customer
+            WHERE a.is_deleted = 0 $where ORDER BY a.mesin_prd ASC";
         return $this->db->query($sql)->result_array();
         // SELECT * FROM tb_schedulemarketing 
         // WHERE is_deleted = 0 ORDER BY created_at ASC";
@@ -32,11 +32,11 @@ class M_print_schedule extends CI_Model
     public function get_cr()
     {
         $sql = "
-        SELECT a.*,b.kode_warna_cap,b.warna_cap,c.kode_warna_body,c.warna_body,d.nama_customer,d.negara FROM tb_mkt_schedulemarketing a
-            LEFT JOIN tb_mlt_kw_cap b ON a.id_kw_cap = b.id_kw_cap
-            LEFT JOIN tb_mlt_kw_body c ON a.id_kw_body = c.id_kw_body
-            LEFT JOIN tb_mkt_customer d ON a.id_customer = d.id_customer
-            WHERE a.is_deleted = 0 AND a.sisa != 0 ORDER BY a.mesin ASC";
+        SELECT a.*,b.kode_warna_cap,b.warna_cap,c.kode_warna_body,c.warna_body,d.nama_customer,d.negara FROM tb_mkt_schedule a
+            LEFT JOIN tb_mkt_master_kw_cap b ON a.id_master_kw_cap = b.id_master_kw_cap
+            LEFT JOIN tb_mkt_master_kw_body c ON a.id_master_kw_body = c.id_master_kw_body
+            LEFT JOIN tb_mkt_master_customer d ON a.id_customer = d.id_customer
+            WHERE a.is_deleted = 0 AND a.sisa != 0 ORDER BY a.mesin_prd ASC";
         return $this->db->query($sql)->result_array();
         // SELECT * FROM tb_schedulemarketing 
         // WHERE is_deleted = 0 ORDER BY created_at ASC";
@@ -46,8 +46,8 @@ class M_print_schedule extends CI_Model
     {
         $id_user = $this->id_user();
         $sql = "
-        INSERT INTO `tb_mkt_schedulemarketing`(`id_customer`, `id_kw_cap`, `id_kw_body`, `no_cr`,`no_batch`,`tgl_sch`,`size`,`mesin`,`jumlah`,`cek_print`, `print`,`tinta`,`jenis_box`,`jenis_zak`,`tgl_kirim`,`keterangan`,`tgl_prd`,`minyak`,`created_at`, `created_by`, `updated_at`, `updated_by`, `is_deleted`) 
-        VALUES ('$data[id_customer]','$data[id_kw_cap]','$data[id_kw_body]','$data[no_cr]','$data[no_batch]','$data[tgl_sch]','$data[size]','$data[mesin]','$data[jumlah]','$data[cek_print]','$data[print]','$data[tinta]','$data[jenis_box]','$data[jenis_zak]','$data[tgl_kirim]','$data[keterangan]','$data[tgl_prd]','$data[minyak]',NOW(),'$id_user','0000-00-00 00:00:00','','0')
+        INSERT INTO `tb_mkt_schedule`(`id_customer`, `id_kw_cap`, `id_kw_body`, `no_cr`,`no_batch`,`tgl_sch`,`size`,`mesin_prd`,`jumlah`,`cek_print`, `print`,`tinta`,`jenis_box`,`jenis_zak`,`tgl_kirim`,`keterangan`,`tgl_prd`,`minyak`,`created_at`, `created_by`, `updated_at`, `updated_by`, `is_deleted`) 
+        VALUES ('$data[id_customer]','$data[id_kw_cap]','$data[id_kw_body]','$data[no_cr]','$data[no_batch]','$data[tgl_sch]','$data[size]','$data[mesin_prd]','$data[jumlah]','$data[cek_print]','$data[print]','$data[tinta]','$data[jenis_box]','$data[jenis_zak]','$data[tgl_kirim]','$data[keterangan]','$data[tgl_prd]','$data[minyak]',NOW(),'$id_user','0000-00-00 00:00:00','','0')
         ";
 
         return $this->db->query($sql);
@@ -56,7 +56,7 @@ class M_print_schedule extends CI_Model
     {
         $id_user = $this->id_user();
         $sql = "
-            UPDATE `tb_mkt_schedulemarketing` 
+            UPDATE `tb_mkt_schedule` 
             SET `id_customer`='$data[id_customer]',
                 `id_kw_cap`='$data[id_kw_cap]',
                 `id_kw_body`='$data[id_kw_body]',
@@ -64,7 +64,7 @@ class M_print_schedule extends CI_Model
                 `no_batch`='$data[no_batch]',
                 `tgl_sch`='$data[tgl_sch]',
                 `size`='$data[size]',
-                `mesin`='$data[mesin]',
+                `mesin_prd`='$data[mesin_prd]',
                 `jumlah`='$data[jumlah]',
                 `cek_print`='$data[cek_print]',
                 `print`='$data[print]',
@@ -85,7 +85,7 @@ class M_print_schedule extends CI_Model
     public function cek_no_cr($no_cr)
     {
         $sql = "
-            SELECT COUNT(a.no_cr) count_cr FROM tb_mkt_schedulemarketing a
+            SELECT COUNT(a.no_cr) count_cr FROM tb_mkt_schedule a
             WHERE a.no_cr = '$no_cr' AND a.is_deleted = 0";
         return $this->db->query($sql);
     }
@@ -99,7 +99,7 @@ class M_print_schedule extends CI_Model
         //WHERE `id_barang`='$data[id_barang]'
         //";
         $sql = "
-        DELETE FROM `tb_mkt_schedulemarketing`
+        DELETE FROM `tb_mkt_schedule`
          WHERE `id_sch`='$data[id_sch]'
         ";
         return $this->db->query($sql);
@@ -113,11 +113,11 @@ class M_print_schedule extends CI_Model
             $where = "AND a.tgl_sch >= '$tgl' AND a.tgl_sch<= '$tgl2'";
         }
         $sql = "
-        SELECT a.*,b.kode_warna_cap,b.warna_cap,c.kode_warna_body,c.warna_body,d.nama_customer,d.negara FROM tb_mkt_schedulemarketing a
-            LEFT JOIN tb_mlt_kw_cap b ON a.id_kw_cap = b.id_kw_cap
-            LEFT JOIN tb_mlt_kw_body c ON a.id_kw_body = c.id_kw_body
-            LEFT JOIN tb_mkt_customer d ON a.id_customer = d.id_customer
-            WHERE a.is_deleted = 0 $where ORDER BY a.mesin ASC";
+        SELECT a.*,b.kode_warna_cap,b.warna_cap,c.kode_warna_body,c.warna_body,d.nama_customer,d.negara FROM tb_mkt_schedule a
+            LEFT JOIN tb_mkt_master_kw_cap b ON a.id_master_kw_cap = b.id_master_kw_cap
+            LEFT JOIN tb_mkt_master_kw_body c ON a.id_master_kw_body = c.id_master_kw_body
+            LEFT JOIN tb_mkt_master_customer d ON a.id_customer = d.id_customer
+            WHERE a.is_deleted = 0 $where ORDER BY a.mesin_prd ASC";
         return $this->db->query($sql);
     }
 }
