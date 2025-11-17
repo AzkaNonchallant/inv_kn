@@ -1,145 +1,107 @@
 <html>
 
 <head>
-
     <title>Print Schedule Marketing</title>
     <style type="text/css">
         body {
             font-family: sans-serif;
+            margin: 0;
+            padding: 10px;
         }
 
         table {
             width: 100%;
-            margin: 20px auto;
+            margin: 10px auto;
             border-collapse: collapse;
+            font-size: 10px;
         }
 
         table th,
         table td {
             border: 1px solid #3c3c3c;
-        }
-
-        table td {
-            /* vertical-align: top; */
-        }
-
-        a {
-            background: blue;
-            color: #fff;
-            padding: 8px 10px;
-            text-decoration: none;
-            border-radius: 2px;
-        }
-
-        table #jj {
-            margin-left: 20% auto;
-        }
-
-        table #hh {
-            margin-left: 20% auto;
+            padding: 3px;
         }
 
         .periode {
             text-align: center;
-            font-size: 13px;
-            line-height: 0.1;
-        }
-
-        #jj th {
-            border: 0px;
-            font-size: 15px;
-            padding-bottom: 15px;
-        }
-
-        #jj td {
-            border: 0px;
-        }
-
-        #jj .jdl {
-            font-size: 11px;
-            /* padding-right: 0; */
-            width: 35%;
-        }
-
-        #jj .hsl {
-            font-size: 11px;
-            /* padding-right: 0; */
-        }
-
-        #jj .ti {
-            font-size: 11px;
-            width: 3%;
-        }
-
-        #hh .tgl {
-            text-align: left;
             font-size: 12px;
-            font-weight: bold;
-            padding-left: 5%;
-            border: 0px;
+            line-height: 1.2;
+            margin-bottom: 10px;
         }
 
-        #hh .no {
+        .header-title {
             text-align: center;
-            font-size: 10px;
-            font-weight: bold;
-            color: darkblue;
-            background-color: lightsalmon;
+            margin: 5px 0;
         }
 
-        #hh .jdl {
+        .header-title h3 {
+            margin: 5px 0;
+            line-height: 1;
+        }
+
+        /* Styling untuk tabel utama */
+        #schedule-table th {
+            background-color: #ffa07a; /* lightsalmon */
+            color: #000080; /* darkblue */
+            font-weight: bold;
             text-align: center;
-            font-size: 10px;
-            font-weight: bold;
-            color: darkblue;
-            background-color: lightsalmon;
-        }
-
-        #hh .cus {
-            text-align: left;
             font-size: 9px;
+            padding: 4px 2px;
+        }
+
+        #schedule-table td {
+            font-size: 8px;
+            vertical-align: middle;
+        }
+
+        .mesin-header {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            text-align: center;
+            font-size: 10px;
+        }
+
+        .customer-name {
+            text-align: left;
             font-weight: bold;
             padding-left: 3px;
         }
 
-        #hh .teks {
+        .text-center {
             text-align: center;
-            font-size: 9px;
-            font-weight: bold;
         }
 
-        #hh .note {
-            text-align: center;
-            font-size: 11px;
-            font-weight: bold;
+        .note-row {
+            background-color: #fff0f0;
+        }
+
+        .note-cell {
             color: red;
-        }
-
-        #hh .bi-bt {
-            font-size: 11px;
-            border-top: 0px;
-            border-left: 0px;
-            border-right: 0px;
-        }
-
-        #hh .bi {
-            color: white;
-            font-size: 11px;
-            border-top: 0px;
-            border-bottom: 0px;
-            border-left: 0px;
-            border-right: 0px;
-        }
-
-        #hh .mesin {
-            text-align: center;
             font-weight: bold;
-            font-size: 11px;
-            border-top: 0px;
-            border-bottom: 0px;
-            border-left: 0px;
-            border-right: 0px;
+            text-align: center;
+            font-size: 10px;
+            padding: 8px;
         }
+
+        .spacer-row {
+            height: 8px;
+        }
+
+        .spacer-cell {
+            border: none;
+            background-color: #f8f8f8;
+        }
+
+        /* Warna untuk mesin yang berbeda */
+        .mesin-A { background-color: #e6f3ff; }
+        .mesin-B { background-color: #fff0e6; }
+        .mesin-C { background-color: #f0ffe6; }
+        .mesin-D { background-color: #fff6e6; }
+        .mesin-E { background-color: #f6e6ff; }
+        .mesin-F { background-color: #e6fff6; }
+        .mesin-G { background-color: #ffe6e6; }
+        .mesin-H { background-color: #ffffe6; }
+        .mesin-I { background-color: #e6e6ff; }
     </style>
 </head>
 
@@ -148,148 +110,135 @@
     <?php
     function bulan($bulan)
     {
-        if ($bulan == '01') {
-            return "Januari";
-        } elseif ($bulan == '02') {
-            return "Februari";
-        } elseif ($bulan == '03') {
-            return "Maret";
-        } elseif ($bulan == '04') {
-            return "April";
-        } elseif ($bulan == '05') {
-            return "Mei";
-        } elseif ($bulan == '06') {
-            return "Juni";
-        } elseif ($bulan == '07') {
-            return "Juli";
-        } elseif ($bulan == '08') {
-            return "Agustus";
-        } elseif ($bulan == '09') {
-            return "September";
-        } elseif ($bulan == '10') {
-            return "Oktober";
-        } elseif ($bulan == '11') {
-            return "November";
-        } elseif ($bulan == '12') {
-            return "Desember";
-        } else {
-            return "No Month";
-        }
-    } ?>
-    <?php
-    if ($tgl == null & $tgl2 == null) {
-        $per = "";
-    } else {
-        $new_tgl = explode('-', $tgl)[2] . " " . bulan(explode('-', $tgl)[1]) . " " . explode('-', $tgl)[0];
-        $new_tgl2 = explode('-', $tgl2)[2] . " " . bulan(explode('-', $tgl2)[1]) . " " . explode('-', $tgl2)[0];
-        $per = "Periode : " . $new_tgl . " - " . $new_tgl2;
+        $bulanMap = [
+            '01' => 'Januari', '02' => 'Februari', '03' => 'Maret',
+            '04' => 'April', '05' => 'Mei', '06' => 'Juni',
+            '07' => 'Juli', '08' => 'Agustus', '09' => 'September',
+            '10' => 'Oktober', '11' => 'November', '12' => 'Desember'
+        ];
+        return $bulanMap[$bulan] ?? 'No Month';
     }
 
+    // Format periode
+    if ($tgl == null && $tgl2 == null) {
+        $per = "";
+    } else {
+        $tglParts = explode('-', $tgl);
+        $tgl2Parts = explode('-', $tgl2);
+        $new_tgl = $tglParts[2] . " " . bulan($tglParts[1]) . " " . $tglParts[0];
+        $new_tgl2 = $tgl2Parts[2] . " " . bulan($tgl2Parts[1]) . " " . $tgl2Parts[0];
+        $per = "Periode : " . $new_tgl . " - " . $new_tgl2;
+    }
     ?>
-    <div style="text-align: center;padding-top: 5px;">
-        <h3 style="float: center;line-height: 0.2;">SCHEDULE</h3>
+
+    <div class="header-title">
+        <h3>SCHEDULE PRODUCTION</h3>
         <p class="periode"><?= $per ?></p>
     </div>
-    <!-- Tabel Hasil -->
-    <table id="hh">
-        <tr>
-            <td class="bi" style="width: 3%;"></td>
-            <td class="no" style="width: 2%;">NO</td>
-            <td class="jdl" style="width: 15%;">NAMA CUSTOMER</td>
-            <td class="jdl" style="width: 4%;">SIZE</td>
-            <td class="jdl" style="width: 7%;">KODE</td>
-            <td class="jdl" style="width: 12%;">WARNA</td>
-            <td class="jdl" style="width: 12%;">PRINT</td>
-            <td class="jdl" style="width: 2%;">TIN</td>
-            <td class="jdl" style="width: 5%;">JENIS</td>
-            <td class="jdl" style="width: 4%;">JML</td>
-            <td class="jdl" style="width: 4%;">SISA</td>
-            <td class="jdl" style="width: 7%;">TGL SCH</td>
-            <td class="jdl" style="width: 4%;">CR</td>
-            <td class="jdl" style="width: 6%;">DELIVERY</td>
-            <td class="jdl" style="width: 2%;"></td>
-            <td class="jdl" style="width: 6%;">KEMASAN</td>
-            <td class="jdl" style="width: 6%;">NO BATCH</td>
-        </tr>
 
-        <!-- Mesin A -->
-        <?php
-        $mesins = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I');
-        foreach ($mesins as $mesin) {
-            $no = 1;
-            $detail_per_mesin = array_filter($detail, function ($k) use ($detail, $mesin) {
-                return $detail[$k]['mesin'] === $mesin;
-            }, ARRAY_FILTER_USE_KEY);
-
-            if (count($detail_per_mesin) === 0) {
-        ?>
-                <tr>
-                    <td class="mesin"><?= $mesin ?></td>
-                    <?php if ($mesin === "A") { ?>
-                        <td class="note" colspan="16">NOTE : MC. A STOP OPERASIONAL</td>
-                    <?php } ?>
-                    <?php if ($mesin === "B") { ?>
-                        <td class="note" colspan="16">NOTE : MC. B STOP OPERASIONAL</td>
-                    <?php } ?>
-                    <?php if ($mesin === "C") { ?>
-                        <td class="note" colspan="16">NOTE : MC. C STOP OPERASIONAL</td>
-                    <?php } ?>
-                    <?php if ($mesin === "D") { ?>
-                        <td class="note" colspan="16">NOTE : MC. D STOP OPERASIONAL</td>
-                    <?php } ?>
-                    <?php if ($mesin === "E") { ?>
-                        <td class="note" colspan="16">NOTE : MC. E STOP OPERASIONAL</td>
-                    <?php } ?>
-                    <?php if ($mesin === "F") { ?>
-                        <td class="note" colspan="16">NOTE : MC. F STOP OPERASIONAL</td>
-                    <?php } ?>
-                    <?php if ($mesin === "G") { ?>
-                        <td class="note" colspan="16">NOTE : MC. G STOP OPERASIONAL</td>
-                    <?php } ?>
-                    <?php if ($mesin === "H") { ?>
-                        <td class="note" colspan="16">NOTE : MC. H STOP OPERASIONAL</td>
-                    <?php } ?>
-                    <?php if ($mesin === "I") { ?>
-                        <td class="note" colspan="16">NOTE : MC. I STOP OPERASIONAL</td>
-                    <?php } ?>
-                </tr>
+    <!-- Tabel Schedule -->
+    <table id="schedule-table">
+        <thead>
+            <tr>
+                <th style="width: 3%">MC</th>
+                <th style="width: 2%">NO</th>
+                <th style="width: 15%">NAMA CUSTOMER</th>
+                <th style="width: 4%">SIZE</th>
+                <th style="width: 7%">KODE WARNA</th>
+                <th style="width: 12%">NAMA WARNA</th>
+                <th style="width: 10%">PRINT</th>
+                <th style="width: 3%">TINTA</th>
+                <th style="width: 5%">MINYAK</th>
+                <th style="width: 4%">JML</th>
+                <th style="width: 4%">SISA</th>
+                <th style="width: 7%">TGL SCH</th>
+                <th style="width: 4%">CR</th>
+                <th style="width: 6%">DELIVERY</th>
+                <th style="width: 4%">BOX</th>
+                <th style="width: 4%">ZAK</th>
+                <th style="width: 6%">NO BATCH</th>
+            </tr>
+        </thead>
+        <tbody>
             <?php
-            }
+            $mesins = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I');
+            
+            foreach ($mesins as $mesin) {
+                $no = 1;
+                
+                // Filter data berdasarkan mesin
+                $detail_per_mesin = array();
+                foreach ($detail as $item) {
+                    if ($item['mesin'] === $mesin) {
+                        $detail_per_mesin[] = $item;
+                    }
+                }
 
-            foreach ($detail_per_mesin as $k) {
-                $tgl_sch = explode('-', $k['tgl_sch'])[2] . "-" . explode('-', $k['tgl_sch'])[1] . "-" . explode('-', $k['tgl_sch'])[0];
-                $tgl_kirim = explode('-', $k['tgl_kirim'])[2] . "-" . explode('-', $k['tgl_kirim'])[1] . "-" . explode('-', $k['tgl_kirim'])[0];
+                // Jika tidak ada data untuk mesin ini
+                if (count($detail_per_mesin) === 0) {
             ?>
-                <tr>
-                    <?php if ($no <= 1) { ?>
-                        <td class="mesin"><?= $k['mesin'] ?></td>
-                    <?php } else { ?>
-                        <td class="mesin"></td>
-                    <?php } ?>
-                    <td class="teks"><?= $no++ ?></td>
-                    <td class="cus"><?= $k['nama_customer'] ?></td>
-                    <td class="teks"><?= $k['size'] ?></td>
-                    <td class="teks"><?= $k['kode_warna_cap'] ?>-<?= $k['kode_warna_body'] ?></td>
-                    <td class="teks"><?= $k['warna_cap'] ?>-<?= $k['warna_body'] ?></td>
-                    <td class="teks"><?= $k['print'] ?></td>
-                    <td class="teks"><?= $k['tinta'] ?></td>
-                    <td class="teks"></td>
-                    <td class="teks"><?= $k['jumlah'] ?></td>
-                    <td class="teks"><?= $k['sisa'] ?></td>
-                    <td class="teks"><?= $tgl_sch ?></td>
-                    <td class="teks"><?= $k['no_cr'] ?></td>
-                    <td class="teks"><?= $tgl_kirim ?></td>
-                    <td class="teks"><?= $k['jenis_box'] ?></td>
-                    <td class="teks"><?= $k['jenis_zak'] ?></td>
-                    <td class="teks"><?= $k['no_batch'] ?></td>
+                    <tr class="mesin-<?= $mesin ?>">
+                        <td class="mesin-header"><?= $mesin ?></td>
+                        <td class="note-cell" colspan="16">
+                            NOTE : MC. <?= $mesin ?> STOP OPERASIONAL
+                        </td>
+                    </tr>
+                    <tr class="spacer-row">
+                        <td class="spacer-cell" colspan="17"></td>
+                    </tr>
+                <?php
+                    continue;
+                }
+
+                // Tampilkan data untuk mesin ini
+                foreach ($detail_per_mesin as $k) {
+                    $tgl_sch = explode('-', $k['tgl_sch'])[2] . "-" . explode('-', $k['tgl_sch'])[1] . "-" . explode('-', $k['tgl_sch'])[0];
+                    $tgl_kirim = explode('-', $k['tgl_kirim'])[2] . "-" . explode('-', $k['tgl_kirim'])[1] . "-" . explode('-', $k['tgl_kirim'])[0];
+                    
+                    // Format jumlah dengan separator
+                    $jumlah = number_format($k['jumlah'], 0, ',', '.');
+                    $sisa = $k['sisa'] != 0 ? number_format($k['sisa'], 0, ',', '.') : '-';
+                ?>
+                    <tr class="mesin-<?= $mesin ?>">
+                        <?php if ($no === 1) { ?>
+                            <td class="mesin-header text-center"><?= $k['mesin'] ?></td>
+                        <?php } else { ?>
+                            <td class="text-center"></td>
+                        <?php } ?>
+                        <td class="text-center"><?= $no++ ?></td>
+                        <td class="customer-name"><?= $k['nama_customer'] ?></td>
+                        <td class="text-center"><?= $k['size'] ?></td>
+                        <td class="text-center"><?= $k['kode_warna_cap'] ?>-<?= $k['kode_warna_body'] ?></td>
+                        <td class="text-center"><?= $k['warna_cap'] ?>-<?= $k['warna_body'] ?></td>
+                        <td class="text-center"><?= $k['print'] ?></td>
+                        <td class="text-center"><?= $k['tinta'] ?></td>
+                        <td class="text-center"><?= $k['minyak'] ?></td>
+                        <td class="text-center"><?= $jumlah ?></td>
+                        <td class="text-center"><?= $sisa ?></td>
+                        <td class="text-center"><?= $tgl_sch ?></td>
+                        <td class="text-center"><?= $k['no_cr'] ?></td>
+                        <td class="text-center"><?= $tgl_kirim ?></td>
+                        <td class="text-center"><?= $k['jenis_box'] ?></td>
+                        <td class="text-center"><?= $k['jenis_zak'] ?></td>
+                        <td class="text-center"><?= $k['no_batch'] ?></td>
+                    </tr>
+                <?php } ?>
+                
+                <!-- Baris spacer antara mesin -->
+                <tr class="spacer-row">
+                    <td class="spacer-cell" colspan="17"></td>
                 </tr>
             <?php } ?>
-            <tr>
-                <td class="bi" style="height: 15px"></td>
-            </tr>
-        <?php }
-        ?>
+        </tbody>
     </table>
+
+    <!-- Informasi Footer -->
+    <div style="margin-top: 20px; font-size: 9px; text-align: center;">
+        <p><strong>Keterangan:</strong></p>
+        <p>MC = Mesin | CR = Customer Request | JML = Jumlah | SCH = Schedule</p>
+        <p>Dicetak pada: <?= date('d-m-Y H:i:s') ?></p>
+    </div>
+
 </body>
 
 </html>

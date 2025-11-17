@@ -49,7 +49,7 @@
                             <th>No Batch</th>
                             <th>No KP</th>
                             <th>Nama Customer</th>
-                            <th>Sisa</th>
+                            
                             <th class="text-center">Detail</th>
                             <th class="text-center">Aksi</th>
                           </tr>
@@ -71,7 +71,7 @@
                               <td><?= $k['no_batch'] ?></td>
                               <td><?= $k['no_kp'] ?? '-' ?></td>
                               <td><?= $k['nama_customer'] ?></td>
-                              <td><?= $k['sisa'] ?></td>
+                             
                               <td class="text-center">
                                 <div class="btn-group" role="group" aria-label="Basic example">
                                   <button type="button" class="btn btn-info btn-square btn-sm" data-toggle="modal"
@@ -85,7 +85,7 @@
                                     data-kode_warna_body="<?= $k['kode_warna_body'] ?>"
                                     data-warna_cap="<?= $k['short_cap'] ?>" data-warna_body="<?= $k['short_body'] ?>"
                                     data-mesin_prd="<?= $k['mesin_prd'] ?>" data-jumlah_prd="<?= $k['jumlah_prd'] ?>"
-                                    data-sisa="<?= $k['sisa'] ?>" data-cek_print="<?= $k['cek_print'] ?>"
+                  
                                     data-print="<?= $k['print'] ?>" data-tinta="<?= $k['tinta'] ?>" data-jenis_grv="<?= $k['jenis_grv'] ?>"
                                     data-nama_customer="<?= $k['nama_customer'] ?>"
                                     data-jenis_box="<?= $k['jenis_box'] ?>" data-jenis_zak="<?= $k['jenis_zak'] ?>"
@@ -110,7 +110,7 @@
                                       data-kode_warna_body="<?= $k['kode_warna_body'] ?>"
                                       data-warna_cap="<?= $k['short_cap'] ?>" data-warna_body="<?= $k['short_body'] ?>"
                                       data-mesin_prd="<?= $k['mesin_prd'] ?>" data-jumlah_prd="<?= $k['jumlah_prd'] ?>"
-                                      data-sisa="<?= $k['sisa'] ?>" data-cek_print="<?= $k['cek_print'] ?>"
+                                      data-cek_print="<?= $k['cek_print'] ?>"
                                       data-print="<?= $k['print'] ?>" data-tinta="<?= $k['tinta'] ?>"
                                       data-jenis_grv="<?= $k['jenis_grv'] ?>"
                                       data-nama_customer="<?= $k['nama_customer'] ?>"
@@ -268,6 +268,9 @@
                 <input type="text" id="minyak" name="minyak" class="form-control" placeholder="U- M/N" readonly>
               </div>
             </div>
+
+            
+            
 
             <!-- Nomor CR -->
             <div class="col-md-6">
@@ -493,12 +496,7 @@
               <input type="text" class="form-control" id="v-jumlah_prd" readonly>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="form-group">
-              <label for="v-sisa">Sisa</label>
-              <input type="text" class="form-control" id="v-sisa" readonly>
-            </div>
-          </div>
+          
           <div class="col-md-6">
             <div class="form-group">
               <label for="v-jenis_grv">Jenis Grv</label>
@@ -692,6 +690,8 @@
               </div>
             </div>
 
+            
+
             <!-- Nomor CR -->
             <div class="col-md-6">
               <div class="form-group">
@@ -843,6 +843,296 @@
 
 <script type="text/javascript">
   $(document).ready(function () {
+    // ========== LOAD DATA KP ==========
+    
+    // Load KP yang available saat modal dibuka - ADD
+    $('#add').on('show.bs.modal', function() {
+        loadAvailableKP();
+    });
+
+    // Load KP yang available saat modal dibuka - EDIT
+    $('#edit').on('show.bs.modal', function() {
+        loadAvailableKPEdit();
+    });
+
+    // Fungsi untuk memuat KP yang available ke dropdown ADD
+    function loadAvailableKP() {
+        $.ajax({
+            url: "<?= base_url('Marketing/Tambah_schedule/get_available_kp_ajax') ?>",
+            type: "GET",
+            dataType: "json",
+            success: function(response) {
+                var kpSelect = $('#id_mkt_kp');
+                kpSelect.empty().append('<option value="">- Pilih No KP -</option>');
+
+                if (response && response.length > 0) {
+                    $.each(response, function(index, kp) {
+                        var displayText = kp.no_kp + ' - ' + (kp.nama_customer || '') + ' (Jumlah: ' + formatNumber(kp.jumlah_kp) + ')';
+                        
+                        kpSelect.append('<option value="' + kp.id_mkt_kp + '" data-jumlah-kp="' + kp.jumlah_kp + '">' + displayText + '</option>');
+                    });
+                    console.log("Loaded " + response.length + " available KP records");
+                } else {
+                    kpSelect.append('<option value="">- Tidak ada KP yang tersedia -</option>');
+                    console.log("No available KP records found");
+                }
+                
+                kpSelect.trigger('chosen:updated');
+            },
+            error: function(xhr, status, error) {
+                console.error("Error loading available KP:", error);
+                var kpSelect = $('#id_mkt_kp');
+                kpSelect.empty().append('<option value="">- Error loading data -</option>');
+                kpSelect.trigger('chosen:updated');
+            }
+        });
+    }
+
+    // Fungsi untuk memuat KP yang available ke dropdown EDIT
+    function loadAvailableKPEdit() {
+        $.ajax({
+            url: "<?= base_url('Marketing/Tambah_schedule/get_active_kp_ajax') ?>",
+            type: "GET",
+            dataType: "json",
+            success: function(response) {
+                var kpSelect = $('#e_id_mkt_kp');
+                kpSelect.empty().append('<option value="">- Pilih No KP -</option>');
+
+                if (response && response.length > 0) {
+                    $.each(response, function(index, kp) {
+                        var displayText = kp.no_kp + ' - ' + (kp.nama_customer || '') + ' (Jumlah: ' + formatNumber(kp.jumlah_kp) + ')';
+                        
+                        kpSelect.append('<option value="' + kp.id_mkt_kp + '" data-jumlah-kp="' + kp.jumlah_kp + '">' + displayText + '</option>');
+                    });
+                    console.log("Loaded " + response.length + " active KP records for edit");
+                } else {
+                    kpSelect.append('<option value="">- Tidak ada KP yang tersedia -</option>');
+                    console.log("No active KP records found for edit");
+                }
+                
+                kpSelect.trigger('chosen:updated');
+            },
+            error: function(xhr, status, error) {
+                console.error("Error loading active KP for edit:", error);
+                var kpSelect = $('#e_id_mkt_kp');
+                kpSelect.empty().append('<option value="">- Error loading data -</option>');
+                kpSelect.trigger('chosen:updated');
+            }
+        });
+    }
+
+    // Format number dengan separator
+    function formatNumber(num) {
+        if (!num) return '0';
+        return parseInt(num).toLocaleString('id-ID');
+    }
+
+    // ========== AUTO-FILL DATA KP ==========
+
+    // Autofill ketika No KP dipilih - ADD MODAL
+    $('#id_mkt_kp').on('change', function () {
+        var id_mkt_kp = $(this).val();
+        var selectedOption = $(this).find('option:selected');
+        var jumlahKp = selectedOption.data('jumlah-kp');
+
+        if (id_mkt_kp) {
+            // Tampilkan loading state
+            $('#id_customer').val('Loading...');
+            $('#id_master_kw_cap').val('Loading...');
+            $('#warna_cap').val('Loading...');
+            $('#id_master_kw_body').val('Loading...');
+            $('#warna_body').val('Loading...');
+            $('#minyak').val('Loading...');
+
+            $.ajax({
+                url: "<?= base_url('Marketing/Tambah_schedule/get_kp_by_id') ?>",
+                type: "POST",
+                data: { id_mkt_kp: id_mkt_kp },
+                dataType: "json",
+                success: function (response) {
+                    console.log("Response:", response);
+
+                    if (response.success && response.data) {
+                        var data = response.data;
+
+                        // Isi field-field yang readonly
+                        $('#id_customer').val(data.nama_customer || '');
+                        $('#id_master_kw_cap').val(data.kode_warna_cap || '');
+                        $('#warna_cap').val(data.short_cap || '');
+                        $('#id_master_kw_body').val(data.kode_warna_body || '');
+                        $('#warna_body').val(data.short_body || '');
+                        $('#size_machine').val(data.size_kp || '');
+                        $('#minyak').val(data.spek_kapsul || '');
+                        $('#jumlah_kp').val(formatNumber(data.jumlah_kp) || '');
+                        $('#print').val(data.kode_print || '');
+                        $('#logo_print').val(data.logo_print || '');
+
+                        // Set hidden values untuk ID
+                        $('#hidden_id_customer').val(data.id_customer || '');
+                        $('#hidden_id_master_kw_cap').val(data.id_master_kw_cap || '');
+                        $('#hidden_id_master_kw_body').val(data.id_master_kw_body || '');
+
+                        console.log("Data loaded successfully");
+
+                    } else {
+                        console.log("Data not found or error in response");
+                        alert('Data tidak ditemukan');
+                        clearAutoFillFields();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", error);
+                    alert('Terjadi kesalahan saat memuat data: ' + error);
+                    clearAutoFillFields();
+                }
+            });
+        } else {
+            clearAutoFillFields();
+        }
+    });
+
+    // Autofill ketika No KP dipilih - EDIT MODAL
+    $('#e_id_mkt_kp').on('change', function () {
+        var id_mkt_kp = $(this).val();
+        var selectedOption = $(this).find('option:selected');
+        var jumlahKp = selectedOption.data('jumlah-kp');
+
+        if (id_mkt_kp) {
+            // Tampilkan loading state
+            $('#e_id_customer').val('Loading...');
+            $('#e_id_master_kw_cap').val('Loading...');
+            $('#e_warna_cap').val('Loading...');
+            $('#e_id_master_kw_body').val('Loading...');
+            $('#e_warna_body').val('Loading...');
+            $('#e_minyak').val('Loading...');
+
+            $.ajax({
+                url: "<?= base_url('Marketing/Tambah_schedule/get_kp_by_id') ?>",
+                type: "POST",
+                data: { id_mkt_kp: id_mkt_kp },
+                dataType: "json",
+                success: function (response) {
+                    console.log("Edit Response:", response);
+
+                    if (response.success && response.data) {
+                        var data = response.data;
+
+                        // Isi field-field yang readonly
+                        $('#e_id_customer').val(data.nama_customer || '');
+                        $('#e_id_master_kw_cap').val(data.kode_warna_cap || '');
+                        $('#e_warna_cap').val(data.short_cap || '');
+                        $('#e_id_master_kw_body').val(data.kode_warna_body || '');
+                        $('#e_warna_body').val(data.short_body || '');
+                        $('#e_size_machine').val(data.size_kp || '');
+                        $('#e_minyak').val(data.spek_kapsul || '');
+                        $('#e_jumlah_kp').val(formatNumber(data.jumlah_kp) || '');
+                        $('#e_print').val(data.kode_print || '');
+                        $('#e_logo_print').val(data.logo_print || '');
+
+                        // Set hidden values untuk ID
+                        $('#e_hidden_id_customer').val(data.id_customer || '');
+                        $('#e_hidden_id_master_kw_cap').val(data.id_master_kw_cap || '');
+                        $('#e_hidden_id_master_kw_body').val(data.id_master_kw_body || '');
+
+                        console.log("Edit Data loaded successfully");
+
+                    } else {
+                        console.log("Edit Data not found or error in response");
+                        alert('Data tidak ditemukan');
+                        clearEditAutoFillFields();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Edit AJAX Error:", error);
+                    alert('Terjadi kesalahan saat memuat data: ' + error);
+                    clearEditAutoFillFields();
+                }
+            });
+        } else {
+            clearEditAutoFillFields();
+        }
+    });
+
+    // ========== VALIDASI JUMLAH PRODUKSI ==========
+
+    // Fungsi validasi jumlah produksi untuk ADD modal
+    function validateJumlahPrd() {
+        var jumlah_prd = parseInt($('#jumlah_prd').val()) || 0;
+        var jumlah_kp = parseInt($('#jumlah_kp').val().replace(/\./g, '')) || 0;
+        
+        if (jumlah_prd > jumlah_kp) {
+            $('#jumlah_prd').addClass("is-invalid");
+            $('#simpan').attr("disabled", "disabled");
+            $('#validationServer03Feedback').show();
+        } else {
+            $('#jumlah_prd').removeClass("is-invalid");
+            $('#simpan').removeAttr("disabled");
+            $('#validationServer03Feedback').hide();
+        }
+    }
+
+    // Fungsi validasi jumlah produksi untuk EDIT modal
+    function validateJumlahPrdEdit() {
+        var jumlah_prd = parseInt($('#e_jumlah_prd').val()) || 0;
+        var jumlah_kp = parseInt($('#e_jumlah_kp').val().replace(/\./g, '')) || 0;
+        
+        if (jumlah_prd > jumlah_kp) {
+            $('#e_jumlah_prd').addClass("is-invalid");
+            $('button[type="submit"]').attr("disabled", "disabled");
+            $('#e_validationServer03Feedback').show();
+        } else {
+            $('#e_jumlah_prd').removeClass("is-invalid");
+            $('button[type="submit"]').removeAttr("disabled");
+            $('#e_validationServer03Feedback').hide();
+        }
+    }
+
+    // Event listener untuk jumlah_prd di modal add
+    $("#jumlah_prd").on('input', function() {
+        validateJumlahPrd();
+    });
+
+    // Event listener untuk jumlah_prd di modal edit
+    $("#e_jumlah_prd").on('input', function() {
+        validateJumlahPrdEdit();
+    });
+
+    // ========== FUNGSI BANTU ==========
+
+    // Clear fields untuk ADD modal
+    function clearAutoFillFields() {
+        $('#id_customer').val('');
+        $('#id_master_kw_cap').val('');
+        $('#warna_cap').val('');
+        $('#id_master_kw_body').val('');
+        $('#warna_body').val('');
+        $('#minyak').val('');
+        $('#jumlah_kp').val('');
+        $('#hidden_id_customer').val('');
+        $('#hidden_id_master_kw_cap').val('');
+        $('#hidden_id_master_kw_body').val('');
+        $('#print').val('');
+        $('#logo_print').val('');
+    }
+
+    // Clear fields untuk EDIT modal
+    function clearEditAutoFillFields() {
+        $('#e_id_customer').val('');
+        $('#e_id_master_kw_cap').val('');
+        $('#e_warna_cap').val('');
+        $('#e_id_master_kw_body').val('');
+        $('#e_warna_body').val('');
+        $('#e_minyak').val('');
+        $('#e_jumlah_kp').val('');
+        $('#e_hidden_id_customer').val('');
+        $('#e_hidden_id_master_kw_cap').val('');
+        $('#e_hidden_id_master_kw_body').val('');
+        $('#e_print').val('');
+        $('#e_logo_print').val('');
+    }
+
+    // ========== VALIDASI TINTA DAN GRV ==========
+
     // Validasi ketergantungan Tinta dan GRV - ADD MODAL
     function validateTintaGrvDependency() {
         const tintaSelected = $('#tinta').val();
@@ -859,32 +1149,6 @@
             grvInput.val('');
         }
     }
-
-    // Validasi jumlah untuk ADD modal
-    $("#jumlah_prd").keyup(function() {
-      var jumlah = $("#jumlah_prd").val().replaceAll('.', '');
-      var stok = $("#jumlah_kp").val().replaceAll('.', '');
-      if (parseInt(jumlah) > parseInt(stok)) {
-        $("#jumlah_prd").addClass("is-invalid");
-        $("#simpan").attr("disabled", "disabled");
-      } else {
-        $("#jumlah_prd").removeClass("is-invalid");
-        $("#simpan").removeAttr("disabled");
-      }
-    });
-
-    // Validasi jumlah untuk EDIT modal
-    $("#e_jumlah_prd").keyup(function() {
-      var jumlah = $("#e_jumlah_prd").val().replaceAll('.', '');
-      var stok = $("#e_jumlah_kp").val().replaceAll('.', '');
-      if (parseInt(jumlah) > parseInt(stok)) {
-        $("#e_jumlah_prd").addClass("is-invalid");
-        $("button[type='submit']").attr("disabled", "disabled");
-      } else {
-        $("#e_jumlah_prd").removeClass("is-invalid");
-        $("button[type='submit']").removeAttr("disabled");
-      }
-    });
 
     // Validasi ketergantungan Tinta dan GRV - EDIT MODAL
     function validateTintaGrvDependencyEdit() {
@@ -903,160 +1167,6 @@
         }
     }
 
-    // Autofill ketika No KP dipilih - ADD MODAL
-    $('#id_mkt_kp').on('change', function () {
-      var id_mkt_kp = $(this).val();
-
-      if (id_mkt_kp) {
-        // Tampilkan loading state
-        $('#id_customer').val('Loading...');
-        $('#id_master_kw_cap').val('Loading...');
-        $('#warna_cap').val('Loading...');
-        $('#id_master_kw_body').val('Loading...');
-        $('#warna_body').val('Loading...');
-        $('#minyak').val('Loading...');
-
-        $.ajax({
-          url: "<?= base_url('Marketing/Tambah_schedule/get_kp_by_id') ?>",
-          type: "POST",
-          data: { id_mkt_kp: id_mkt_kp },
-          dataType: "json",
-          success: function (response) {
-            console.log("Response:", response); // Debug log
-
-            if (response.success && response.data) {
-              var data = response.data;
-
-              // Isi field-field yang readonly
-              $('#id_customer').val(data.nama_customer || '');
-              $('#id_master_kw_cap').val(data.kode_warna_cap || '');
-              $('#warna_cap').val(data.short_cap || '');
-              $('#id_master_kw_body').val(data.kode_warna_body || '');
-              $('#warna_body').val(data.short_body || '');
-              $('#size_machine').val(data.size_kp || '');
-              $('#minyak').val(data.spek_kapsul || '');
-              $('#jumlah_kp').val(data.jumlah_kp || '');
-              $('#print').val(data.kode_print || '');
-              $('#logo_print').val(data.logo_print || '');
-
-              // Set hidden values untuk ID
-              $('#hidden_id_customer').val(data.id_customer || '');
-              $('#hidden_id_master_kw_cap').val(data.id_master_kw_cap || '');
-              $('#hidden_id_master_kw_body').val(data.id_master_kw_body || '');
-
-              console.log("Data loaded successfully"); // Debug log
-
-            } else {
-              console.log("Data not found or error in response");
-              alert('Data tidak ditemukan');
-              clearAutoFillFields();
-            }
-          },
-          error: function (xhr, status, error) {
-            console.error("AJAX Error:", error);
-            console.error("Status:", status);
-            console.error("Response:", xhr.responseText);
-            alert('Terjadi kesalahan saat memuat data: ' + error);
-            clearAutoFillFields();
-          }
-        });
-      } else {
-        clearAutoFillFields();
-      }
-    });
-
-    // Autofill ketika No KP dipilih - EDIT MODAL
-    $('#e_id_mkt_kp').on('change', function () {
-      var id_mkt_kp = $(this).val();
-
-      if (id_mkt_kp) {
-        // Tampilkan loading state
-        $('#e_id_customer').val('Loading...');
-        $('#e_id_master_kw_cap').val('Loading...');
-        $('#e_warna_cap').val('Loading...');
-        $('#e_id_master_kw_body').val('Loading...');
-        $('#e_warna_body').val('Loading...');
-        $('#e_minyak').val('Loading...');
-
-        $.ajax({
-          url: "<?= base_url('Marketing/Tambah_schedule/get_kp_by_id') ?>",
-          type: "POST",
-          data: { id_mkt_kp: id_mkt_kp },
-          dataType: "json",
-          success: function (response) {
-            console.log("Edit Response:", response); // Debug log
-
-            if (response.success && response.data) {
-              var data = response.data;
-
-              // Isi field-field yang readonly
-              $('#e_id_customer').val(data.nama_customer || '');
-              $('#e_id_master_kw_cap').val(data.kode_warna_cap || '');
-              $('#e_warna_cap').val(data.short_cap || '');
-              $('#e_id_master_kw_body').val(data.kode_warna_body || '');
-              $('#e_warna_body').val(data.short_body || '');
-              $('#e_size_machine').val(data.size_kp || '');
-              $('#e_minyak').val(data.spek_kapsul || '');
-              $('#e_jumlah_kp').val(data.jumlah_kp || '');
-              $('#e_print').val(data.kode_print || '');
-              $('#e_logo_print').val(data.logo_print || '');
-
-              // Set hidden values untuk ID
-              $('#e_hidden_id_customer').val(data.id_customer || '');
-              $('#e_hidden_id_master_kw_cap').val(data.id_master_kw_cap || '');
-              $('#e_hidden_id_master_kw_body').val(data.id_master_kw_body || '');
-
-              console.log("Edit Data loaded successfully"); // Debug log
-
-            } else {
-              console.log("Edit Data not found or error in response");
-              alert('Data tidak ditemukan');
-              clearEditAutoFillFields();
-            }
-          },
-          error: function (xhr, status, error) {
-            console.error("Edit AJAX Error:", error);
-            console.error("Status:", status);
-            console.error("Response:", xhr.responseText);
-            alert('Terjadi kesalahan saat memuat data: ' + error);
-            clearEditAutoFillFields();
-          }
-        });
-      } else {
-        clearEditAutoFillFields();
-      }
-    });
-
-    function clearAutoFillFields() {
-      $('#id_customer').val('');
-      $('#id_master_kw_cap').val('');
-      $('#warna_cap').val('');
-      $('#id_master_kw_body').val('');
-      $('#warna_body').val('');
-      $('#minyak').val('');
-      $('#jumlah_kp').val('');
-      $('#hidden_id_customer').val('');
-      $('#hidden_id_master_kw_cap').val('');
-      $('#hidden_id_master_kw_body').val('');
-      $('#print').val('');
-      $('#logo_print').val('');
-    }
-
-    function clearEditAutoFillFields() {
-      $('#e_id_customer').val('');
-      $('#e_id_master_kw_cap').val('');
-      $('#e_warna_cap').val('');
-      $('#e_id_master_kw_body').val('');
-      $('#e_warna_body').val('');
-      $('#e_minyak').val('');
-      $('#e_jumlah_kp').val('');
-      $('#e_hidden_id_customer').val('');
-      $('#e_hidden_id_master_kw_cap').val('');
-      $('#e_hidden_id_master_kw_body').val('');
-      $('#e_print').val('');
-      $('#e_logo_print').val('');
-    }
-
     // Event listener untuk perubahan tinta - ADD MODAL
     $('#tinta').on('change', function() {
         validateTintaGrvDependency();
@@ -1067,13 +1177,16 @@
         validateTintaGrvDependencyEdit();
     });
 
+    // ========== FUNGSI UPPERCASE ==========
+
     // Fungsi untuk uppercase
     function uppercase(selector) {
-      $(selector).on('input', function () {
-        this.value = this.value.toUpperCase();
-      });
+        $(selector).on('input', function () {
+            this.value = this.value.toUpperCase();
+        });
     }
 
+    // Terapkan uppercase ke field yang diperlukan
     uppercase('#no_cr');
     uppercase('#no_batch');
     uppercase('#print');
@@ -1085,173 +1198,243 @@
     uppercase('#e_ket_prd');
     uppercase('#e_jenis_grv');
 
+    // ========== VALIDASI NO CR ==========
+
     // Validasi No CR untuk ADD modal
     $("#no_cr").keyup(function () {
-      var no_cr = $("#no_cr").val();
-      jQuery.ajax({
-        url: "<?= base_url() ?>Marketing/Tambah_schedule/cek_no_cr",
-        dataType: 'text',
-        type: "post",
-        data: { no_cr: no_cr },
-        success: function (response) {
-          if (response == "true") {
-            $("#no_cr").addClass("is-invalid");
-            $("#simpan").attr("disabled", "disabled");
-          } else {
-            $("#no_cr").removeClass("is-invalid");
-            $("#simpan").removeAttr("disabled");
-          }
-        }
-      });
+        var no_cr = $("#no_cr").val();
+        jQuery.ajax({
+            url: "<?= base_url() ?>Marketing/Tambah_schedule/cek_no_cr",
+            dataType: 'text',
+            type: "post",
+            data: { no_cr: no_cr },
+            success: function (response) {
+                if (response == "true") {
+                    $("#no_cr").addClass("is-invalid");
+                    $("#simpan").attr("disabled", "disabled");
+                } else {
+                    $("#no_cr").removeClass("is-invalid");
+                    $("#simpan").removeAttr("disabled");
+                }
+            }
+        });
     });
 
     // Validasi No CR untuk EDIT modal
     $("#e_no_cr").keyup(function () {
-      var no_cr = $("#e_no_cr").val();
-      var id_mkt_schedule = $("#e_id_mkt_schedule").val();
-      jQuery.ajax({
-        url: "<?= base_url() ?>Marketing/Tambah_schedule/cek_no_cr_edit",
-        dataType: 'text',
-        type: "post",
-        data: { no_cr: no_cr, id_mkt_schedule: id_mkt_schedule },
-        success: function (response) {
-          if (response == "true") {
-            $("#e_no_cr").addClass("is-invalid");
-            $("button[type='submit']").attr("disabled", "disabled");
-          } else {
-            $("#e_no_cr").removeClass("is-invalid");
-            $("button[type='submit']").removeAttr("disabled");
-          }
-        }
-      });
+        var no_cr = $("#e_no_cr").val();
+        var id_mkt_schedule = $("#e_id_mkt_schedule").val();
+        jQuery.ajax({
+            url: "<?= base_url() ?>Marketing/Tambah_schedule/cek_no_cr_edit",
+            dataType: 'text',
+            type: "post",
+            data: { no_cr: no_cr, id_mkt_schedule: id_mkt_schedule },
+            success: function (response) {
+                if (response == "true") {
+                    $("#e_no_cr").addClass("is-invalid");
+                    $("button[type='submit']").attr("disabled", "disabled");
+                } else {
+                    $("#e_no_cr").removeClass("is-invalid");
+                    $("button[type='submit']").removeAttr("disabled");
+                }
+            }
+        });
     });
+
+    // ========== MODAL FUNCTIONALITY ==========
 
     // View Modal functionality
     $('#view').on('show.bs.modal', function (event) {
-      var button = $(event.relatedTarget);
+        var button = $(event.relatedTarget);
 
-      var no_cr = button.data('no_cr');
-      var no_batch = button.data('no_batch');
-      var tgl_sch = button.data('tgl_sch');
-      var size_machine = button.data('size_machine');
-      var kode_warna_cap = button.data('kode_warna_cap');
-      var kode_warna_body = button.data('kode_warna_body');
-      var warna_cap = button.data('warna_cap');
-      var warna_body = button.data('warna_body');
-      var mesin_prd = button.data('mesin_prd');
-      var jumlah_prd = button.data('jumlah_prd');
-      var sisa = button.data('sisa');
-      var print = button.data('print');
-      var tinta = button.data('tinta');
-      var jenis_grv = button.data('jenis_grv');
-      var customer = button.data('nama_customer');
-      var jenis_box = button.data('jenis_box');
-      var jenis_zak = button.data('jenis_zak');
-      var minyak = button.data('minyak');
-      var tgl_kirim = button.data('tgl_kirim');
-      var tgl_prd = button.data('tgl_prd');
-      var ket_prd = button.data('ket_prd');
+        var no_cr = button.data('no_cr');
+        var no_batch = button.data('no_batch');
+        var tgl_sch = button.data('tgl_sch');
+        var size_machine = button.data('size_machine');
+        var kode_warna_cap = button.data('kode_warna_cap');
+        var kode_warna_body = button.data('kode_warna_body');
+        var warna_cap = button.data('warna_cap');
+        var warna_body = button.data('warna_body');
+        var mesin_prd = button.data('mesin_prd');
+        var jumlah_prd = button.data('jumlah_prd');
+        
+        var print = button.data('print');
+        var tinta = button.data('tinta');
+        var jenis_grv = button.data('jenis_grv');
+        var customer = button.data('nama_customer');
+        var jenis_box = button.data('jenis_box');
+        var jenis_zak = button.data('jenis_zak');
+        var minyak = button.data('minyak');
+        var tgl_kirim = button.data('tgl_kirim');
+        var tgl_prd = button.data('tgl_prd');
+        var ket_prd = button.data('ket_prd');
 
-      var modal = $(this);
-      modal.find('#v-no_cr').val(no_cr);
-      modal.find('#v-no_batch').val(no_batch);
-      modal.find('#v-tgl_sch').val(tgl_sch);
-      modal.find('#v-size_machine').val(size_machine);
-      modal.find('#v-kode_warna_cap').val(kode_warna_cap);
-      modal.find('#v-warna_cap').val(warna_cap);
-      modal.find('#v-kode_warna_body').val(kode_warna_body);
-      modal.find('#v-warna_body').val(warna_body);
-      modal.find('#v-mesin_prd').val(mesin_prd);
-      modal.find('#v-jumlah_prd').val(jumlah_prd);
-      modal.find('#v-sisa').val(sisa);
-      modal.find('#v-jenis_grv').val(jenis_grv);
-      modal.find('#v-customer').val(customer);
-      modal.find('#v-jenis_box').val(jenis_box);
-      modal.find('#v-jenis_zak').val(jenis_zak);
-      modal.find('#v-minyak').val(minyak);
-      modal.find('#v-tgl_kirim').val(tgl_kirim);
-      modal.find('#v-tgl_prd').val(tgl_prd);
-      modal.find('#v-ket_prd').val(ket_prd);
-      modal.find('#v-print').val(print);
-      modal.find('#v-tinta').val(tinta);
+        var modal = $(this);
+        modal.find('#v-no_cr').val(no_cr);
+        modal.find('#v-no_batch').val(no_batch);
+        modal.find('#v-tgl_sch').val(tgl_sch);
+        modal.find('#v-size_machine').val(size_machine);
+        modal.find('#v-kode_warna_cap').val(kode_warna_cap);
+        modal.find('#v-warna_cap').val(warna_cap);
+        modal.find('#v-kode_warna_body').val(kode_warna_body);
+        modal.find('#v-warna_body').val(warna_body);
+        modal.find('#v-mesin_prd').val(mesin_prd);
+        modal.find('#v-jumlah_prd').val(jumlah_prd);
+        
+        modal.find('#v-jenis_grv').val(jenis_grv);
+        modal.find('#v-customer').val(customer);
+        modal.find('#v-jenis_box').val(jenis_box);
+        modal.find('#v-jenis_zak').val(jenis_zak);
+        modal.find('#v-minyak').val(minyak);
+        modal.find('#v-tgl_kirim').val(tgl_kirim);
+        modal.find('#v-tgl_prd').val(tgl_prd);
+        modal.find('#v-ket_prd').val(ket_prd);
+        modal.find('#v-print').val(print);
+        modal.find('#v-tinta').val(tinta);
     });
 
-    // Edit Modal functionality
+    // Edit Modal functionality dengan PERBAIKAN datepicker
     $('#edit').on('show.bs.modal', function (event) {
-      var button = $(event.relatedTarget);
+        var button = $(event.relatedTarget);
 
-      var id_mkt_schedule = button.data('id_mkt_schedule');
-      var id_mkt_kp = button.data('id_mkt_kp');
-      var no_cr = button.data('no_cr');
-      var no_batch = button.data('no_batch');
-      var tgl_sch = button.data('tgl_sch');
-      var size_machine = button.data('size_machine');
-      var id_master_kw_cap = button.data('id_master_kw_cap');
-      var id_master_kw_body = button.data('id_master_kw_body');
-      var kode_warna_cap = button.data('kode_warna_cap');
-      var kode_warna_body = button.data('kode_warna_body');
-      var warna_cap = button.data('warna_cap');
-      var warna_body = button.data('warna_body');
-      var mesin_prd = button.data('mesin_prd');
-      var jumlah_prd = button.data('jumlah_prd');
-      var sisa = button.data('sisa');
-      var print = button.data('print');
-      var tinta = button.data('tinta');
-      var jenis_grv = button.data('jenis_grv');
-      var id_customer = button.data('id_customer');
-      var jenis_box = button.data('jenis_box');
-      var jenis_zak = button.data('jenis_zak');
-      var minyak = button.data('minyak');
-      var tgl_kirim = button.data('tgl_kirim');
-      var tgl_prd = button.data('tgl_prd');
-      var ket_prd = button.data('ket_prd');
+        var id_mkt_schedule = button.data('id_mkt_schedule');
+        var id_mkt_kp = button.data('id_mkt_kp');
+        var no_cr = button.data('no_cr');
+        var no_batch = button.data('no_batch');
+        var tgl_sch = button.data('tgl_sch');
+        var size_machine = button.data('size_machine');
+        var id_master_kw_cap = button.data('id_master_kw_cap');
+        var id_master_kw_body = button.data('id_master_kw_body');
+        var kode_warna_cap = button.data('kode_warna_cap');
+        var kode_warna_body = button.data('kode_warna_body');
+        var warna_cap = button.data('warna_cap');
+        var warna_body = button.data('warna_body');
+        var mesin_prd = button.data('mesin_prd');
+        var jumlah_prd = button.data('jumlah_prd');
+        var print = button.data('print');
+        var tinta = button.data('tinta');
+        var jenis_grv = button.data('jenis_grv');
+        var id_customer = button.data('id_customer');
+        var jenis_box = button.data('jenis_box');
+        var jenis_zak = button.data('jenis_zak');
+        var minyak = button.data('minyak');
+        var tgl_kirim = button.data('tgl_kirim');
+        var tgl_prd = button.data('tgl_prd');
+        var ket_prd = button.data('ket_prd');
 
-      var modal = $(this);
-      modal.find('#e_id_mkt_schedule').val(id_mkt_schedule);
-      modal.find('#e_id_mkt_kp').val(id_mkt_kp).trigger('chosen:updated');
-      modal.find('#e_no_cr').val(no_cr);
-      modal.find('#e_no_batch').val(no_batch);
-      modal.find('#e_tgl_sch').val(tgl_sch);
-      modal.find('#e_size_machine').val(size_machine);
-      modal.find('#e_id_master_kw_cap').val(kode_warna_cap);
-      modal.find('#e_warna_cap').val(warna_cap);
-      modal.find('#e_id_master_kw_body').val(kode_warna_body);
-      modal.find('#e_warna_body').val(warna_body);
-      modal.find('#e_mesin_prd').val(mesin_prd).trigger('chosen:updated');
-      modal.find('#e_jumlah_prd').val(jumlah_prd);
-      modal.find('#e_sisa').val(sisa);
-      modal.find('#e_jenis_grv').val(jenis_grv).trigger('chosen:updated');
-      modal.find('#e_id_customer').val(button.data('nama_customer'));
-      modal.find('#e_jenis_box').val(jenis_box).trigger('chosen:updated');
-      modal.find('#e_jenis_zak').val(jenis_zak).trigger('chosen:updated');
-      modal.find('#e_minyak').val(minyak);
-      modal.find('#e_tgl_kirim').val(tgl_kirim);
-      modal.find('#e_tgl_prd').val(tgl_prd);
-      modal.find('#e_ket_prd').val(ket_prd);
-      modal.find('#e_print').val(print);
-      modal.find('#e_tinta').val(tinta).trigger('chosen:updated');
+        var modal = $(this);
+        modal.find('#e_id_mkt_schedule').val(id_mkt_schedule);
+        modal.find('#e_id_mkt_kp').val(id_mkt_kp).trigger('chosen:updated');
+        modal.find('#e_no_cr').val(no_cr);
+        modal.find('#e_no_batch').val(no_batch);
+        modal.find('#e_tgl_sch').val(tgl_sch);
+        modal.find('#e_size_machine').val(size_machine);
+        modal.find('#e_id_master_kw_cap').val(kode_warna_cap);
+        modal.find('#e_warna_cap').val(warna_cap);
+        modal.find('#e_id_master_kw_body').val(kode_warna_body);
+        modal.find('#e_warna_body').val(warna_body);
+        modal.find('#e_mesin_prd').val(mesin_prd).trigger('chosen:updated');
+        modal.find('#e_jumlah_prd').val(jumlah_prd);
+       
+        modal.find('#e_jenis_grv').val(jenis_grv).trigger('chosen:updated');
+        modal.find('#e_id_customer').val(button.data('nama_customer'));
+        modal.find('#e_jenis_box').val(jenis_box).trigger('chosen:updated');
+        modal.find('#e_jenis_zak').val(jenis_zak).trigger('chosen:updated');
+        modal.find('#e_minyak').val(minyak);
+        modal.find('#e_tgl_kirim').val(tgl_kirim);
+        modal.find('#e_tgl_prd').val(tgl_prd);
+        modal.find('#e_ket_prd').val(ket_prd);
+        modal.find('#e_print').val(print);
+        modal.find('#e_tinta').val(tinta).trigger('chosen:updated');
 
-      // Set hidden values
-      modal.find('#e_hidden_id_customer').val(id_customer);
-      modal.find('#e_hidden_id_master_kw_cap').val(id_master_kw_cap);
-      modal.find('#e_hidden_id_master_kw_body').val(id_master_kw_body);
+        // Set hidden values
+        modal.find('#e_hidden_id_customer').val(id_customer);
+        modal.find('#e_hidden_id_master_kw_cap').val(id_master_kw_cap);
+        modal.find('#e_hidden_id_master_kw_body').val(id_master_kw_body);
 
-      // Enable GRV jika tinta sudah dipilih
-      if (tinta) {
-        modal.find('#e_jenis_grv').prop('disabled', false);
-      }
+        // Enable GRV jika tinta sudah dipilih
+        if (tinta) {
+            modal.find('#e_jenis_grv').prop('disabled', false);
+        }
+
+        // PERBAIKAN: Handle datepicker conflict dengan modal
+        modal.find('#e_tgl_sch').datepicker().on('show.bs.modal', function(event) {
+            event.stopPropagation();
+        });
+        
+        modal.find('#e_tgl_kirim').datepicker().on('show.bs.modal', function(event) {
+            event.stopPropagation();
+        });
+        
+        modal.find('#e_tgl_prd').datepicker().on('show.bs.modal', function(event) {
+            event.stopPropagation();
+        });
     });
+
+    // ========== RESET FORM ==========
 
     // Reset form ketika modal ditutup - ADD
     $('#add').on('hidden.bs.modal', function () {
-      $(this).find('form')[0].reset();
-      clearAutoFillFields();
-      $('#jenis_grv').prop('disabled', true).val('');
+        $(this).find('form')[0].reset();
+        clearAutoFillFields();
+        $('#jenis_grv').prop('disabled', true).val('');
+        $('#tinta').val('').trigger('chosen:updated');
     });
     
     // Reset form ketika modal ditutup - EDIT
     $('#edit').on('hidden.bs.modal', function () {
-      $('#e_jenis_grv').prop('disabled', true).val('');
+        $('#e_jenis_grv').prop('disabled', true).val('');
+        $('#e_tinta').val('').trigger('chosen:updated');
+        clearEditAutoFillFields();
     });
-  });
+
+    // ========== INISIALISASI TAMBAHAN ==========
+
+    // Inisialisasi datepicker dengan PERBAIKAN untuk mencegah konflik
+    $('.datepicker').datepicker({
+        format: 'dd/mm/yyyy',
+        autoclose: true,
+        todayHighlight: true,
+        language: 'id'
+    }).on('show.bs.modal', function(event) {
+        event.stopPropagation();
+    });
+
+    // Inisialisasi chosen select
+    $('.chosen-select').chosen({
+        width: '100%',
+        search_contains: true
+    });
+
+    // Validasi form submit
+    $('#scheduleForm').submit(function(e) {
+        var jumlah_prd = parseInt($('#jumlah_prd').val()) || 0;
+        var jumlah_kp = parseInt($('#jumlah_kp').val().replace(/\./g, '')) || 0;
+        
+        if (jumlah_prd > jumlah_kp) {
+            e.preventDefault();
+            alert('Jumlah produksi tidak boleh melebihi jumlah KP!');
+            return false;
+        }
+        
+        return confirm('Apakah Anda yakin ingin menyimpan data Schedule ini?');
+    });
+
+    // PERBAIKAN: Handle datepicker untuk modal Add juga
+    $('#add').on('shown.bs.modal', function() {
+        $('#tgl_sch').datepicker().on('show.bs.modal', function(event) {
+            event.stopPropagation();
+        });
+        
+        $('#tgl_kirim').datepicker().on('show.bs.modal', function(event) {
+            event.stopPropagation();
+        });
+        
+        $('#tgl_prd').datepicker().on('show.bs.modal', function(event) {
+            event.stopPropagation();
+        });
+    });
+
+    console.log('JavaScript Tambah Schedule loaded successfully');
+});
 </script>
