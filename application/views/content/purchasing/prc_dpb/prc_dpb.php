@@ -86,8 +86,7 @@
                                   data-no_dpb="<?= $k['no_dpb'] ?>"
                                   data-tgl_dpb="<?= $tgl_dpb ?>"
                                   data-no_sjl="<?= $k['no_sjl'] ?>"
-                                  data-prc_admin="<?= $k['prc_admin'] ?>"
-                                  >
+                                  data-prc_admin="<?= $k['prc_admin'] ?>">
                                   <?= $k['no_dpb'] ?>
                                 </span>
                               </td>
@@ -102,8 +101,7 @@
                                       data-no_dpb="<?= $k['no_dpb'] ?>"
                                       data-tgl_dpb="<?= $tgl_dpb ?>"
                                       data-no_sjl="<?= $k['no_sjl'] ?>"
-                                      data-prc_admin="<?= $k['prc_admin'] ?>"
-                                      data-rincian='<?= json_encode($k["detail_barang"]) ?>'>
+                                      data-prc_admin="<?= $k['prc_admin'] ?>">
                                       <i class="fas fa-edit"></i>Edit
                                     </button>
                                   </div>
@@ -496,29 +494,29 @@
     }
 
     document.getElementById('jml_beli', 'jml_ongkir', 'jml_ppn', 'jml_materi', 'jml_disc').addEventListener('keyup', function(e) {
-        let value = this.value.replace(/\D/g, '');
-        value = new Intl.NumberFormat('id-ID').format(value);
-        this.value = value;
+      let value = this.value.replace(/\D/g, '');
+      value = new Intl.NumberFormat('id-ID').format(value);
+      this.value = value;
     });
     document.getElementById('jml_ongkir').addEventListener('keyup', function(e) {
-        let value = this.value.replace(/\D/g, '');
-        value = new Intl.NumberFormat('id-ID').format(value);
-        this.value = value;
+      let value = this.value.replace(/\D/g, '');
+      value = new Intl.NumberFormat('id-ID').format(value);
+      this.value = value;
     });
     document.getElementById('jml_ppn').addEventListener('keyup', function(e) {
-        let value = this.value.replace(/\D/g, '');
-        value = new Intl.NumberFormat('id-ID').format(value);
-        this.value = value;
+      let value = this.value.replace(/\D/g, '');
+      value = new Intl.NumberFormat('id-ID').format(value);
+      this.value = value;
     });
-    document.getElementById( 'jml_materi').addEventListener('keyup', function(e) {
-        let value = this.value.replace(/\D/g, '');
-        value = new Intl.NumberFormat('id-ID').format(value);
-        this.value = value;
+    document.getElementById('jml_materi').addEventListener('keyup', function(e) {
+      let value = this.value.replace(/\D/g, '');
+      value = new Intl.NumberFormat('id-ID').format(value);
+      this.value = value;
     });
     document.getElementById('jml_disc').addEventListener('keyup', function(e) {
-        let value = this.value.replace(/\D/g, '');
-        value = new Intl.NumberFormat('id-ID').format(value);
-        this.value = value;
+      let value = this.value.replace(/\D/g, '');
+      value = new Intl.NumberFormat('id-ID').format(value);
+      this.value = value;
     });
   });
 </script>
@@ -618,12 +616,12 @@
                 <td>` + data[i].no_po + `</td>
                 <td>` + data[i].jenis_bayar + `</td>
                 
-                <td>` + data[i].jml_beli + `</td>
-                <td>` + data[i].jml_ongkir + `</td>
-                <td>` + data[i].jml_materi + `</td>
-                <td>` + data[i].jml_ppn + `</td>
-                <td>` + data[i].jml_disc + `</td>
-                <td class="text-right">` + data[i].total + "&nbsp" + `</td>
+                <td>` + formatRupiah(data[i].jml_beli) + `</td>
+                <td>` + formatRupiah(data[i].jml_ongkir) + `</td>
+                <td>` + formatRupiah(data[i].jml_materi) + `</td>
+                <td>` + formatRupiah(data[i].jml_ppn) + `</td>
+                <td>` + formatRupiah(data[i].jml_disc) + `</td>
+                <td class="text-right">` + formatRupiah(data[i].total) + "&nbsp" + `</td>
               </tr>
             `);
           }
@@ -632,11 +630,15 @@
           alert('Gagal memuat data PO.');
         }
       });
+      function formatRupiah(v) {
+        return new Intl.NumberFormat('id-ID').format(v);
+      }
     });
   });
 </script>
 
-<!-- <div class="modal fade" id="edit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Modal Edit -->
+<div class="modal fade" id="edit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
@@ -657,7 +659,7 @@
             <div class="col-md-3">
               <div class="form-group">
                 <label for="no_dpb">No DPB</label>
-                <input type="text" class="form-control" id="e-no_dpb" name="no_dpb" autocomplete="off" placeholder="No DPB" value="<?= $generate_no_dpb ?>" maxlength="20" readonly>
+                <input type="text" class="form-control" id="e-no_dpb" name="no_dpb" autocomplete="off" placeholder="No DPB" maxlength="20" readonly>
               </div>
             </div>
             <div class="col-md-3">
@@ -669,7 +671,7 @@
             <div class="col-md-3">
               <div class="form-group">
                 <label for="no_rb">No RB</label>
-                <select class="form-control chosen-select" id="e-no_rb" name="no_rb" placeholder="No RB" required>
+                <select class="form-control chosen-select" id="e-no_rb" name="no_rb" placeholder="No RB">
                   <option value="" disabled selected hidden> - Pilih No RB -</option>
                   <?php foreach ($res_rb as $rb) : ?>
                     <option value="<?= $rb['no_rb'] ?>"><?= $rb['no_rb'] ?></option>
@@ -680,10 +682,98 @@
             <div class="col-md-3">
               <div class="form-group">
                 <label for="no_budget">No Budget</label>
-                <select type="text" class="form-control chosen-select" id="e-no_budget" name="no_budget" placeholder="Tanggal PPB" required>
+                <select type="text" class="form-control chosen-select" id="e-no_budget" name="no_budget" placeholder="Tanggal PPB">
                   <option value="" disabled selected hidden> - Pilih No Budget</option>
                 </select>
               </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="kode_barang">Kode Barang</label>
+                <input type="text" class="form-control" id="e-kode_barang" name="kode_barang" placeholder="Kode Barang" readonly autocomplete="off">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="nama_barang">Nama Barang</label>
+                <input type="text" class="form-control" id="e-nama_barang" name="nama_barang" placeholder="Nama barang" readonly autocomplete="off">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="spek">Speksifikasi</label>
+                <input type="text" class="form-control" id="e-spek" name="spek" placeholder="Spek Barang" readonly autocomplete="off">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="jumlah_barang">jumlah</label>
+                <input type="text" class="form-control" id="e-jumlah_barang" name="jumlah_barang" placeholder="Jumlah Barang" readonly autocomplete="off">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="satuan">Satuan</label>
+                <input type="text" class="form-control" id="e-satuan" name="satuan" placeholder="Satuan Barang" readonly autocomplete="off">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="jml_beli">Jumlah Beli</label>
+                <input type="text" class="form-control" id="e-jml_beli" placeholder="Masukan Jumlah" autocomplete="off">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="jml_materi">Jumlah Materi</label>
+                <input type="text" class="form-control" id="e-jml_materi" placeholder="Masukan jumlah" autocomplete="off">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="jml_ongkir">Jumlah Ongkir</label>
+                <input type="text" class="form-control" id="e-jml_ongkir" placeholder="Masukan jumlah" autocomplete="off">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="jml_ppn">Jumlah PPN</label>
+                <input type="text" class="form-control" id="e-jml_ppn" placeholder="Masukan jumlah" autocomplete="off">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="jml_disc">Jumlah Disc</label>
+                <input type="text" class="form-control" id="e-jml_disc" placeholder="Masukan jumlah" autocomplete="off">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="total">Total</label>
+                <input type="text" class="form-control" id="e-total" name="total" placeholder="Jumlah" readonly autocomplete="off">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="no_po">No Po</label>
+                <input type="text" class="form-control" id="e-no_po" placeholder="No Po">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="jenis_bayar">Jenis Bayar</label>
+                <select class="form-control chosen-select" id="e-jenis_bayar" placeholder="Jenis Bayar">
+                  <option value=""> - Pilih Jenis Bayar - </option>
+                  <option value="T">T</option>
+                  <option value="K">K</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <label>&nbsp;</label>
+              <button type="button" id="e-btnInputBarang" class="btn btn-primary btn-block mb-3">
+                Input Barang
+              </button>
             </div>
           </div>
           <div class="row">
@@ -691,71 +781,22 @@
               <table class="table table-bordered table-sm">
                 <thead>
                   <tr>
+                    <th>No Budget</th>
                     <th>Kode Barang</th>
                     <th>Nama Barang</th>
-                    <th>Spek</th>
-                    <th>Satuan</th>
-                    <th class="text-center">Jumlah</th>
-                    <th>No Budget</th>
-                    <th class="text-center">Harga</th>
+                    <th>No PO</th>
+                    <th>Jenis Bayar</th>
+                    <th class="text-center">Jml Beli</th>
+                    <th class="text-center">Jml materi</th>
+                    <th class="text-center">Jml Ongkir</th>
+                    <th class="text-center">Jml PPN</th>
+                    <th class="text-center">Jml Disc</th>
                     <th class="text-right">Total</th>
                     <th class="text-center">Aksi</th>
                   </tr>
                 </thead>
                 <tbody id="e-ppb_barang"></tbody>
               </table>
-            </div>
-            <div class="col-md-3">
-              <div class="form-group">
-                <label for="jenis_bayar">No Po</label>
-                <input class="form-control" id="e-no_po" name="no_po" placeholder="No Po" required>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="form-group">
-                <label for="jenis_bayar">Jenis Bayar</label>
-                <select class="form-control chosen-select" id="e-jenis_bayar" name="jenis_bayar" placeholder="No RB" required>
-                  <option value=""> - Pilih Jenis Bayar - </option>
-                  <option value="T">T</option>
-                  <option value="K">K</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="form-group">
-                <label for="jml_beli">Jumlah Beli</label>
-                <input type="text" class="form-control" id="e-jml_beli" name="jml_beli" placeholder="Masukan Jumlah" required autocomplete="off">
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="form-group">
-                <label for="jml_materi">Jumlah Materi</label>
-                <input type="text" class="form-control" id="e-jml_materi" name="jml_materi" placeholder="Masukan jumlah" required autocomplete="off">
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="form-group">
-                <label for="jml_ongkir">Jumlah Ongkir</label>
-                <input type="text" class="form-control" id="e-jml_ongkir" name="jml_ongkir" placeholder="Masukan jumlah" required autocomplete="off">
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="form-group">
-                <label for="jml_ppn">Jumlah PPN</label>
-                <input type="text" class="form-control" id="e-jml_ppn" name="jml_ppn" placeholder="Masukan jumlah" required autocomplete="off">
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="form-group">
-                <label for="jml_disc">Jumlah Disc</label>
-                <input type="text" class="form-control" id="e-jml_disc" name="jml_disc" placeholder="Masukan jumlah" required autocomplete="off">
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="form-group">
-                <label for="total">Total</label>
-                <input type="text" class="form-control" id="total" name="total" placeholder="Jumlah" readonly autocomplete="off">
-              </div>
             </div>
           </div>
         </div>
@@ -770,50 +811,234 @@
 </div>
 </div>
 
-<script type="text/javascript">
+<script>
   $(document).ready(function() {
+
+    // ===============================
+    // SHOW MODAL EDIT
+    // ===============================
     $('#edit').on('show.bs.modal', function(event) {
-      var button = $(event.relatedTarget);
-      // Ambil data dari tombol
-      var no_dpb = button.data('no_dpb');
-      var tgl_dpb = button.data('tgl_dpb');
-      var no_sjl = button.data('no_sjl');
-      var jenis_bayar = button.data('jenis_bayar');
-      var no_po = button.data('no_po');
-      var rincian = button.data('rincian');
 
-      var modal = $(this);
+      let btn = $(event.relatedTarget);
+      let no_dpb = btn.data('no_dpb');
+      let tgl_dpb = btn.data('tgl_dpb');
+      let no_sjl = btn.data('no_sjl');
 
-      // Set nilai ke input modal
-      modal.find('#e-no_dpb').val(no_dpb);
-      modal.find('#e-no_dpb_old').val(no_dpb);
-      modal.find('#e-tgl_dpb').val(tgl_dpb);
-      modal.find('#e-no_sjl').val(no_sjl);
-      modal.find('#e-jenis_bayar').val(jenis_bayar);
-      modal.find('#e-no_po').val(no_po);
+      $('#e-no_dpb').val(no_dpb);
+      $('#e-tgl_dpb').val(tgl_dpb);
+      $('#e-no_sjl').val(no_sjl);
 
-      // Hapus table sebelumnya
-      $('#e-ppb_barang').html('');
+      $(this).find('#e-tgl_dpb').datepicker().on('show.bs.modal', function(event) {
+        // prevent datepicker from firing bootstrap modal "show.bs.modal"
+        event.stopPropagation();
+      });
 
-      // Tambahkan row detail barang yang sudah ada
-      // rincian.forEach(function(item) {
-      //   $('#e-ppb_barang').append(`
-      //       <tr>
-      //           <input type="hidden" name="id_prc_rb[]" value="${item.id_prc_rb}">
-      //           <td>${item.no_budget}</td>
-      //           <td>${item.nama_barang}</td>
-      //           <td>${item.spek}</td>
-      //           <td>${item.satuan}</td>
-      //           <td class="text-center">${item.jumlah}</td>
-      //           <td>${item.no_budget}</td>
-      //           <td class="text-center">${item.harga}</td>
-      //           <td class="text-right">${item.total}</td>
-      //           <td class="text-center">
-      //               <button type="button" class="btn btn-danger btn-sm btn-hapus">Hapus</button>
-      //           </td>
-      //       </tr>
-      //   `);
-      // });
+      function formatRupiah(v) {
+        return new Intl.NumberFormat('id-ID').format(v);
+      }
+      // KOSONGKAN TABEL BARANG
+      $('#e-ppb_barang').empty();
+
+      // ===============================
+      // LOAD BARANG DPB (EDIT MODE)
+      // ===============================
+      $.ajax({
+        url: "<?= base_url('purchasing/prc_dpb/prc_dpb/get_by_no_dpb') ?>",
+        type: "POST",
+        data: {
+          no_dpb: no_dpb
+        },
+        dataType: "json",
+        success: function(res) {
+
+          res.forEach(row => {
+
+            let total =
+              Number(row.jml_beli) +
+              Number(row.jml_ongkir) +
+              Number(row.jml_ppn) -
+              Number(row.jml_disc);
+
+            $('#e-ppb_barang').append(`
+                        <tr>
+                            <input type="hidden" name="id_prc_rb[]" value="${row.id_prc_rb}">
+                            <input type="hidden" name="jml_beli[]" value="${row.jml_beli}">
+                            <input type="hidden" name="jml_materi[]" value="${row.jml_materi}">
+                            <input type="hidden" name="jml_ongkir[]" value="${row.jml_ongkir}">
+                            <input type="hidden" name="jml_ppn[]" value="${row.jml_ppn}">
+                            <input type="hidden" name="jml_disc[]" value="${row.jml_disc}">
+                            <input type="hidden" name="no_po[]" value="${row.no_po}">
+                            <input type="hidden" name="jenis_bayar[]" value="${row.jenis_bayar}">
+                            <td>${row.no_budget}</td>
+                            <td>${row.kode_barang}</td>
+                            <td>${row.nama_barang}</td>
+                            <td>${row.no_po}</td>
+                            <td>${row.jenis_bayar}</td>
+                            <td>${formatRupiah(row.jml_beli) || ''}</td>
+                            <td>${formatRupiah(row.jml_materi) || ''}</td>
+                            <td>${formatRupiah(row.jml_ongkir) || ''}</td>
+                            <td>${formatRupiah(row.jml_ppn) || ''}</td>
+                            <td>${formatRupiah(row.jml_disc) || ''}</td>
+                            <td class="text-right">${formatRupiah(total)}</td>
+                            <td><button class="btn btn-danger btn-sm btn-hapus">Hapus</button></td>
+                        </tr>
+                    `);
+          });
+
+        }
+      });
     });
-  })
-</script> -->
+
+
+    // ===============================
+    // LOAD NO BUDGET (EDIT)
+    // ===============================
+    $('#e-no_rb').on('change', function() {
+
+      const no_rb = $(this).val();
+
+      $('#e-no_budget')
+        .html('<option disabled selected hidden>Loading...</option>')
+        .trigger("chosen:updated");
+
+      $.ajax({
+        url: "<?= base_url('purchasing/prc_dpb/prc_dpb/get_by_no_rb') ?>",
+        type: "POST",
+        data: {
+          no_rb: no_rb
+        },
+        dataType: "json",
+        success: function(data) {
+
+          $('#e-no_budget').empty()
+            .append('<option disabled selected hidden>- Pilih No Budget -</option>');
+
+          $.each(data, function(i, item) {
+            $('#e-no_budget').append(`
+                        <option
+                            value="${item.no_budget}"
+                            data-kode_barang="${item.kode_barang}"
+                            data-nama_barang="${item.nama_barang}"
+                            data-spek="${item.spek}"
+                            data-satuan="${item.satuan}"
+                            data-jumlah_rh="${item.jumlah_rh}"
+                            data-id_prc_rb="${item.id_prc_rb}"
+                        >
+                            ${item.no_budget}
+                        </option>
+                    `);
+          });
+
+          $('#e-no_budget').trigger("chosen:updated");
+        }
+      });
+    });
+
+
+    // ===============================
+    // AMBIL DETAIL BARANG EDIT
+    // ===============================
+    $('#e-no_budget').on('change', function() {
+
+      let selected = $(this).find('option:selected');
+
+      $('#e-kode_barang').val(selected.data('kode_barang') || '');
+      $('#e-nama_barang').val(selected.data('nama_barang') || '');
+      $('#e-jumlah_barang').val(selected.data('jumlah_rh') || '');
+      $('#e-satuan').val(selected.data('satuan') || '');
+      $('#e-spek').val(selected.data('spek') || '');
+    });
+
+
+    // ===============================
+    // HAPUS ROW
+    // ===============================
+    $(document).on('click', '.btn-hapus', function() {
+      $(this).closest('tr').remove();
+    });
+
+
+    // ===============================
+    // TAMBAH BARANG DI MODE EDIT
+    // ===============================
+    $('#e-btnInputBarang').on('click', function() {
+
+      let selected = $('#e-no_budget').find('option:selected');
+      let no_budget = selected.val();
+
+      if (!no_budget) {
+        alert("Pilih No Budget dulu!");
+        return;
+      }
+
+      let jml_beli = $('#e-jml_beli').val();
+      let jml_materi = $('#e-jml_materi').val();
+      let jml_ongkir = $('#e-jml_ongkir').val();
+      let jml_ppn = $('#e-jml_ppn').val();
+      let jml_disc = $('#e-jml_disc').val();
+      let no_po = $('#e-no_po').val();
+      let jenis_bayar = $('#e-jenis_bayar').val();
+
+      if (!jml_beli || !jml_materi || !jml_ongkir || !jml_ppn || !jml_disc || !no_po || !jenis_bayar) {
+        alert("Mohon isi semua jumlah terlebih dahulu.");
+        return;
+      }
+
+      let total =
+        convert(jml_beli) +
+        convert(jml_ongkir) +
+        convert(jml_ppn) -
+        convert(jml_disc);
+
+      // CEK DUPLIKAT (EDIT)
+      let dupe = false;
+      $('#e-ppb_barang tr').each(function() {
+        let existing = $(this).find('td:eq(0)').text().trim();
+        if (existing == no_budget) dupe = true;
+      });
+
+      if (dupe) {
+        alert("No Budget sudah ada!");
+        return;
+      }
+
+      // INSERT BARANG
+      $('#e-ppb_barang').append(`
+            <tr>
+                <input type="hidden" name="id_prc_rb[]" value="${selected.data('id_prc_rb')}">
+                <input type="hidden" name="jml_beli[]" value="${jml_beli}">
+                <input type="hidden" name="jml_materi[]" value="${jml_materi}">
+                <input type="hidden" name="jml_ongkir[]" value="${jml_ongkir}">
+                <input type="hidden" name="jml_ppn[]" value="${jml_ppn}">
+                <input type="hidden" name="jml_disc[]" value="${jml_disc}">
+                <input type="hidden" name="no_po[]" value="${no_po}">
+                <input type="hidden" name="jenis_bayar[]" value="${jenis_bayar}">
+
+                <td>${no_budget}</td>
+                <td>${selected.data('kode_barang')}</td>
+                <td>${selected.data('nama_barang')}</td>
+                <td>${no_po}</td>
+                <td>${jenis_bayar}</td>
+                <td>${formatRupiah(jml_beli)}</td>
+                <td>${formatRupiah(jml_materi)}</td>
+                <td>${formatRupiah(jml_ongkir)}</td>
+                <td>${formatRupiah(jml_ppn)}</td>
+                <td>${formatRupiah(jml_disc)}</td>
+                <td class="text-right">${formatRupiah(total)}</td>
+                <td><button class="btn btn-danger btn-sm btn-hapus">Hapus</button></td>
+            </tr>
+        `);
+
+    });
+
+  });
+
+  // convert
+  function convert(v) {
+    return Number(v.replace(/\./g, '').replace(/,/g, '')) || 0;
+  }
+
+  function formatRupiah(v) {
+    return new Intl.NumberFormat('id-ID').format(v);
+  }
+</script>
