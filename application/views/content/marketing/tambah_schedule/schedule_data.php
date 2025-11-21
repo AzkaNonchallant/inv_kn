@@ -1,3 +1,472 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konfirmasi Pesanan</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --barang: #436;
+            --upd: #f72585;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --info: #4895ef;
+            --warning: #ae4976ff;
+            --danger: #e63946;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        .barang-container {
+            padding: 20px;
+            background-color: #f5f7fb;
+            min-height: 100vh;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+        }
+
+        .page-title i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 0;
+        }
+
+        .breadcrumb-item a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .card {
+            width: 100%;
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 25px;
+        }
+
+        .card-header {
+            background: white;
+            border-bottom: 1px solid var(--light-gray);
+            padding: 15px 15px;
+            border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-header h5 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            border-radius: 8px;
+            font-weight: 600;
+            padding: 8px 16px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), var(--info));
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(76, 201, 240, 0.3);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, var(--info), #3a86ff);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #b5179e);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #d00000);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--gray), #495057);
+            color: white;
+        }
+
+        .table-responsive {
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            overflow: hidden;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table {
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+            min-width: 1200px;
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 13px 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            line-height: 1.5;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            padding: 10px 8px;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--light-gray);
+            white-space: nowrap;
+            font-size: 13px;
+        }
+
+        .table tbody tr {
+            transition: var(--transition);
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(67, 97, 238, 0.05);
+            transform: translateY(-1px);
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table-responsive::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-responsive::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        .badge {
+            padding: 6px 8px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 11px;
+        }
+
+        .badge-success {
+            background-color: rgba(76, 201, 240, 0.1);
+            color: var(--success);
+        }
+
+        .badge-primary {
+            background-color: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+        }
+
+        .badge-warning {
+            background-color: rgba(247, 37, 133, 0.1);
+            color: var(--warning);
+        }
+
+        .modal-content {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            padding: 20px 25px;
+        }
+
+        .modal-up {
+            background: linear-gradient(135deg, var(--upd), var(--warning));
+            color: white;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            padding: 20px 25px;
+        }
+
+        .modal-barang {
+            background: linear-gradient(135deg, var(--barang), var(--secondary));
+            color: white;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            padding: 20px 25px;
+        }
+
+        .modal-title {
+            font-weight: 700;
+            font-size: 18px;
+            color: white;
+        }
+
+        .close {
+            color: white;
+            opacity: 0.8;
+        }
+
+        .close:hover {
+            color: white;
+            opacity: 1;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            padding: 10px 15px;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-label i {
+            color: var(--primary);
+            font-size: 14px;
+            width: 16px;
+        }
+
+        .invalid-feedback {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            flex-wrap: nowrap;
+        }
+
+        .table .btn-sm {
+            padding: 4px 8px;
+            font-size: 11px;
+            line-height: 1.5;
+            white-space: nowrap;
+        }
+
+        .table .btn i {
+            font-size: 10px;
+            margin-right: 2px;
+        }
+
+        .filter-section {
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 25px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 15px;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 180px;
+            margin-bottom: 0;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            align-items: end;
+        }
+
+        .filter-actions .btn {
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .chosen-container {
+            width: 100% !important;
+        }
+
+        .chosen-container-single .chosen-single {
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            padding: 10px 15px;
+            height: auto;
+            background: white;
+            box-shadow: none;
+        }
+
+        .chosen-container-active.chosen-with-drop .chosen-single {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+        }
+
+        .datepicker {
+            z-index: 9999 !important;
+        }
+
+        .datepicker-dropdown {
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border: none;
+        }
+
+        .datepicker table tr td.active.active,
+        .datepicker table tr td.active:hover.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
+            border-color: var(--primary) !important;
+        }
+
+        .datepicker table tr td.today {
+            background-color: var(--light-gray) !important;
+        }
+
+        .datepicker table tr td.today:hover {
+            background-color: var(--gray) !important;
+        }
+
+        .form-check {
+            margin-bottom: 15px;
+        }
+
+        .form-check-input {
+            margin-right: 8px;
+        }
+
+        .form-check-label {
+            font-weight: 600;
+            color: var(--dark);
+            cursor: pointer;
+        }
+
+        .print-section {
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .card-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .btn-group {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .filter-row {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                width: 100%;
+                min-width: auto;
+            }
+
+            .filter-actions {
+                width: 100%;
+                justify-content: stretch;
+                margin-top: 10px;
+            }
+
+            .filter-actions .btn {
+                flex: 1;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 3px;
+            }
+        }
+    </style>
+</head>
 <!-- [ Main Content ] start -->
 <section class="pcoded-main-container">
   <div class="pcoded-wrapper">
@@ -960,16 +1429,16 @@
                         var data = response.data;
 
                         // Isi field-field yang readonly
-                        $('#id_customer').val(data.nama_customer || '');
-                        $('#id_master_kw_cap').val(data.kode_warna_cap || '');
-                        $('#warna_cap').val(data.short_cap || '');
-                        $('#id_master_kw_body').val(data.kode_warna_body || '');
-                        $('#warna_body').val(data.short_body || '');
-                        $('#size_machine').val(data.size_kp || '');
-                        $('#minyak').val(data.spek_kapsul || '');
+                        $('#id_customer').val(data.nama_customer || '-');
+                        $('#id_master_kw_cap').val(data.kode_warna_cap || '-');
+                        $('#warna_cap').val(data.short_cap || '-');
+                        $('#id_master_kw_body').val(data.kode_warna_body || '-');
+                        $('#warna_body').val(data.short_body || '-');
+                        $('#size_machine').val(data.size_kp || '-');
+                        $('#minyak').val(data.spek_kapsul || '-');
                         $('#jumlah_kp').val(formatNumber(data.jumlah_kp) || '');
-                        $('#print').val(data.kode_print || '');
-                        $('#logo_print').val(data.logo_print || '');
+                        $('#print').val(data.kode_print || '-');
+                        $('#logo_print').val(data.logo_print || '-');
                         $('#outstanding').val(formatNumber(response.sisa_kp) || formatNumber(data.jumlah_kp));
 
                         // Set hidden values untuk ID
@@ -1023,10 +1492,10 @@
                         var data = response.data;
 
                         // Isi field-field yang readonly
-                        $('#e_id_customer').val(data.nama_customer || '');
-                        $('#e_id_master_kw_cap').val(data.kode_warna_cap || '');
-                        $('#e_warna_cap').val(data.short_cap || '');
-                        $('#e_id_master_kw_body').val(data.kode_warna_body || '');
+                        $('#e_id_customer').val(data.nama_customer || '-');
+                        $('#e_id_master_kw_cap').val(data.kode_warna_cap || '-');
+                        $('#e_warna_cap').val(data.short_cap || '-');
+                        $('#e_id_master_kw_body').val(data.kode_warna_body || '-');
                         $('#e_warna_body').val(data.short_body || '');
                         $('#e_size_machine').val(data.size_kp || '');
                         $('#e_minyak').val(data.spek_kapsul || '');
@@ -1258,16 +1727,17 @@
         var no_batch = button.data('no_batch');
         var tgl_sch = button.data('tgl_sch');
         var size_machine = button.data('size_machine');
-        var kode_warna_cap = button.data('kode_warna_cap');
-        var kode_warna_body = button.data('kode_warna_body');
-        var warna_cap = button.data('warna_cap');
-        var warna_body = button.data('warna_body');
+        var kode_warna_cap = button.data('kode_warna_cap') || '-';
+        var kode_warna_body = button.data('kode_warna_body') || '-';
+        var warna_cap = button.data('warna_cap') || '-';
+        var warna_body = button.data('warna_body') || '-';
         var mesin_prd = button.data('mesin_prd');
         var jumlah_prd = button.data('jumlah_prd');
         var id_customer = button.data('id_customer');
-        var print = button.data(('print') || '-');
-        var tinta = button.data('tinta');
-        var jenis_grv = button.data('jenis_grv');
+        var print = button.data('print') || '-';
+          
+        var tinta = button.data('tinta') ||  '-';
+        var jenis_grv = button.data('jenis_grv') || '-';
         var customer = button.data('nama_customer');
         var jenis_box = button.data('jenis_box');
         var jenis_zak = button.data('jenis_zak');

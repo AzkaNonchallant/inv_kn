@@ -298,6 +298,7 @@
       var warna_cap = button.data('warna_cap');
       var warna_body = button.data('warna_body');
       var mesin = button.data('mesin');
+      //  modal.find('#v-logo_print').val(button.data('logo_print') || '-');
       var jumlah = button.data('jumlah');
       var cek_print = button.data('cek_print');
       var jenis_grv= button.data('jenis_grv');

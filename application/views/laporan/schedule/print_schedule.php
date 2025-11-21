@@ -104,15 +104,15 @@
         }
 
         /* Warna untuk mesin yang berbeda */
-        .mesin-A { background-color: #e6f3ff; }
-        .mesin-B { background-color: #fff0e6; }
-        .mesin-C { background-color: #f0ffe6; }
-        .mesin-D { background-color: #fff6e6; }
-        .mesin-E { background-color: #f6e6ff; }
-        .mesin-F { background-color: #e6fff6; }
-        .mesin-G { background-color: #ffe6e6; }
-        .mesin-H { background-color: #ffffe6; }
-        .mesin-I { background-color: #e6e6ff; }
+        .mesin-A { background-color: #f2f2f2ff; }
+        .mesin-B { background-color: #f2f2f2ff  ; }
+        .mesin-C { background-color: #f2f2f2ff; }
+        .mesin-D { background-color: #f2f2f2ff; }
+        .mesin-E { background-color: #f2f2f2ff; }
+        .mesin-F { background-color: #f2f2f2ff; }
+        .mesin-G { background-color: #f2f2f2ff; }
+        .mesin-H { background-color: #f2f2f2ff; }
+        .mesin-I { background-color: #f2f2f2ff; }
     </style>
 </head>
 
