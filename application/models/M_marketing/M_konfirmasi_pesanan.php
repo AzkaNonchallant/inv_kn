@@ -173,15 +173,21 @@ class M_konfirmasi_pesanan extends CI_Model {
     }
     
     // Delete data (soft delete)
-    public function delete($data) {
-        $id_user = $this->id_user();
-        $this->db->where('id_mkt_kp', $data['id_mkt_kp']);
-        return $this->db->update('tb_mkt_kp', [
-            'is_deleted' => 1,
-            'deleted_by' => $id_user,
-            'deleted_at' => date('Y-m-d H:i:s')
-        ]);
-    }
+    // public function delete($data) {
+    //     $id_user = $this->id_user();
+    //     $this->db->where('id_mkt_kp', $data['id_mkt_kp']);
+    //     return $this->db->update('tb_mkt_kp', [
+    //         'is_deleted' => 1,
+    //         'deleted_by' => $id_user,
+    //         'deleted_at' => date('Y-m-d H:i:s')
+    //     ]);
+    // }
+
+    public function delete_konfirmasi_pesanan($id_mkt_kp)
+{
+    $this->db->where('id_mkt_kp', $id_mkt_kp);
+    return $this->db->delete('tb_mkt_kp');
+}
     
     // Cek No KP sudah ada
     public function cek_no_kp($no_kp) {

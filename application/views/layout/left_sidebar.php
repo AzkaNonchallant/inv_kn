@@ -46,7 +46,11 @@
                             <li class="nav-item <?= $uri == 'Stock_keeper' ? 'active' : '' ?>"><a
                                     href="<?= base_url('administrator/stok_barang') ?>" class="">Stok Barang</a></li>
                             <li class="nav-item <?= $uri == 'Stock_keeper' ? 'active' : '' ?>"><a
+                                    href="<?= base_url('administrator/adm_barang_masuk') ?>" class="">Barang Masuk</a></li>
+                            <li class="nav-item <?= $uri == 'Stock_keeper' ? 'active' : '' ?>"><a
                                     href="<?= base_url('administrator/ppb') ?>" class="">PPB</a></li>
+                             <li class="nav-item <?= $uri == 'Stock_keeper' ? 'active' : '' ?>"><a
+                                    href="<?= base_url('administrator/adm_dpb') ?>" class="">DPB</a></li>
                             <li class="nav-item <?= $uri == 'PPB' ? 'active' : '' ?>"><a
                                     href="<?= base_url('administrator/acc/acc_supervisor') ?>" class="">ACC Supervisor</a></li>
                             <li class="nav-item <?= $uri == 'PPB' ? 'active' : '' ?>"><a

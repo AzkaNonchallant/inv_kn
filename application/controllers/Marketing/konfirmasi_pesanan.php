@@ -248,15 +248,29 @@ class Konfirmasi_pesanan extends CI_Controller {
     }
 }
 
-    public function delete($id) {
-    $data = ['id_mkt_kp' => $id];
-    if ($this->M_konfirmasi_pesanan->delete($data)) {
-            $this->session->set_flashdata('success', 'Data berhasil dihapus');
-        } else {
-            $this->session->set_flashdata('error', 'Data gagal dihapus');
-        }
-        redirect('marketing/konfirmasi_pesanan');
+    // public function delete($id) {
+    // $data = ['id_mkt_kp' => $id];
+    // if ($this->M_konfirmasi_pesanan->delete($data)) {
+    //         $this->session->set_flashdata('success', 'Data berhasil dihapus');
+    //     } else {
+    //         $this->session->set_flashdata('error', 'Data gagal dihapus');
+    //     }
+    //     redirect('marketing/konfirmasi_pesanan');
+    // }
+
+  public function delete($id_mkt_kp)
+{
+    $respon = $this->M_konfirmasi_pesanan->delete_konfirmasi_pesanan($id_mkt_kp);
+
+    if ($respon) {
+        $this->session->set_flashdata('success', 'Data berhasil dihapus');
+    } else {
+        $this->session->set_flashdata('error', 'Data gagal dihapus');
     }
+
+    redirect('marketing/konfirmasi_pesanan');
+}
+
     
     public function cek_no_kp() {
         $no_kp = $this->input->post('no_kp');

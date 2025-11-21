@@ -727,7 +727,7 @@
                                                                         <?php if ($level === "admin" || $level == "marketing"): ?>
                                                                             <?php if ($jumlah_prd == 0): ?>
                                                                                 <!-- Tombol Hapus (hanya muncul jika belum ada produksi) -->
-                                                                                <a href="<?= base_url() ?>marketing/konfirmasi_pesanan/delete/<?= $id_mkt_kp ?>"
+                                                                                <a href="<?= base_url() ?>Marketing/konfirmasi_pesanan/delete/<?= $k['id_mkt_kp'] ?>"
                                                                                     class="btn btn-danger btn-sm btn-action"
                                                                                     onclick="if (! confirm('Apakah Anda Yakin?')) { return false; }">
                                                                                     <i class="fas fa-trash"></i> Hapus

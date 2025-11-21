@@ -15,7 +15,7 @@
                   <li class="breadcrumb-item"><a href="<?= base_url() ?>"><i class="feather icon-home"></i></a></li>
                   <li class="breadcrumb-item"><a href="<?= base_url() ?>">Purchasing</a></li>
                   <li class="breadcrumb-item"><a href="<?= base_url() ?>">Other</a></li>
-                  <li class="breadcrumb-item"><a href="<?= base_url('Purchasing/Other/Dpb') ?>">DPB</a></li>
+                  <li class="breadcrumb-item"><a href="<?= base_url('Administrator/Dpb') ?>">DPB</a></li>
                 </ul>
               </div>
             </div>
