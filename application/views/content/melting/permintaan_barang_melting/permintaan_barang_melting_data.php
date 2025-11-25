@@ -136,12 +136,21 @@
           <div class="row">
             <div class="col-md-4">
               <div class="form-group">
-                <label for="no_transfer_slip">No Transfer Slip</label>
-                <!-- <input type="text" class="form-control" id="no_transfer_slip" name="no_transfer_slip" placeholder="No Surat Jalan" maxlength="20" required> -->
-                <input type="text" class="form-control text-uppercase" id="no_transfer_slip" name="no_transfer_slip" Value="../XII/2023" maxlength="20" aria-describedby="validationServer03Feedback" autocomplete="off" required>
+                <label for="no_transfer_slip">No Urut</label>
+                <input type="text" class="form-control text-uppercase" id="no_transfer_slip" name="no_transfer_slip" Value="<?= $no_urut ?>" maxlength="20" aria-describedby="validationServer03Feedback" autocomplete="off" readonly>
                 <div id="validationServer03Feedback" class="invalid-feedback">
                   Maaf nomor transfer slip sudah ada.
                 </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="kode_ts">Kode TS</label>
+                <select type="text" class="form-control chosen-select" id="kode_ts" name="kode_ts" placeholder="Tanggal Permintaan" autocomplete="off" required>
+                  <option value="" disabled selected hidden> - Pilih Kode TS - </option>
+                  <option value="Bahan Baku">BA</option>
+                  <option value="Bahan Pembantu">BB</option>
+                </select>
               </div>
             </div>
             <div class="col-md-4">
@@ -163,17 +172,7 @@
               <div class="form-group">
                 <label for="no_batch">No Batch & Nama Barang & Mfg & Exp</label>
                 <select class="form-control chosen-select" id="no_batch_add" name="no_batch_add" required>
-                  <option disabled selected hidden value="">- Pilih No Batch & Nama Barang & Nama Supplier & Mfg & Exp -</option>
-                  <?php
-                  foreach ($bm as $s) {
-                    $mfg =  explode('-', $s['mfg'])[2] . "/" . explode('-', $s['mfg'])[1] . "/" . explode('-', $s['mfg'])[0];
-                    $exp =  explode('-', $s['exp'])[2] . "/" . explode('-', $s['exp'])[1] . "/" . explode('-', $s['exp'])[0];
-                  ?>
-                    <option data-satuan="<?= $s['satuan'] ?>" value="<?= $s['no_batch'] ?>,<?= $s['nama_barang'] ?>,<?= $s['stok'] ?>,<?= $s['mfg'] ?>,<?= $s['exp'] ?>,<?= $s['id_barang_masuk'] ?>,<?= $s['id_barang'] ?>,<?= $s['id_supplier'] ?>">
-                      <?php if ($s['stok'] > 0) { ?>
-                        <?= $s['no_batch'] ?> | <?= $s['nama_barang'] ?> | <?= $s['nama_supplier'] ?> | <?= $mfg ?> | <?= $exp ?> </option>
-                  <?php } ?>
-                <?php } ?>
+                  <option disabled selected hidden value="">- Pilih No Batch & Nama Barang  -</option>
                 </select>
               </div>
             </div>
@@ -201,8 +200,6 @@
                   <th>No Batch</th>
                   <th>Nama Barang</th>
                   <th>Qty</th>
-                  <th>Mfg date</th>
-                  <th>Exp date</th>
                   <th class="text-right">Hapus</th>
                 </tr>
               </thead>
@@ -222,91 +219,52 @@
 </div>
 <script type="text/javascript">
   $(document).ready(function() {
-    uppercase('#no_transfer_slip');
 
-    $("#no_transfer_slip").keyup(function() {
-      var no_transfer_slip = $("#no_transfer_slip").val();
-      jQuery.ajax({
-        url: "<?= base_url() ?>melting/permintaan_barang_melting/d_transfer_slip",
-        dataType: 'text',
-        type: "post",
+    $('#kode_ts').on('change', function() {
+      let value = $(this).val()
+
+      $('#no_batch_add').html('<option disabled selected hidden>Loading...</option>')
+      .trigger("chosen:updated")
+
+      $.ajax({
+        url: "<?= base_url('purchasing/prc_dpb/prc_dpb/get_by_no_rb') ?>",
+        type: "POST",
         data: {
-          no_transfer_slip: no_transfer_slip
+          kode_ts: value
         },
-        success: function(response) {
-          if (response == "true") {
-            $("#no_transfer_slip").addClass("is-invalid");
-            $("#simpan").attr("disabled", "disabled");
-          } else {
-            $("#no_transfer_slip").removeClass("is-invalid");
-            $("#simpan").removeAttr("disabled");
-          }
+        dataType: "json",
+        success: function(data) {
+
+          $('#no_batch_add').empty()
+            .append('<option value="" disabled selected hidden>- Pilih No Batch & Nama Barang -</option>');
+
+          $.each(data, function(i, item) {
+            $('#no_batch_add').append(`
+            <option 
+              value="${item.no_budget}"
+              data-kode_barang="${item.kode_barang}"
+              data-nama_barang="${item.nama_barang}"
+              data-spek="${item.spek}"
+              data-satuan="${item.satuan}"
+              data-jumlah_rh="${item.jumlah_rh}"
+              data-id_prc_rb="${item.id_prc_rb}"
+            >
+              ${item.no_budget}
+            </option>
+          `);
+          });
+
+          $('#no_batch_add').trigger("chosen:updated");
         }
       });
     })
+    
 
-    $("select").on('change', function() {
-      const selected = $(this).find(':selected').attr('data-satuan')
-      satuan = selected.replaceAll(' ', '')
-      $('#satuan_add').val(satuan)
-    });
+    
 
-    $("#input").click(function() {
-      // alert()
-      var jumlah = parseInt($("#jumlah_batch").val()); // Ambil jumlah data form pada textbox jumlah-form      
-      var nextform = jumlah + 1; // Tambah 1 untuk jumlah form nya
-      $("#jumlah_batch").val(nextform)
-
-      var batch = $("#no_batch_add").val();
-      var no_batch = batch.split(",")[0];
-      var nama_barang = batch.split(",")[1];
-      var stok = batch.split(",")[2];
-      var qty = $("#qty_add").val();
-      var mfg = batch.split(",")[3];
-      var exp = batch.split(",")[4];
-      var id_barang_masuk = batch.split(",")[5];
-      var id_barang = batch.split(",")[6];
-      var id_supplier = batch.split(",")[7];
-
-      if (qty == '' || qty == '') {
-        alert("Quantity tidak Boleh Kosong");
-      } else if (batch == '') {
-        alert("No Batch tidak Boleh Kosong");
-      } else if (stok == '0') {
-        alert("Stok Kosong");
-      } else if (Number(qty) > Number(stok)) {
-        alert("stock tidak mencukupi");
-      } else if (insert_batch == '') {
-        alert("tidak Boleh Kosong");
-      } else {
-        // Mfg Format Date
-        var e_mfg = mfg.split('-');
-        var newMfg = e_mfg[2] + '-' + e_mfg[1] + '-' + e_mfg[0];
-        // Exp Format Date
-        var e_exp = exp.split('-');
-        var newExp = e_exp[2] + '-' + e_exp[1] + '-' + e_exp[0];
-        $("#insert_batch").append(`
-          <tr id="tr_` + nextform + `">
-            <input type="hidden" name="id_barang_masuk[]" value="` + id_barang_masuk + `">
-            <input type="hidden" name="id_barang[]" value="` + id_barang + `">
-            <input type="hidden" name="id_supplier[]" value="` + id_supplier + `">
-            <td>` + no_batch + `<input type="hidden" name="no_batch[]" value="` + no_batch + `"></td>
-            <td>` + nama_barang + `</td>
-            <td>` + qty + `<input type="hidden" name="qty[]" value="` + qty + `"></td>
-            <td>` + newMfg + `</td>
-            <td>` + newExp + `</td>
-            <td class="text-right"><a href="javascript:void(0)" onclick="remove(` + nextform + `)" class="text-danger"><i class="feather icon-trash-2"></i></a></td>
-          </tr>
-        `);
-      }
+    
 
 
-      remove = function(param) {
-        var p = document.getElementById('insert_batch');
-        var e = document.getElementById('tr_' + param);
-        p.removeChild(e); //menghapus elemen child dengan id error bila kita menginput nama
-      }
-    })
     $('#add').on('hidden.bs.modal', function() {
       $(this).find('form')[0].reset();
     });

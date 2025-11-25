@@ -26,8 +26,8 @@ class M_permintaan_barang_gudang extends CI_Model
             LEFT JOIN tb_gbb_barang_masuk b ON a.id_barang_masuk = b.id_barang_masuk
             LEFT JOIN tb_prc_barang c ON a.id_barang = c.id_barang
             LEFT JOIN tb_prc_supplier d ON a.id_supplier = d.id_supplier
-            LEFT JOIN tb_transfer_slip e ON a.no_transfer_slip = e.no_transfer_slip
-            WHERE a.no_transfer_slip = '$no_transfer_slip' AND a.is_deleted = 0 AND e.is_deleted = 0 ORDER BY a.no_batch ASC";
+            LEFT JOIN tb_transfer_slip e ON a.no_urut = e.no_urut
+            WHERE a.no_no_urut = '$no_transfer_slip' AND a.is_deleted = 0 AND e.is_deleted = 0 ORDER BY a.no_batch ASC";
         return $this->db->query($sql);
     }
     public function cek_permintaan()
@@ -39,8 +39,8 @@ class M_permintaan_barang_gudang extends CI_Model
     public function cek_transfer_slip($no_transfer_slip)
     {
         $sql = "
-            SELECT COUNT(a.no_transfer_slip) count_sj FROM tb_transfer_slip a
-            WHERE a.no_transfer_slip = '$no_transfer_slip' AND a.is_deleted = 0";
+            SELECT COUNT(a.no_urut) count_sj FROM tb_transfer_slip a
+            WHERE a.no_urut = '$no_transfer_slip' AND a.is_deleted = 0";
         return $this->db->query($sql);
     }
     public function add_transfer_slip($data)
@@ -56,8 +56,8 @@ class M_permintaan_barang_gudang extends CI_Model
     {
         $id_user = $this->id_user();
         $sql = "
-        INSERT INTO `tb_gbb_permintaan_barang`(`id_barang_masuk`,`id_barang`,`id_supplier`,`no_batch`, `no_transfer_slip`,`tgl`,`qty`, `created_at`, `created_by`, `updated_at`, `updated_by`, `is_deleted`)
-        VALUES ('$data[id_barang_masuk]','$data[id_barang]','$data[id_supplier]','$data[no_batch]','$data[no_transfer_slip]','$data[tgl]','$data[qty]',NOW(),'$id_user','0000-00-00 00:00:00','','0')
+        INSERT INTO `tb_gbb_permintaan_barang`(`id_barang_masuk`,`id_barang`,`id_supplier`,`no_batch`, `no_urut`,`tgl`,`qty`, `created_at`, `created_by`, `updated_at`, `updated_by`, `is_deleted`)
+        VALUES ('$data[id_barang_masuk]','$data[id_barang]','$data[id_supplier]','$data[no_batch]','$data[no_urut]','$data[tgl]','$data[qty]',NOW(),'$id_user','0000-00-00 00:00:00','','0')
         ";
         return $this->db->query($sql);
     }
@@ -75,7 +75,7 @@ class M_permintaan_barang_gudang extends CI_Model
             'id_barang' => $data['id_barang'],
             'id_supplier' => $data['id_supplier'],
             'no_batch' => $data['no_batch'],
-            'no_transfer_slip' => $data['no_transfer_slip'],
+            'no_urut' => $data['no_urut'],
             'tgl' => $data['tgl'],
             'qty' => $data['qty'],
             'created_at' => date("Y-m-d H:i:s"),
@@ -124,7 +124,7 @@ class M_permintaan_barang_gudang extends CI_Model
         $sql = "
         UPDATE `tb_gbb_permintaan_barang`
         SET `tgl_setuju`='$tgl_rilis'
-        WHERE `no_transfer_slip`='$no_transfer_slip';
+        WHERE `no_urut`='$no_transfer_slip';
         ";
         return $this->db->query($sql);
     }
@@ -134,7 +134,7 @@ class M_permintaan_barang_gudang extends CI_Model
         $sql = "
         UPDATE `tb_gbb_permintaan_barang`
         SET `tgl_tdksetuju`='$tgl_reject'
-        WHERE `no_transfer_slip`='$no_transfer_slip';
+        WHERE `no_urut`='$no_transfer_slip';
         ";
         return $this->db->query($sql);
     }
@@ -144,7 +144,7 @@ class M_permintaan_barang_gudang extends CI_Model
         $sql = "
         UPDATE `tb_transfer_slip`
         SET `status`='$status'
-        WHERE `no_transfer_slip`='$no_transfer_slip';
+        WHERE `no_urut`='$no_transfer_slip';
         ";
         return $this->db->query($sql);
     }
@@ -177,11 +177,11 @@ class M_permintaan_barang_gudang extends CI_Model
         // ";
         $sql1 = "
             DELETE FROM `tb_transfer_slip` 
-            WHERE `no_transfer_slip`='$data[no_transfer_slip]'
+            WHERE `nourutp`='$data[no_transfer_slip]'
         ";
         $sql = "
            DELETE FROM `tb_gbb_permintaan_barang`
-            WHERE `no_transfer_slip`='$data[no_transfer_slip]'
+            WHERE `no_urut`='$data[no_transfer_slip]'
         ";
         $this->db->query($sql);
         return $this->db->query($sql1);
@@ -206,7 +206,7 @@ class M_permintaan_barang_gudang extends CI_Model
         $sql = "
             SELECT a.*,b.nama_operator,b.alamat FROM tb_transfer_slip a
             LEFT JOIN tb_user b ON a.nama_operator = b.nama_operator
-            WHERE a.is_deleted = 0 AND a.no_transfer_slip = '$no_transfer_slip' ORDER BY a.created_at DESC";
+            WHERE a.is_deleted = 0 AND a.no_urut = '$no_transfer_slip' ORDER BY a.created_at DESC";
         return $this->db->query($sql);
     }
 }

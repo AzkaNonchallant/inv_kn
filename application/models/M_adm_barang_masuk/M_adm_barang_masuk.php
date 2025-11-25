@@ -53,21 +53,34 @@ class M_adm_barang_masuk extends CI_Model
     ');
 
         $this->db->from('tb_adm_dpb a');
-        $this->db->join('tb_prc_dpb_tf b', 'a.no_dpb = b.no_dpb', 'left');
-        $this->db->join('tb_prc_dpb c', 'a.no_dpb = c.no_dpb', 'left');
+
+        // FIX COLLATION JOIN
+        $this->db->join(
+            'tb_prc_dpb_tf b',
+            'a.no_dpb COLLATE utf8mb4_general_ci = b.no_dpb COLLATE utf8mb4_general_ci',
+            'left',
+            false
+        );
+
+        $this->db->join(
+            'tb_prc_dpb c',
+            'a.no_dpb COLLATE utf8mb4_general_ci = c.no_dpb COLLATE utf8mb4_general_ci',
+            'left',
+            false
+        );
+
         $this->db->join('tb_prc_rb d', 'c.id_prc_rb = d.id_prc_rb', 'left');
         $this->db->join('tb_prc_rh e', 'd.id_prc_rh = e.id_prc_rh', 'left');
         $this->db->join('tb_prc_ppb f', 'e.id_prc_ppb = f.id_prc_ppb', 'left');
         $this->db->join('tb_prc_master_barang g', 'f.id_prc_master_barang = g.id_prc_master_barang', 'left');
         $this->db->join('tb_prc_master_supplier h', 'g.id_prc_master_supplier = h.id_prc_master_supplier', 'left');
 
-        // FILTER UTAMA
+        // FILTER
         $this->db->where('a.is_deleted', 0);
         $this->db->where('b.is_deleted', 0);
         $this->db->where('a.no_batch IS NOT NULL');
         $this->db->where('a.no_batch !=', '');
 
-        // FILTER OPSIONAL
         if (!empty($no_dpb)) {
             $this->db->like('b.no_dpb', $no_dpb);
         }
@@ -80,7 +93,6 @@ class M_adm_barang_masuk extends CI_Model
             $this->db->where('b.tgl_dpb <=', date('Y-m-d', strtotime($tgl_selesai)));
         }
 
-        // ORDER BY SEDERHANA
         $this->db->order_by('a.created_at', 'DESC');
 
         return $this->db->get();
