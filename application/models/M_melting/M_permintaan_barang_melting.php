@@ -135,4 +135,27 @@ class M_permintaan_barang_melting extends CI_Model
             WHERE a.is_deleted = 0 AND a.no_transfer_slip = '$no_transfer_slip' ORDER BY a.created_at DESC";
         return $this->db->query($sql);
     }
+
+
+    public function generate_no_urut()
+    {
+        $this->db->select('no_urut');
+        $this->db->from('tb_transfer_slip');
+        $this->db->order_by('id_transfer_slip', 'DESC');
+        $this->db->limit(1);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $last_no = $query->row()->no_urut;
+
+            // Ambil angka, misal "0012" → 12
+            $last_number = (int)$last_no;
+            $new_number = $last_number + 1;
+        } else {
+            $new_number = 1;
+        }
+
+        // generate format 4 digit: 0001, 0002, ... 0100, 1000
+        return str_pad($new_number, 4, '0', STR_PAD_LEFT);
+    }
 }

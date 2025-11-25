@@ -23,6 +23,7 @@ class Permintaan_barang_melting extends CI_Controller
         // $data['row'] = $this->customer_m->get();
         $data['result'] = $this->M_permintaan_barang_melting->get1()->result_array();
         $data['user'] = $this->M_users->get()->result_array();
+        $data['no_urut'] = $this->M_permintaan_barang_melting->generate_no_urut();
         $data['bm'] = $this->M_barang_masuk->get()->result_array(); {
             // for ($i = 0; $i < count($data['bm']); $i++) {
             //     $d['no_batch'] = $data['bm'][$i]['no_batch'];

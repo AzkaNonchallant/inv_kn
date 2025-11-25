@@ -28,7 +28,7 @@ class M_dashboard extends CI_Model
     {
         // $kode_user = $this->kode_user();
         $sql = "SELECT count(a.id_permintaan_barang) tot_permintaan_barang FROM tb_gbb_permintaan_barang a
-                LEFT JOIN tb_transfer_slip b ON b.no_transfer_slip = a.no_transfer_slip
+                LEFT JOIN tb_transfer_slip b ON b.no_urut = a.no_urut
                 WHERE b.tgl='$hariini' AND a.is_deleted = 0 AND b.is_deleted = 0";
         return $this->db->query($sql);
     }
