@@ -91,6 +91,19 @@ public function get_latest_dpb()
         ]);
     }
 }
+// Tambahkan function ini di controller Adm_dpb
+public function get_all_items_by_dpb()
+{
+    $no_dpb = $this->input->post('no_dpb');
+    
+    $data = $this->M_adm_dpb->get_all_items_by_dpb($no_dpb);
+    
+    echo json_encode([
+        'success' => !empty($data),
+        'data' => $data,
+        'message' => !empty($data) ? 'Data ditemukan' : 'Data tidak ditemukan'
+    ]);
+}
 
 public function get_dpb_by_item()
     {
@@ -162,36 +175,73 @@ public function get_dpb_by_item()
 
 public function add()
 {
-    $data['no_dpb']     = $this->input->post('no_dpb', TRUE);
-    $data['tgl_bm']     = $this->input->post('tgl_dpb', TRUE);
-    $data['no_batch']   = $this->input->post('no_batch', TRUE);
-    $data['jumlah']     = $this->input->post('jumlah_diterima', TRUE);
-    $data['id_prc_master_barang'] = $this->input->post('id_prc_master_barang', TRUE);
-    $data['id_prc_dpb'] = $this->input->post('id_prc_dpb', TRUE);
-    // ambil data dpb by no_dpb
+    $no_dpb     = $this->input->post('no_dpb', TRUE);
+    $tgl_bm     = $this->input->post('tgl_dpb', TRUE);
+    $no_batch   = $this->input->post('no_batch', TRUE); // ini array
+    $jumlah_diterima = $this->input->post('jumlah_diterima', TRUE); // ini array
+    $id_prc_master_barang = $this->input->post('id_prc_master_barang', TRUE); // ini array
+    $id_prc_dpb = $this->input->post('id_prc_dpb', TRUE); // ini array
+    
+    $id_user = $this->session->userdata('id_user');
 
-        
+    // Debug data yang diterima
+    error_log("Data yang diterima:");
+    error_log("no_dpb: " . $no_dpb);
+    error_log("tgl_bm: " . $tgl_bm);
+    error_log("no_batch: " . print_r($no_batch, true));
+    error_log("jumlah_diterima: " . print_r($jumlah_diterima, true));
+    error_log("id_prc_master_barang: " . print_r($id_prc_master_barang, true));
+    error_log("id_prc_dpb: " . print_r($id_prc_dpb, true));
 
-    // siapkan data untuk insert
-    $insert = [
-        'id_prc_master_barang' => $data['id_prc_master_barang'],
-        'id_prc_dpb'           => $data['id_prc_dpb'],
-        'no_dpb'               => $data['no_dpb'],
-        'tgl_bm'               => $data['tgl_bm'],
-        'no_batch'             => $data['no_batch'],
-        'jml_bm'               => $data['jumlah'],
-        'created_at'           => date('Y-m-d H:i:s'),
-        'created_by'           => $this->session->userdata('id_user'),
-        'is_deleted'           => 0
-    ];
+    // Validasi data array
+    if (!is_array($jumlah_diterima) || !is_array($id_prc_master_barang) || !is_array($id_prc_dpb)) {
+        header('location:' . base_url('administrator/adm_dpb') . '?alert=error&msg=Format data tidak valid');
+        return;
+    }
 
-    // insert data
-    $res = $this->M_adm_barang_masuk->add($insert);
+    $success_count = 0;
+    $error_count = 0;
 
-    if ($res) {
-        header('location:' . base_url('administrator/adm_dpb') . '?alert=success&msg=Berhasil menambah data barang masuk');
+    // Loop melalui semua item yang dikirim
+    foreach ($jumlah_diterima as $index => $jumlah) {
+        // Pastikan index ada di semua array
+        if (isset($id_prc_master_barang[$index]) && isset($id_prc_dpb[$index]) && isset($no_batch[$index])) {
+            
+            // Siapkan data untuk insert
+            $insert = [
+                'id_prc_master_barang' => $id_prc_master_barang[$index],
+                'id_prc_dpb'           => $id_prc_dpb[$index],
+                'no_dpb'               => $no_dpb,
+                'tgl_bm'               => $tgl_bm,
+                'no_batch'             => $no_batch[$index],
+                'jml_bm'               => $jumlah,
+                'created_at'           => date('Y-m-d H:i:s'),
+                'created_by'           => $id_user,
+                'is_deleted'           => 0
+            ];
+
+            error_log("Insert data ke-" . ($index + 1) . ": " . print_r($insert, true));
+
+            // Insert data
+            $res = $this->M_adm_barang_masuk->add($insert);
+            
+            if ($res) {
+                $success_count++;
+            } else {
+                $error_count++;
+                error_log("Gagal insert data ke-" . ($index + 1));
+            }
+        }
+    }
+
+    if ($success_count > 0) {
+        $message = "Berhasil menambah " . $success_count . " data barang masuk";
+        if ($error_count > 0) {
+            $message .= " (" . $error_count . " gagal)";
+        }
+        header('location:' . base_url('administrator/adm_dpb') . '?alert=success&msg=' . $message);
     } else {
-        header('location:' . base_url('administrator/adm_dpb') . '?alert=error&msg=Gagal menambah data');
+        header('location:' . base_url('administrator/adm_dpb') . '?alert=error&msg=Gagal menambah semua data');
     }
 }
 
