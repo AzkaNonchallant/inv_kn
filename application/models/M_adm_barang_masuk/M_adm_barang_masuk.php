@@ -32,76 +32,68 @@ class M_adm_barang_masuk extends CI_Model
     //     FROM tb_adm_dpb a
     //     LEFT JOIN";
     // }
-    public function get($no_dpb = null, $tgl_mulai = null, $tgl_selesai = null)
-    {
-        $sql = "SELECT 
-    x.no_dpb,
-    x.no_batch,
-    x.jml_bm,
-    x.created_at,
-    b.tgl_dpb,
-    b.no_sjl,
-    c.jenis_bayar,
-    sb.nama_barang,
-    sb.kode_barang,
-    sb.spek,
-    sb.satuan,
-    h.nama_supplier
-FROM (
-    SELECT 
-        MIN(id_adm_bm) AS id_adm_bm,
-        no_batch,
-        MIN(jml_bm) AS jml_bm,
-        MIN(no_dpb) AS no_dpb,
-        MIN(created_at) AS created_at
-    FROM tb_adm_barang_masuk
-    WHERE is_deleted = 0 
-      AND no_batch IS NOT NULL
-      AND no_batch != ''
-    GROUP BY no_batch
-) x
-LEFT JOIN tb_prc_dpb_tf b 
-    ON x.no_dpb = b.no_dpb
-LEFT JOIN tb_prc_dpb c 
-    ON x.no_dpb = c.no_dpb
-LEFT JOIN tb_prc_rb d 
-    ON c.id_prc_rb = d.id_prc_rb
-LEFT JOIN tb_prc_rh e 
-    ON d.id_prc_rh = e.id_prc_rh
-LEFT JOIN tb_prc_ppb f 
-    ON e.id_prc_ppb = f.id_prc_ppb
-LEFT JOIN tb_prc_master_barang g 
-    ON f.id_prc_master_barang = g.id_prc_master_barang
-LEFT JOIN tb_prc_master_supplier h 
-    ON g.id_prc_master_supplier = h.id_prc_master_supplier
-LEFT JOIN (
-    SELECT 
-        a.no_batch,
-        MIN(g.nama_barang) AS nama_barang,
-        MIN(g.kode_barang) AS kode_barang,
-        MIN(g.spek) AS spek,
-        MIN(g.satuan) AS satuan
-    FROM tb_adm_barang_masuk a
-    LEFT JOIN tb_prc_dpb c 
-        ON a.no_dpb = c.no_dpb
-    LEFT JOIN tb_prc_rb d 
-        ON c.id_prc_rb = d.id_prc_rb
-    LEFT JOIN tb_prc_rh e 
-        ON d.id_prc_rh = e.id_prc_rh
-    LEFT JOIN tb_prc_ppb f 
-        ON e.id_prc_ppb = f.id_prc_ppb
-    LEFT JOIN tb_prc_master_barang g 
-        ON f.id_prc_master_barang = g.id_prc_master_barang
-    WHERE a.is_deleted = 0
-    GROUP BY a.no_batch
-) sb 
-    ON sb.no_batch = x.no_batch
-ORDER BY x.created_at DESC;
-"; 
+    public function get($id_prc_master_barang = null, $tgl_mulai = null, $tgl_selesai = null)
+{
+    $sql = "
+        SELECT
+            x.id_prc_master_barang,
+            x.no_batch,
+            
+            x.created_at,
+            b.nama_barang,
+            b.kode_barang,
+            b.spek,
+            b.satuan,
+            c.jml_bm,
+            c.no_dpb,
+            d.no_sjl,
+            d.tgl_dpb,
+            e.jenis_bayar,
+            f.spek,
+            s.nama_supplier
+        FROM (
+            SELECT
+                id_prc_master_barang,
+                no_batch,
+                MIN(created_at) AS created_at
+            FROM tb_adm_barang_masuk
+            WHERE is_deleted = 0
+              AND no_batch IS NOT NULL
+              AND no_batch != ''
+            GROUP BY id_prc_master_barang, no_batch
+        ) x
+        LEFT JOIN tb_prc_master_barang b
+            ON b.id_prc_master_barang = x.id_prc_master_barang
+        LEFT JOIN tb_adm_barang_masuk c
+            ON c.id_prc_master_barang = x.id_prc_master_barang
+        LEFT JOIN tb_prc_dpb_tf d
+            ON c.no_dpb = d.no_dpb
+        LEFT JOIN tb_prc_dpb e
+            ON c.id_prc_dpb = e.id_prc_dpb
+        LEFT JOIN tb_prc_master_barang f
+            ON x.id_prc_master_barang = f.id_prc_master_barang
+        LEFT JOIN tb_prc_master_supplier s
+            ON s.id_prc_master_supplier = b.id_prc_master_supplier
+       
+        WHERE 1=1
+    ";
 
-        return $this->db->query($sql);
+    if (!empty($id_prc_master_barang)) {
+        $sql .= " AND x.id_prc_master_barang = " . $this->db->escape($id_prc_master_barang);
     }
 
+    if (!empty($tgl_mulai)) {
+        $sql .= " AND x.created_at >= " . $this->db->escape(date('Y-m-d', strtotime($tgl_mulai)));
+    }
+
+    if (!empty($tgl_selesai)) {
+        $sql .= " AND x.created_at <= " . $this->db->escape(date('Y-m-d', strtotime($tgl_selesai)));
+    }
+
+    $sql .= " ORDER BY x.created_at DESC";
+
+    return $this->db->query($sql);
+}
 
     // Fungsi utama untuk mendapatkan data barang masuk HANYA yang memiliki no_batch
     public function get2($no_dpb = null, $tgl_mulai = null, $tgl_selesai = null)
