@@ -144,12 +144,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                       </div>
                     </div>
                     <br><br>
-                    <!-- <div class="alert alert-info alert-dismissible fade show" role="alert">
-                      <i class="feather icon-info"></i> Data dengan <strong>No DPB</strong> yang sama akan digabungkan menjadi satu baris. Klik ikon <i class="feather icon-chevron-down"></i> untuk melihat detail.
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div> -->
+                    
                   </div>
                   <div class="card-block table-border-style">
                     <div class="table-responsive">
@@ -158,9 +153,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
                           <tr>
                             <th class="text-center">#</th>
                             <th class="text-center">Tanggal DPB</th>
-                            <!-- <th class="text-center">No DPB</th> -->
+                            <th class="text-center">No DPB</th>
                             <th class="text-center">No Surat Jalan</th>
-                            <!-- <th class="text-center">Status</th> -->
+                            <th class="text-center">Status</th>
                             <th class="text-center">Detail Barang</th>
                             <th class="text-center">Aksi</th>
                           </tr>
@@ -192,9 +187,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
                             <tr class="merged-row" data-dpb="<?= $no_dpb ?>">
                               <th scope="row" class="text-center"><?= $no++ ?></th>
                               <td class="text-center"><?= $tgl_dpb ?></td>
-                              <!-- <td class="text-center"><strong><?= $no_dpb ?></strong></td> -->
+                              <td class="text-center"><strong><?= $no_dpb ?></strong></td>
                               <td class="text-center"><?= $no_surat_jalan ?></td>
-                              <!-- <td class="text-center"><?= $status ?></td> -->
+                              <td class="text-center"><?= $status ?></td>
                               <td class="text-center">
                                 <span class="toggle-details" data-dpb="<?= $no_dpb ?>">
                                   <i class="feather icon-chevron-down"></i>
@@ -273,7 +268,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                       <i class="feather icon-eye"></i>
                                     </button>
                                     <?php if ($level === "admin" && $item['is_deleted'] == 0) { ?>
-                                      <a type="button" class="btn btn-danger btn-sm text-light" href="<?= base_url() ?>administrator/adm_dpb/delete_item/<?= $item['id_adm_dpb'] ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus item ini?')" title="Hapus Item">
+                                      <a type="button" class="btn btn-danger btn-sm text-light" href="<?= base_url() ?>administrator/adm_dpb/delete_item/<?= $item['id_adm_bm'] ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus item ini?')" title="Hapus Item">
                                         <i class="feather icon-trash"></i>
                                       </a>
                                     <?php } ?>
@@ -309,26 +304,26 @@ defined('BASEPATH') or exit('No direct script access allowed');
       <form method="post" action="<?= base_url() ?>administrator/adm_dpb/add">
         <div class="modal-body">
           <!-- Header DPB -->
-          <div class="row mb-6">
-            <div class="col-md-4">
+          <div class="row mb-4">
+            <div class="col-md-3">
               <div class="form-group text-center">
                 <label for="tgl_dpb" class="font-weight-bold">Tanggal DPB</label>
                 <input type="text" class="form-control text-center" id="tgl_dpb" name="tgl_dpb" readonly style="background-color: #f8f9fa; font-weight: bold;">
               </div>
             </div>
-            <!-- <div class="col-md-3">
+            <div class="col-md-3">
               <div class="form-group text-center">
                 <label for="no_dpb" class="font-weight-bold">No DPB</label>
                 <input type="text" class="form-control text-center" id="no_dpb" name="no_dpb" readonly style="background-color: #f8f9fa; font-weight: bold;">
               </div>
-            </div> -->
-            <div class="col-md-4">
+            </div>
+            <div class="col-md-3">
               <div class="form-group text-center">
                 <label for="no_sjl" class="font-weight-bold">No Surat Jalan</label>
                 <input type="text" class="form-control text-center" id="no_sjl" name="no_sjl" readonly style="background-color: #f8f9fa;">
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <div class="form-group text-center">
                 <label for="status" class="font-weight-bold">Status</label>
                 <input type="text" class="form-control text-center" value="0" readonly style="background-color: #f8f9fa; font-weight: bold;">
@@ -385,13 +380,13 @@ defined('BASEPATH') or exit('No direct script access allowed');
         </button>
       </div>
       <div class="modal-body">
-        <!-- <div class="row">
+        <div class="row">
           <div class="col-md-3">
             <div class="form-group text-center">
               <label class="font-weight-bold">No DPB</label>
               <p id="detail-no-dpb" class="form-control-plaintext text-center">-</p>
             </div>
-          </div> -->
+          </div>
           <div class="col-md-3">
             <div class="form-group text-center">
               <label class="font-weight-bold">Tanggal DPB</label>
