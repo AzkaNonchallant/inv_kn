@@ -186,15 +186,13 @@ ORDER BY x.created_at DESC;
 
 
     public function add($data)
-    {
-        $insert = $this->db->insert('tb_adm_barang_masuk', $data);
+{
+    return $this->db->insert('tb_adm_barang_masuk', $data);
+}
 
-        if ($insert) {
-            return $this->db->insert_id(); // kembalikan ID record baru
-        } else {
-            return false;
-        }
-    }
+
+    // Tambahkan function ini di model
+
 
 
 
