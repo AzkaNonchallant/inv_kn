@@ -34,8 +34,8 @@ class App extends CI_Controller
 		$tot_transfer_slip = $this->M_dashboard->tot_transfer_slip($hariini)->row_array();
 		$data['tot_transfer_slip'] = $tot_transfer_slip['tot_transfer_slip'];
 
-		$tot_permintaan_barang = $this->M_dashboard->tot_permintaan_barang($hariini)->row_array();
-		$data['tot_permintaan_barang'] = $tot_permintaan_barang['tot_permintaan_barang'];
+		// $tot_permintaan_barang = $this->M_dashboard->tot_permintaan_barang($hariini)->row_array();
+		// $data['tot_permintaan_barang'] = $tot_permintaan_barang['tot_permintaan_barang'];
 
 		$tot_barang = $this->M_dashboard->tot_barang()->row_array();
 		$data['tot_barang'] = $tot_barang['tot_barang'];

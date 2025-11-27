@@ -23,36 +23,13 @@ class Permintaan_barang_melting extends CI_Controller
     {
         // $data['row'] = $this->customer_m->get();
         $data['result'] = $this->M_permintaan_barang_melting->get1()->result_array();
-        $data['user'] = $this->M_users->get()->result_array();
         $data['no_urut'] = $this->M_permintaan_barang_melting->generate_no_urut();
-        // $data['bm'] = $this->M_adm_barang_masuk->get()->result_array(); {
-        //     // for ($i = 0; $i < count($data['bm']); $i++) {
-        //     //     $d['no_batch'] = $data['bm'][$i]['no_batch'];
-        //     //     $jml_permintaan_barang = $this->M_permintaan_barang_gudang->jml_permintaan_barang($d)->row_array();
-        //     //     $stok = $data['bm'][$i]['qty'] - $jml_permintaan_barang['tot_permintaan_barang'];
-        //     //     $data['bm'][$i]['stok'] = $stok;
-        //     // }
-        // }
+        
 
         $this->template->load('template', 'content/melting/permintaan_barang_melting/permintaan_barang_melting_data', $data);
         // print_r($data['bm']);
     }
-    public function data_permintaan_barang()
-    {
-        $no_transfer_slip = $this->input->post('no_transfer_slip', TRUE);
-
-        $result = $this->M_permintaan_barang_melting->data_permintaan_barang($no_transfer_slip)->result_array();
-        /*for($i=0; $i<count($result);$i++){
-            $data['id_penerima'] = $result[$i]['id_penerima'];
-            $donasi = $this->m_penerima->data_donasi($data)->result_array();
-            $a=0;
-            for($o=0; $o<count($donasi);$o++){
-                $a+=$donasi[$o]['donasi'];
-            }
-            $result[$i]['hasil_donasi']=$a;
-        }*/
-        echo json_encode($result);
-    }
+   
     public function cek_transfer_slip()
     {
         $no_transfer_slip = $this->input->post('no_transfer_slip', TRUE);
@@ -72,16 +49,20 @@ class Permintaan_barang_melting extends CI_Controller
         echo json_encode($result);
     }
 
+    public function get_by_no_urut() {
+        $no_urut = $this->input->post('no_urut', TRUE);
+        $result = $this->M_permintaan_barang_melting->get_by_no_urut($no_urut);
+
+        echo json_encode($result);
+    }
+
     public function add()
     {
-        $data['no_transfer_slip'] = $this->input->post('no_transfer_slip', TRUE);
-        $data['nama_operator'] = $this->input->post('nama_operator', TRUE);
-        $data['tgl'] = $this->convertDate($this->input->post('tgl', TRUE));
-        $data['id_barang_masuk'] = $this->input->post('id_barang_masuk', TRUE);
-        $data['id_barang'] = $this->input->post('id_barang', TRUE);
-        $data['id_supplier'] = $this->input->post('id_supplier', TRUE);
-        $data['no_batch'] = $this->input->post('no_batch', TRUE);
-        $data['qty'] = $this->input->post('qty', TRUE);
+        $data['no_urut'] = $this->input->post('no_urut', TRUE);
+        $data['tgl_permintaan'] = $this->convertDate($this->input->post('tgl_permintaan', TRUE));
+        $data['id_adm_bm'] = $this->input->post('id_adm_bm', TRUE);
+        $data['id_prc_master_barang'] = $this->input->post('id_prc_master_barang', TRUE);
+        $data['jml_permintaan'] = $this->input->post('jml_permintaan', TRUE);
 
         // print_r($data['no_batch']);
 
@@ -90,17 +71,14 @@ class Permintaan_barang_melting extends CI_Controller
 
 
         if ($respon) {
-            for ($i = 0; $i < count($data['qty']); $i++) {
+            for ($i = 0; $i < count($data['id_prc_master_barang']); $i++) {
                 // echo $data['qty'][$i]."<br>";
-                $d['no_transfer_slip'] = $data['no_transfer_slip'];
-                $d['tgl'] = $data['tgl'];
-                $d['id_barang_masuk'] = $data['id_barang_masuk'][$i];
-                $d['id_barang'] = $data['id_barang'][$i];
-                $d['id_supplier'] = $data['id_supplier'][$i];
-                $d['no_batch'] = $data['no_batch'][$i];
-                $d['qty'] = $data['qty'][$i];
+                $d['no_urut'] = $data['no_urut'];
+                $d['id_adm_bm'] = $data['id_adm_bm'][$i];
+                $d['id_prc_master_barang'] = $data['id_prc_master_barang'][$i];
+                $d['jml_permintaan'] = $data['jml_permintaan'][$i];
 
-                $respon = $this->M_permintaan_barang_gudang->add_permintaan_barang($d);
+                $respon = $this->M_permintaan_barang_melting->add_permintaan_barang($d);
             }
             header('location:' . base_url('melting/permintaan_barang_melting') . '?alert=success&msg=Selamat anda berhasil menambah Permintaan Barang Melting');
         } else {
@@ -137,25 +115,33 @@ class Permintaan_barang_melting extends CI_Controller
 
     public function update()
     {
-        $data['id_permintaan_barang'] = $this->input->post('id_permintaan_barang', TRUE);
-        $data['no_batch'] = $this->input->post('no_batch', TRUE);
-        $data['tgl'] = $this->convertDate($this->input->post('tgl', TRUE));
-        $data['id_barang'] = $this->input->post('id_barang', TRUE);
-        $data['id_supplier'] = $this->input->post('id_supplier', TRUE);
-        $data['status'] = $this->input->post('status', TRUE);
-        $data['qty'] = $this->input->post('qty', TRUE);
-        $respon = $this->M_barang_masuk->update($data);
+        $data['no_urut'] = $this->input->post('no_urut', TRUE);
+        $data['tgl_permintaan'] = $this->convertDate($this->input->post('tgl_permintaan', TRUE));
+        $data['id_prc_master_barang'] = $this->input->post('id_prc_master_barang', TRUE);
+        $data['jml_permintaan'] = $this->input->post('jml_permintaan', TRUE);
+        $data['id_adm_bm'] = $this->input->post('id_adm_bm', TRUE);
+        $respon = $this->M_permintaan_barang_melting->update($data);
+
+        $this->M_permintaan_barang_melting->delete_barang($data);
 
         if ($respon) {
-            header('location:' . base_url('melting/Permintaan_barang_melting') . '?alert=success&msg=Selamat anda berhasil meng-update Permintaan Barang Melting');
+            for ($i = 0; $i < count($data['id_prc_master_barang']); $i++) {
+                // echo $data['qty'][$i]."<br>";
+                $d['no_urut'] = $data['no_urut'];
+                $d['id_adm_bm'] = $data['id_adm_bm'][$i] ?? null;
+                $d['id_prc_master_barang'] = $data['id_prc_master_barang'][$i] ?? null;
+                $d['jml_permintaan'] = $data['jml_permintaan'][$i] ?? null;
+
+                $this->M_permintaan_barang_melting->add_permintaan_barang($d);
+            }
+            header('location:' . base_url('melting/permintaan_barang_melting') . '?alert=success&msg=Selamat anda berhasil mengupdate Permintaan Barang Melting');
         } else {
-            header('location:' . base_url('melting/Permintaan_barang_melting') . '?alert=error&msg=Maaf anda gagal meng-update Permintaan Barang Melting');
+            header('location:' . base_url('melting/permintaan_barang_melting') . '?alert=error&msg=Maaf anda gagal mengupdate Permintaan Barang Melting');
         }
     }
-    public function delete($no_transfer_slip)
+    public function delete($no_urut)
     {
-        $data['no_transfer_slip'] = str_replace('--', '/', $no_transfer_slip);
-        $respon = $this->M_permintaan_barang_melting->delete($data);
+        $respon = $this->M_permintaan_barang_melting->delete($no_urut);
 
         if ($respon) {
             header('location:' . base_url('melting/permintaan_barang_melting') . '?alert=success&msg=Selamat anda berhasil menghapus Permintaan Barang Melting');
