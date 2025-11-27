@@ -22,14 +22,7 @@ class Permintaan_barang_gudang extends CI_Controller
     {
         // $data['row'] = $this->customer_m->get();
         $data['result'] = $this->M_permintaan_barang_gudang->get()->result_array();
-        $data['user'] = $this->M_users->get()->result_array();
-        $data['bm'] = $this->M_barang_masuk->get()->result_array();
-        // for ($i = 0; $i < count($data['bm']); $i++) {
-        //     $d['no_batch'] = $data['bm'][$i]['no_batch'];
-        //     $jml_permintaan_barang = $this->M_permintaan_barang_gudang->jml_permintaan_barang($d)->row_array();
-        //     $stok = $data['bm'][$i]['qty'] - $jml_permintaan_barang['tot_permintaan_barang'];
-        //     $data['bm'][$i]['stok'] = $stok;
-        // }
+       
 
         $this->template->load('template', 'content/gudang_bahanbaku/permintaan_barang_gudang/permintaan_barang_gudang_data', $data);
         // print_r($data['bm']);

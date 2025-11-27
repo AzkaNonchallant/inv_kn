@@ -11,12 +11,12 @@ class M_permintaan_barang_gudang extends CI_Model
     {
         return $this->session->userdata("id_user");
     }
-    public function get($id = null)
+   public function get($id = null)
     {
         $sql = "
-            SELECT a.*,b.nama_operator FROM tb_transfer_slip a
-            LEFT JOIN tb_user b ON a.nama_operator = b.nama_operator
-            WHERE a.is_deleted = 0 ORDER BY a.tgl ASC";
+            SELECT a.*, b.nama_operator FROM tb_mlt_permintaan_barang_tf a
+            LEFT JOIN tb_user b ON a.id_user = b.id_user
+            WHERE a.is_deleted = 0 ORDER BY a.tgl_permintaan ASC";
         return $this->db->query($sql);
     }
     public function data_permintaan_barang($no_transfer_slip)
@@ -139,53 +139,10 @@ class M_permintaan_barang_gudang extends CI_Model
         return $this->db->query($sql);
     }
 
-    public function update_status_ts($no_transfer_slip, $status)
-    {
-        $sql = "
-        UPDATE `tb_transfer_slip`
-        SET `status`='$status'
-        WHERE `no_urut`='$no_transfer_slip';
-        ";
-        return $this->db->query($sql);
-    }
-
-    public function update($data)
-    {
-        $id_user = $this->id_user();
-        $sql = "
-            UPDATE `tb_gbb_barang_masuk` 
-            SET `no_batch`='$data[no_batch]',`tgl`='$data[tgl]',`id_barang`='$data[id_barang]',`id_supplier`='$data[id_supplier]',`qty`='$data[qty]',`updated_at` = NOW(),`updated_by`='$id_user' 
-            WHERE `id_barang_masuk`='$data[id_barang_masuk]'
-        ";
-        return $this->db->query($sql);
-        // return $sql;
-    }
+   
 
 
-    public function delete($data)
-    {
-        $id_user = $this->id_user();
-        // $sql1 = "
-        //     UPDATE `tb_transfer_slip` 
-        //     SET `is_deleted`='1',`updated_at`=NOW(),`updated_by`='$id_user' 
-        //     WHERE `no_transfer_slip`='$data[no_transfer_slip]'
-        // ";
-        // $sql = "
-        //     UPDATE `tb_permintaan_barang` 
-        //     SET `is_deleted`='1',`updated_at`=NOW(),`updated_by`='$id_user' 
-        //     WHERE `no_transfer_slip`='$data[no_transfer_slip]'
-        // ";
-        $sql1 = "
-            DELETE FROM `tb_transfer_slip` 
-            WHERE `nourutp`='$data[no_transfer_slip]'
-        ";
-        $sql = "
-           DELETE FROM `tb_gbb_permintaan_barang`
-            WHERE `no_urut`='$data[no_transfer_slip]'
-        ";
-        $this->db->query($sql);
-        return $this->db->query($sql1);
-    }
+    
 
     public function jml_permintaan_barang($id_barang)
     {

@@ -26,8 +26,9 @@ class M_permintaan_barang_melting extends CI_Model
     public function get1($id = null)
     {
         $sql = "
-            SELECT a.* FROM tb_transfer_slip a
-            WHERE a.is_deleted = 0 ORDER BY a.tgl ASC";
+            SELECT a.*, b.nama_operator FROM tb_mlt_permintaan_barang_tf a
+            LEFT JOIN tb_user b ON a.id_user = b.id_user
+            WHERE a.is_deleted = 0 ORDER BY a.tgl_permintaan ASC";
         return $this->db->query($sql);
     }
     public function data_permintaan_barang($no_transfer_slip)
@@ -52,8 +53,24 @@ class M_permintaan_barang_melting extends CI_Model
     {
         $id_user = $this->id_user();
         $sql = "
-        INSERT INTO `tb_transfer_slip`(`no_transfer_slip`, `tgl`, `nama_operator`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`, `is_deleted`) 
-        VALUES ('$data[no_transfer_slip]','$data[tgl]','$data[nama_operator]','Proses',NOW(),'$id_user','0000-00-00 00:00:00','','0')
+        INSERT INTO `tb_mlt_permintaan_barang_tf`(`no_urut`, `tgl_permintaan`, `id_user`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`, `is_deleted`) 
+        VALUES ('$data[no_urut]','$data[tgl_permintaan]','$id_user','Proses',NOW(),'$id_user','0000-00-00 00:00:00','','0')
+        ";
+        return $this->db->query($sql);
+    }
+
+    public function add_permintaan_barang($d) {
+        $id_user = $this->id_user();
+        $sql = "
+        INSERT INTO tb_mlt_permintaan_barang (no_urut, id_adm_bm, id_prc_master_barang, jml_permintaan, id_user, created_at, created_by, updated_at, updated_by, is_deleted)
+        VALUE('$d[no_urut]', '$d[id_adm_bm]', '$d[id_prc_master_barang]', '$d[jml_permintaan]', '$id_user', 'NOW()', '$id_user', '0000-00-00', 0, 0)
+        ";
+        return $this->db->query($sql);
+    }
+
+    public function delete_barang($data) {
+        $sql = "
+        DELETE FROM tb_mlt_permintaan_barang WHERE no_urut='$data[no_urut]'
         ";
         return $this->db->query($sql);
     }
@@ -71,35 +88,26 @@ class M_permintaan_barang_melting extends CI_Model
     {
         $id_user = $this->id_user();
         $sql = "
-            UPDATE `tb_gbb_barang_masuk` 
-            SET `no_batch`='$data[no_batch]',`tgl`='$data[tgl]',`id_barang`='$data[id_barang]',`id_supplier`='$data[id_supplier]',`status`='$data[status]',`qty`='$data[qty]',`updated_at`=NOW(),`updated_by`='$id_user' 
-            WHERE `id_barang_masuk`='$data[id_barang_masuk]'
+            UPDATE tb_mlt_permintaan_barang_tf 
+            SET tgl_permintaan='$data[tgl_permintaan]', updated_at='NOW()', updated_by='$id_user'
+            WHERE no_urut='$data[no_urut]'
         ";
         return $this->db->query($sql);
         // return $sql;
     }
 
 
-    public function delete($data)
+    public function delete($no_urut)
     {
         $id_user = $this->id_user();
-        // $sql1 = "
-        //     UPDATE `tb_transfer_slip` 
-        //     SET `is_deleted`='1',`updated_at`=NOW(),`updated_by`='$id_user' 
-        //     WHERE `no_transfer_slip`='$data[no_transfer_slip]'
-        // ";
-        // $sql = "
-        //     UPDATE `tb_permintaan_barang` 
-        //     SET `is_deleted`='1',`updated_at`=NOW(),`updated_by`='$id_user' 
-        //     WHERE `no_transfer_slip`='$data[no_transfer_slip]'
-        // ";
+    
         $sql1 = "
-            DELETE FROM `tb_transfer_slip` 
-            WHERE `no_transfer_slip`='$data[no_transfer_slip]'
+            DELETE FROM `tb_mlt_permintaan_barang` 
+            WHERE `no_urut`='$no_urut'
         ";
         $sql = "
-           DELETE FROM `tb_gbb_permintaan_barang`
-            WHERE `no_transfer_slip`='$data[no_transfer_slip]'
+           DELETE FROM `tb_mlt_permintaan_barang_tf`
+            WHERE `no_urut`='$no_urut'
         ";
         $this->db->query($sql);
         return $this->db->query($sql1);
@@ -136,12 +144,23 @@ class M_permintaan_barang_melting extends CI_Model
         return $this->db->query($sql);
     }
 
+    public function get_by_no_urut($no_urut) {
+        $sql = "
+        SELECT a.id_adm_bm, a.no_urut ,a.is_deleted, a.id_prc_master_barang,a.jml_permintaan, b.satuan ,b.nama_barang,c.no_batch FROM tb_mlt_permintaan_barang a 
+        LEFT JOIN tb_prc_master_barang b ON a.id_prc_master_barang = b.id_prc_master_barang
+        LEFT JOIN tb_adm_barang_masuk c ON a.id_adm_bm = c.id_adm_bm
+        WHERE a.is_deleted = 0 AND a.no_urut='$no_urut'
+        ";
+
+        return $this->db->query($sql)->result_array();
+    }
+
 
     public function generate_no_urut()
     {
         $this->db->select('no_urut');
-        $this->db->from('tb_transfer_slip');
-        $this->db->order_by('id_transfer_slip', 'DESC');
+        $this->db->from('tb_mlt_permintaan_barang_tf');
+        $this->db->order_by('id_permintaan_barang_tf', 'DESC');
         $this->db->limit(1);
         $query = $this->db->get();
 

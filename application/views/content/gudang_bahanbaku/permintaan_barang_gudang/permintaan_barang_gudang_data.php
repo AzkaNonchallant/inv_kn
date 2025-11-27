@@ -52,23 +52,27 @@
                         </thead>
                         <tbody>
                           <?php
-                          $level = $this->session->userdata('level');
+                          $level = $this->session->userdata('departement');
                           $jabatan = $this->session->userdata('jabatan');
                           $no = 1;
                           foreach ($result as $k) {
-                            $tgl =  explode('-', $k['tgl'])[2] . "/" . explode('-', $k['tgl'])[1] . "/" . explode('-', $k['tgl'])[0];
+                            $tgl =  explode('-', $k['tgl_permintaan'])[2] . "/" . explode('-', $k['tgl_permintaan'])[1] . "/" . explode('-', $k['tgl_permintaan'])[0];
                             // $exp =  explode('-', $k['exp'])[2]."/".explode('-', $k['exp'])[1]."/".explode('-', $k['exp'])[0];
 
                           ?>
                             <tr>
                               <th scope="row"><?= $no++ ?></th>
                               <td><?= $tgl ?></td>
-                              <td><?= $k['no_transfer_slip'] ?></td>
+                              <td><?= $k['no_urut'] ?></td>
                               <td><?= $k['nama_operator'] ?></td>
                               <td><?= $k['status'] ?></td>
                               <td class="text-center">
                                 <div class="btn-group" role="group" aria-label="Basic example">
-                                  <button type="button" class="btn btn-info btn-square btn-sm" data-toggle="modal" data-target="#view" data-no_transfer_slip="<?= $k['no_transfer_slip'] ?>" ; data-l-no_transfer_slip="<?= urlencode($k['no_transfer_slip']) ?>" data-tgl="<?= $tgl ?>" data-nama_operator="<?= $k['nama_operator'] ?>" data-note="<?= $k['note'] ?>">
+                                  <button type="button" class="btn btn-info btn-square btn-sm" data-toggle="modal" data-target="#view" 
+                                  data-no_urut="<?= $k['no_urut'] ?>" 
+                                  data-tgl_permintaan="<?= $tgl ?>" 
+                                  data-nama_operator="<?= $k['nama_operator'] ?>" 
+                                  >
                                     <i class="feather icon-eye"></i>Detail
                                   </button>
                                 </div>
@@ -77,12 +81,19 @@
                                 <?php if ($jabatan === "supervisor" || $jabatan === "admin") { ?>
                                   <?php if ($k['status'] === "Proses") { ?>
                                     <div class="btn-group" role="group" aria-label="Basic example">
-                                      <button type="button" class="btn btn-primary btn-square btn-sm" data-toggle="modal" data-target="#disetujui" data-no_transfer_slip="<?= $k['no_transfer_slip'] ?>" ; data-l-no_transfer_slip="<?= urlencode($k['no_transfer_slip']) ?>" data-tgl="<?= $tgl ?>" data-nama_operator="<?= $k['nama_operator'] ?>" data-note="<?= $k['note'] ?>">
+                                      <button type="button" class="btn btn-primary btn-square btn-sm" data-toggle="modal" data-target="#disetujui" data-no_urut="<?= $k['no_urut'] ?>" 
+                                      data-tgl_permintaan="<?= $tgl ?>" 
+                                      data-nama_operator="<?= $k['nama_operator'] ?>" 
+                                      >
                                         <i class=" feather icon-edit-2"></i>DiSetujui
                                       </button>
                                     </div>
                                     <div class="btn-group" role="group" aria-label="Basic example">
-                                      <button type="button" class="btn btn-danger btn-square btn-sm" data-toggle="modal" data-target="#tidakdisetujui" data-no_transfer_slip="<?= $k['no_transfer_slip'] ?>" ; data-l-no_transfer_slip="<?= urlencode($k['no_transfer_slip']) ?>" data-tgl="<?= $tgl ?>" data-nama_operator="<?= $k['nama_operator'] ?>" data-note="<?= $k['note'] ?>">
+                                      <button type="button" class="btn btn-danger btn-square btn-sm" data-toggle="modal" data-target="#tidakdisetujui" 
+                                      data-no_urut="<?= $k['no_urut'] ?>"
+                                      data-tgl_permintaan="<?= $tgl ?>" 
+                                      data-nama_operator="<?= $k['nama_operator'] ?>" 
+                                      >
                                         <i class=" feather icon-edit-2"></i>Tidak DiSetujui
                                       </button>
                                     </div>
@@ -123,14 +134,14 @@
           <div class="row">
             <div class="col-md-4">
               <div class="form-group">
-                <label for="v-no_transfer_slip">No Transfer Slip</label>
-                <input type="text" class="form-control" id="v-no_transfer_slip" name="no_transfer_slip" placeholder="No Surat Jalan" maxlength="20" readonly>
+                <label for="v-no_urut">No Transfer Slip</label>
+                <input type="text" class="form-control" id="v-no_urut" name="no_transfer_slip" placeholder="No Surat Jalan" maxlength="20" readonly>
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-group">
-                <label for="tgl">Tanggal Keluar</label>
-                <input type="text" class="form-control" id="v-tgl" name="tgl" placeholder="Tanggal Keluar" readonly>
+                <label for="tgl_permintaan">Tanggal Keluar</label>
+                <input type="text" class="form-control" id="v-tgl_permintaan" name="tgl" placeholder="Tanggal Keluar" readonly>
               </div>
             </div>
             <div class="col-md-4">
@@ -139,19 +150,7 @@
                 <input type="text" class="form-control" id="v-nama_operator" name="nama_operator" placeholder="No Surat Jalan" maxlength="20" readonly>
               </div>
             </div>
-            <div class="col-md-6">
-              <!-- <div class="form-group">
-              <label for="tgl">Tanggal Kadaluarsa</label>
-              <input type="text" class="form-control" id="v-exp" name="exp"  placeholder="Tanggal Kadaluarsa" readonly>
-            </div> -->
-            </div>
-            <!-- <div class="col-md-12">
-              <div class="form-group">
-                <label for="v-note">Keterangan</label>
-                <textarea class="form-control" id="v-note" name="note" rows="3" readonly></textarea>
-              </div>
-            </div> -->
-          </div>
+            
           <div class="table-responsive">
             <table class="table table-bordered table-sm">
               <thead>
@@ -164,7 +163,7 @@
                   <th class="text-center">Exp.</th>
                 </tr>
               </thead>
-              <tbody id="v-barang_keluar">
+              <tbody id="v-detail_barang">
               </tbody>
             </table>
           </div>
