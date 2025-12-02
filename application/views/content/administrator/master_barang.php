@@ -39,9 +39,19 @@
                       <div class="input-group">
                         <select class="form-control chosen-select" id="filter_barang" name="filter_barang">
                           <option value="" disabled selected hidden>- Nama Barang -</option>
-                          <?php foreach ($res_barang as $nm) { ?>
-                            <option <?= $name === $nm['nama_barang'] ? 'selected' : '' ?> value="<?= $nm['nama_barang'] ?>"><?= $nm['nama_barang'] ?></option>
+                          <?php foreach ($fil_barang as $nm) { ?>
+                            <option value="<?= $nm['nama_barang'] ?>"><?= $nm['nama_barang'] ?></option>
                           <?php } ?>
+                        </select>
+                        <select class="form-control chosen-select" id="filter_jenis_barang" name="filter_jenis_barang">
+                          <option value="" disabled selected hidden>- Jenis Barang -</option>
+                            <option value="Bahan Baku">Bahan Baku</option>
+                            <option value="Bahan Tambahan">Bahan Tambahan</option>
+                            <option value="Bahan Kemas">Bahan Kemas</option>
+                            <option value="Pewarna">Pewarna</option>
+                            <option value="Printing">Printing</option>
+                            <option value="Bahan Pembantu">Bahan Pembantu</option>
+                            <option value="Alat Ukur">Alat Ukur</option>
                         </select>
                         <div class="btn-group">
                           <button class="btn btn-secondary" id="lihat" type="button">Lihat</button>
@@ -142,17 +152,19 @@
   $(document).ready(function() {
     $('#lihat').click(function() {
       var filter_nama = $('#filter_barang').find(':selected').val();
-
+      var filter_jenis_barang = $('#filter_jenis_barang').find(':selected').val();
+      console.log(filter_jenis_barang)
+      console.log(filter_nama)
       // If filter_nama is empty, show an alert (optional validation)
-      if (filter_nama == '') {
-        window.location = "<?= base_url() ?>purchasing/prc_ppb/prc_ppb_masterbarang?alert=warning&msg=barang belum dipilih";
-        alert("Barang belum dipilih");
-      } else {
+      // if (filter_nama != '' || filter_jenis_barang == "") {
+      //   window.location = "<?= base_url() ?>administrator/master_barang?alert=warning&msg=Filter belum dipilih";
+      // } else {
         const query = new URLSearchParams({
-          name: filter_nama
+          nama_barang: filter_nama,
+          jenis_barang : filter_jenis_barang
         });
-        window.location = "<?= base_url() ?>purchasing/prc_ppb/prc_ppb_masterbarang?" + query.toString();
-      }
+        window.location = "<?= base_url() ?>administrator/master_barang/index?" + query.toString();
+      // }
     });
 
     $('#export').click(function() {
@@ -166,7 +178,7 @@
         const query = new URLSearchParams({
           name: filter_nama
         });
-        var url = "<?= base_url() ?>Purchasing/prc_ppb/pdf_prc_ppb_masterbarang?" + query.toString();
+        var url = "<?= base_url() ?>administrator/master_barang?" + query.toString();
         window.open(url, 'location=yes,height=700,width=1300,scrollbars=yes,status=yes');
       }
     });
@@ -232,6 +244,7 @@
                   <option value="Pewarna">Pewarna</option>
                   <option value="Printing">Printing</option>
                   <option value="Bahan Pembantu">Bahan Pembantu</option>
+                  <option value="Alat Ukur">Alat Ukur</option>
                 </select>
               </div>
             </div>
@@ -408,6 +421,7 @@
                   <option value="Pewarna">Pewarna</option>
                   <option value="Printing">Printing</option>
                   <option value="Bahan Pembantu">Bahan Pembantu</option>
+                  <option value="Alat Ukur">Alat Ukur</option>
                 </select>
               </div>
             </div>

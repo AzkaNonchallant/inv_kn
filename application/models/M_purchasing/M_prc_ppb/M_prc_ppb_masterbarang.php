@@ -13,13 +13,27 @@ class M_prc_ppb_masterbarang extends CI_Model
         return $this->session->userdata("id_user");
     }
 
-    public function get($id = null)
+    public function get($nama_barang = null, $jenis_barang = null)
     {
+        if ($nama_barang == null) {
+            $where[] = "";
+        } else {
+            $where[] = "AND a.nama_barang = '$nama_barang'";
+        }
+
+        if ($jenis_barang == null) {
+            $where[] = "";
+        } else {
+            $where[] = "AND a.jenis_barang= '$jenis_barang'";
+        }
+
+        $where = implode(" ", $where);
+
         $sql = "
         SELECT a.*,b.nama_supplier
         FROM tb_prc_master_barang a
         LEFT JOIN tb_prc_master_supplier b ON a.id_prc_master_supplier = b.id_prc_master_supplier
-        WHERE a.is_deleted = 0 ORDER BY nama_barang ASC";
+        WHERE a.is_deleted = 0 $where ORDER BY nama_barang ASC";
         return $this->db->query($sql);
     }
 

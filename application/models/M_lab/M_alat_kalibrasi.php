@@ -17,8 +17,10 @@ class M_alat_kalibrasi extends CI_Model
     {
         // $kode_user = $this->kode_user();
         $sql = "
-        SELECT a.* FROM tb_lab_alat_kalibrasi a
-        WHERE a.is_deleted = 0 ORDER BY a.tgl_kalibrasi ASC";
+            SELECT a.id_prc_master_barang, a.nama_barang, a.kode_barang,a.is_deleted,a.jenis_barang, a.departement, b.id_lab_kalibrasi ,b.no_sertif, b.status_sertif, b.tgl_kalibrasi, b.ed_kalibrasi FROM tb_prc_master_barang a
+            LEFT JOIN tb_lab_alat_kalibrasi b ON a.id_prc_master_barang = b.id_prc_master_barang
+            WHERE a.is_deleted = 0 AND a.jenis_barang='Alat Ukur' AND a.departement='Lab';
+        ";
 
         return $this->db->query($sql);
     }
@@ -27,8 +29,8 @@ class M_alat_kalibrasi extends CI_Model
     {
         $id_user = $this->id_user();
         $sql = "
-        INSERT INTO `tb_lab_alat_kalibrasi`(`kode_alat`, `nama_alat`, `no_sertif`, `tgl_kalibrasi`,`ed_kalibrasi`, `created_at`, `created_by`, `updated_at`, `updated_by`, `is_deleted`) 
-        VALUES ('$data[kode_alat]','$data[nama_alat]','$data[no_sertif]','$data[tgl_kalibrasi]','$data[ed_kalibrasi]',NOW(),'$id_user','0000-00-00 00:00:00','','0')
+        INSERT INTO `tb_lab_alat_kalibrasi`(`id_prc_master_barang`, `no_sertif`, `tgl_kalibrasi`,`ed_kalibrasi`, `id_user`,`created_at`, `created_by`, `updated_at`, `updated_by`, `is_deleted`) 
+        VALUES ('$data[id_prc_master_barang]','$data[no_sertif]','$data[tgl_kalibrasi]','$data[ed_kalibrasi]','$id_user',NOW(),'$id_user','0000-00-00 00:00:00','','0')
         ";
 
         return $this->db->query($sql);

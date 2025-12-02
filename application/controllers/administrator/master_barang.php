@@ -15,15 +15,18 @@ class master_barang extends CI_Controller
     public function index()
 {
     // Ambil data filter barang dan master barang
+    $nama_barang = $this->input->get('nama_barang');
+    $jenis_barang = $this->input->get('jenis_barang');
+    
     $data['fil_barang'] = $this->M_prc_ppb_masterbarang->get_filter_brng();
     $data['res_barang'] = $this->M_prc_ppb_masterbarang->get_master_barang();
-
+    
     // Ambil data barang
-    $data['result'] = $this->M_prc_ppb_masterbarang->get()->result_array();
+    $data['result'] = $this->M_prc_ppb_masterbarang->get($nama_barang, $jenis_barang)->result_array();
     $data['res_supp'] = $this->M_prc_master_supplier->get()->result_array();
-
+    $data['nama_barang'] = $nama_barang; // Setel ini sesuai dengan kebutuhan
+    $data['jenis_barang'] = $jenis_barang; // Setel ini sesuai dengan kebutuhan
     // Misalnya jika Anda mendapatkan nama barang yang dipilih
-    $data['name'] = 'Nama Barang yang Terpilih'; // Setel ini sesuai dengan kebutuhan
 
     // Memuat view dengan data yang diperlukan
     $this->template->load('template', 'content/administrator/master_barang', $data);
