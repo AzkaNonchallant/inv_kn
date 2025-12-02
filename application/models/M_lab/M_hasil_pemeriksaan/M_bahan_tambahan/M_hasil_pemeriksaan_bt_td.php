@@ -15,7 +15,7 @@ class M_hasil_pemeriksaan_bt_td extends CI_Model
     {
         // $kode_user = $this->kode_user();
         $sql = "
-            SELECT a.*,b.id_prc_prc_master_barang,b.id_adm_bm,b.no_batch,b.status_barang,c.tgl_dpb,c.no_sjl,,d.nama_barang,d.jenis_bahan FROM tb_lab_hasil_ujibt_titaniumdioxide a
+            SELECT a.*,b.id_prc_master_barang,b.id_adm_bm,b.no_batch,b.status_barang,c.tgl_dpb,c.no_sjl,d.nama_barang,d.jenis_barang FROM tb_lab_hasil_ujibt_titaniumdioxide a
             LEFT JOIN tb_adm_barang_masuk b ON a.id_adm_bm = b.id_adm_bm
             LEFT JOIN tb_prc_dpb_tf c ON b.no_dpb = c.no_dpb
             LEFT JOIN tb_prc_master_barang d ON a.id_prc_master_barang = d.id_prc_master_barang

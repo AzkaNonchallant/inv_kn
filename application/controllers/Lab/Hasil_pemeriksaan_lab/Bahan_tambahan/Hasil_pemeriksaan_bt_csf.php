@@ -37,12 +37,11 @@ class hasil_pemeriksaan_bt_csf extends CI_Controller
     // Uji Bahan Tambahan (Candurin Silver Fine)
     public function add_ujicsf()
     {
-        $data['id_pb'] = $this->input->post('id_pb', TRUE);
-        $data['id_barang'] = $this->input->post('id_barang', TRUE);
-        $data['id_supplier'] = $this->input->post('id_supplier', TRUE);
+        $data['id_adm_bm'] = $this->input->post('id_adm_bm', TRUE);
+        $data['id_barang'] = $this->input->post('id_prc_master_barang', TRUE);
         $data['tgl_uji'] = $this->convertDate($this->input->post('tgl_uji', TRUE));
         $data['no_analis'] = $this->input->post('no_analis', TRUE);
-        $data['no_surat_jalan'] = $this->input->post('no_surat_jalan', TRUE);
+        $data['no_surat_jalan'] = $this->input->post('no_sjl', TRUE);
         $data['no_batch'] = $this->input->post('no_batch', TRUE);
         $data['nama_barang'] = $this->input->post('nama_barang', TRUE);
         $data['nama_supplier'] = $this->input->post('nama_supplier', TRUE);
@@ -54,7 +53,7 @@ class hasil_pemeriksaan_bt_csf extends CI_Controller
 
         $respon = $this->M_hasil_pemeriksaan_bt_csf->add_ujicsf($data);
 
-        $this->M_pemeriksaan_bahan->update_status_pb($data['id_pb'], "Proses");
+        $this->M_pemeriksaan_bahan->update_status_pb($data['id_adm_bm'], "Proses");
 
         if ($respon) {
             header('location:' . base_url('lab/pemeriksaan_bahan') . '?alert=success&msg=Selamat anda berhasil melakukan Uji Bahan Tambahan (Candurin Silver Fine)');
@@ -66,11 +65,10 @@ class hasil_pemeriksaan_bt_csf extends CI_Controller
     public function add()
     {
         $data['id_ujibt'] = $this->input->post('id_ujibt', TRUE);
-        $data['id_pb'] = $this->input->post('id_pb', TRUE);
-        $data['id_barang'] = $this->input->post('id_barang', TRUE);
-        $data['id_supplier'] = $this->input->post('id_supplier', TRUE);
+        $data['id_adm_bm'] = $this->input->post('id_adm_bm', TRUE);
+        $data['id_barang'] = $this->input->post('id_prc_master_barang', TRUE);
         $data['no_batch'] = $this->input->post('no_batch', TRUE);
-        $data['no_surat_jalan'] = $this->input->post('no_surat_jalan', TRUE);
+        $data['no_surat_jalan'] = $this->input->post('no_sjl', TRUE);
         $data['tgl'] = $this->convertDate($this->input->post('tgl', TRUE));
         $data['tgl_rilis'] = $this->convertDate($this->input->post('tgl_rilis', TRUE));
         $data['tgl_uu'] = $this->convertDate($this->input->post('tgl_uu', TRUE));
@@ -84,13 +82,13 @@ class hasil_pemeriksaan_bt_csf extends CI_Controller
         $data['tutup'] = $this->input->post('tutup', TRUE);
         $data['wadah'] = $this->input->post('wadah', TRUE);
         $data['label'] = $this->input->post('label', TRUE);
-        $data['qty'] = $this->input->post('qty', TRUE);
+        $data['qty'] = $this->input->post('jml_bm', TRUE);
         $data['stok'] = $this->input->post('qty', TRUE);
         $data['ditolak_qty'] = $this->input->post('ditolak_qty', TRUE);
         $data['exp'] = $this->convertDate($this->input->post('exp', TRUE));
         $data['mfg'] = $this->convertDate($this->input->post('mfg', TRUE));
 
-        $this->M_pemeriksaan_bahan->update_status_pb($data['id_pb'], "Released");
+        $this->M_pemeriksaan_bahan->update_status_pb($data['id_adm_bm'], "Released");
 
         $this->M_hasil_pemeriksaan_bt_csf->approval_rilis($data);
         $respon = $this->M_barang_masuk->add($data);

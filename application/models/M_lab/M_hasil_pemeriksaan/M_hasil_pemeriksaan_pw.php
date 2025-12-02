@@ -15,7 +15,7 @@ class M_hasil_pemeriksaan_pw extends CI_Model
     {
         // $kode_user = $this->kode_user();
         $sql = "
-            SELECT a.*,b.id_prc_master_barang,b.no_batch,b.status_barang,c.no_sjl,tgl_dpb, d.nama_barang,d.jenis_barang FROM tb_lab_hasil_ujipewarna a
+            SELECT a.*,b.jml_bm,b.id_user AS op_gudang,b.no_batch,b.status_barang,c.no_sjl,tgl_dpb, d.nama_barang,d.jenis_barang FROM tb_lab_hasil_ujipewarna a
             LEFT JOIN tb_adm_barang_masuk b ON a.id_adm_bm = b.id_adm_bm
             LEFT JOIN tb_prc_dpb_tf c ON b.no_dpb = c.no_dpb
             LEFT JOIN tb_prc_master_barang d ON a.id_prc_master_barang = d.id_prc_master_barang
