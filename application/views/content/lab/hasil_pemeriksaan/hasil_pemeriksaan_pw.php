@@ -71,33 +71,36 @@
                                                     $no = 1;
                                                     foreach ($result as $k) {
                                                         $tgl_uji =  explode('-', $k['tgl_uji'])[2] . "/" . explode('-', $k['tgl_uji'])[1] . "/" . explode('-', $k['tgl_uji'])[0];
-                                                        $tgl_msk =  explode('-', $k['tgl'])[2] . "/" . explode('-', $k['tgl'])[1] . "/" . explode('-', $k['tgl'])[0];
-                                                        $tgl_mfg =  explode('-', $k['mfg'])[2] . "/" . explode('-', $k['mfg'])[1] . "/" . explode('-', $k['mfg'])[0];
-                                                        $tgl_exp =  explode('-', $k['exp'])[2] . "/" . explode('-', $k['exp'])[1] . "/" . explode('-', $k['exp'])[0];
+                                                        $tgl_msk = !empty($k['tgl_bm'])
+    ? implode("/", array_reverse(explode("-", $k['tgl_bm'])))
+    : "-";
+
+                                                        // $tgl_mfg =  explode('-', $k['mfg'])[2] . "/" . explode('-', $k['mfg'])[1] . "/" . explode('-', $k['mfg'])[0];
+                                                        // $tgl_exp =  explode('-', $k['exp'])[2] . "/" . explode('-', $k['exp'])[1] . "/" . explode('-', $k['exp'])[0];
                                                     ?>
                                                         <tr>
                                                             <th scope="row"><?= $no++ ?></th>
                                                             <td><?= $tgl_uji ?></td>
                                                             <td><?= $k['no_batch'] ?></td>
                                                             <td><?= $k['nama_barang'] ?></td>
-                                                            <td><?= $k['status'] ?></td>
+                                                            <td><?= $k['status_barang'] ?></td>
                                                             <td class="text-center">
                                                                 <div class="btn-group" role="group" aria-label="Basic example">
-                                                                    <button type="button" class="btn btn-info btn-square btn-sm" data-toggle="modal" data-target="#detail" data-id_barang="<?= $k['id_barang'] ?>" data-id_adm_bm="<?= $k['id_adm_bm'] ?>" data-no_batch="<?= $k['no_batch'] ?>" data-no_surat_jalan="<?= $k['no_surat_jalan'] ?>" data-tgl="<?= $tgl_msk ?>" data-tgl_uji="<?= $tgl_uji ?>" data-no_analis="<?= $k['no_analis'] ?>" data-nama_barang="<?= $k['nama_barang'] ?>" data-nama_supplier="<?= $k['nama_supplier'] ?>" data-op_gudang="<?= $k['op_gudang'] ?>" data-dok_pendukung="<?= $k['dok_pendukung'] ?>" data-jenis_kemasan="<?= $k['jenis_kemasan'] ?>" data-jml_kemasan="<?= $k['jml_kemasan'] ?>" data-ditolak_kemasan="<?= $k['ditolak_kemasan'] ?>" data-qty="<?= $k['qty'] ?>" data-ditolak_qty="<?= $k['ditolak_qty'] ?>" data-exp="<?= $tgl_exp ?>" data-mfg="<?= $tgl_mfg ?>" data-tutup="<?= $k['tutup'] ?>" data-wadah="<?= $k['wadah'] ?>" data-label="<?= $k['label'] ?>" data-pemerian="<?= $k['pemerian'] ?>" data-kelarutan="<?= $k['kelarutan'] ?>" data-ident_air="<?= $k['ident_air'] ?>" data-ident_hcip="<?= $k['ident_hcip'] ?>" data-ident_naohp="<?= $k['ident_naohp'] ?>" data-ident_h2so4p="<?= $k['ident_h2so4p'] ?>" data-ident_t_larutan="<?= $k['ident_t_larutan'] ?>" data-s_pengeringan="<?= $k['s_pengeringan'] ?>" data-p_kadar="<?= $k['p_kadar'] ?>" data-kesamaan_std="<?= $k['kesamaan_std'] ?>" data-kondisi_py="<?= $k['kondisi_py'] ?>" data-penguji="<?= $k['penguji'] ?>">
+                                                                    <button type="button" class="btn btn-info btn-square btn-sm" data-toggle="modal" data-target="#detail" data-id_barang="<?= $k['id_prc_master_barang'] ?>" data-id_adm_bm="<?= $k['id_adm_bm'] ?>" data-no_batch="<?= $k['no_batch'] ?>" data-no_surat_jalan="<?= $k['no_sjl'] ?>" data-tgl="<?= $tgl_msk ?>" data-tgl_uji="<?= $tgl_uji ?>" data-no_analis="<?= $k['no_analis'] ?>" data-nama_barang="<?= $k['nama_barang'] ?>" data-op_gudang="<?= $k['op_gudang'] ?>" data-qty="<?= $k['jml_bm'] ?>" data-pemerian="<?= $k['pemerian'] ?>" data-kelarutan="<?= $k['kelarutan'] ?>" data-ident_air="<?= $k['ident_air'] ?>" data-ident_hcip="<?= $k['ident_hcip'] ?>" data-ident_naohp="<?= $k['ident_naohp'] ?>" data-ident_h2so4p="<?= $k['ident_h2so4p'] ?>" data-ident_t_larutan="<?= $k['ident_t_larutan'] ?>" data-s_pengeringan="<?= $k['s_pengeringan'] ?>" data-p_kadar="<?= $k['p_kadar'] ?>" data-kesamaan_std="<?= $k['kesamaan_std'] ?>" data-kondisi_py="<?= $k['kondisi_py'] ?>" data-penguji="<?= $k['penguji'] ?>">
                                                                         <i class="feather icon-eye"></i>Details
                                                                     </button>
                                                                 </div>
                                                             </td>
                                                             <!-- Aksi Approval -->
                                                             <td class="text-center">
-                                                                <?php if ($jabatan === "supervisor" || $jabatan === "admin" && $k['status'] === "Proses") { ?>
+                                                                <?php if ($jabatan === "supervisor" || $jabatan === "admin" && $k['status_barang'] === "Proses") { ?>
                                                                     <div class="btn-group" role="group" aria-label="Basic example">
-                                                                        <button type="button" class="btn btn-primary btn-square btn-sm" data-toggle="modal" data-target="#released" data-id_ujipewarna="<?= $k['id_ujipewarna'] ?>" data-id_adm_bm=""="<?= $k['id_adm_bm'] ?>" data-id_barang="<?= $k['id_prc_master_barang'] ?>" data-id_supplier="<?= $k['id_supplier'] ?>" data-no_batch="<?= $k['no_batch'] ?>" data-no_surat_jalan="<?= $k['no_surat_jalan'] ?>" data-tgl="<?= $tgl_msk ?>" data-tgl_uji="<?= $tgl_uji ?>" data-no_analis="<?= $k['no_analis'] ?>" data-nama_barang="<?= $k['nama_barang'] ?>" data-nama_supplier="<?= $k['nama_supplier'] ?>" data-op_gudang="<?= $k['op_gudang'] ?>" data-dok_pendukung="<?= $k['dok_pendukung'] ?>" data-jenis_kemasan="<?= $k['jenis_kemasan'] ?>" data-jml_kemasan="<?= $k['jml_kemasan'] ?>" data-ditolak_kemasan="<?= $k['ditolak_kemasan'] ?>" data-qty="<?= $k['qty'] ?>" data-ditolak_qty="<?= $k['ditolak_qty'] ?>" data-exp="<?= $tgl_exp ?>" data-mfg="<?= $tgl_mfg ?>" data-tutup="<?= $k['tutup'] ?>" data-wadah="<?= $k['wadah'] ?>" data-label="<?= $k['label'] ?>" data-pemerian="<?= $k['pemerian'] ?>" data-kelarutan="<?= $k['kelarutan'] ?>" data-ident_air="<?= $k['ident_air'] ?>" data-ident_hcip="<?= $k['ident_hcip'] ?>" data-ident_naohp="<?= $k['ident_naohp'] ?>" data-ident_h2so4p="<?= $k['ident_h2so4p'] ?>" data-ident_t_larutan="<?= $k['ident_t_larutan'] ?>" data-s_pengeringan="<?= $k['s_pengeringan'] ?>" data-p_kadar="<?= $k['p_kadar'] ?>" data-kesamaan_std="<?= $k['kesamaan_std'] ?>" data-kondisi_py="<?= $k['kondisi_py'] ?>" data-penguji="<?= $k['penguji'] ?>">
+                                                                        <button type="button" class="btn btn-primary btn-square btn-sm" data-toggle="modal" data-target="#released" data-id_ujipewarna="<?= $k['id_ujipewarna'] ?>" data-id_adm_bm=""="<?= $k['id_adm_bm'] ?>" data-id_barang="<?= $k['id_prc_master_barang'] ?>" data-id_supplier="<?= $k['id_supplier'] ?>" data-no_batch="<?= $k['no_batch'] ?>" data-no_surat_jalan="<?= $k['no_sjl'] ?>" data-tgl="<?= $tgl_msk ?>" data-tgl_uji="<?= $tgl_uji ?>" data-no_analis="<?= $k['no_analis'] ?>" data-nama_barang="<?= $k['nama_barang'] ?>"  data-op_gudang="<?= $k['op_gudang'] ?>"data-qty="<?= $k['jml_bm'] ?>" data-pemerian="<?= $k['pemerian'] ?>" data-kelarutan="<?= $k['kelarutan'] ?>" data-ident_air="<?= $k['ident_air'] ?>" data-ident_hcip="<?= $k['ident_hcip'] ?>" data-ident_naohp="<?= $k['ident_naohp'] ?>" data-ident_h2so4p="<?= $k['ident_h2so4p'] ?>" data-ident_t_larutan="<?= $k['ident_t_larutan'] ?>" data-s_pengeringan="<?= $k['s_pengeringan'] ?>" data-p_kadar="<?= $k['p_kadar'] ?>" data-kesamaan_std="<?= $k['kesamaan_std'] ?>" data-kondisi_py="<?= $k['kondisi_py'] ?>" data-penguji="<?= $k['penguji'] ?>">
                                                                             <i class="feather icon-edit-2"></i>Released
                                                                         </button>
                                                                     </div>
                                                                     <div class="btn-group" role="group" aria-label="Basic example">
-                                                                        <button type="button" class="btn btn-danger btn-square btn-sm" data-toggle="modal" data-target="#reject" data-id_ujipewarna="<?= $k['id_ujipewarna'] ?>" data-id_adm_bm="<?= $k['id_adm_bm'] ?>" data-id_barang="<?= $k['id_prc_master_barang'] ?>" data-id_supplier="<?= $k['id_supplier'] ?>" data-no_batch="<?= $k['no_batch'] ?>" data-no_surat_jalan="<?= $k['no_surat_jalan'] ?>" data-tgl="<?= $tgl_msk ?>" data-tgl_uji="<?= $tgl_uji ?>" data-no_analis="<?= $k['no_analis'] ?>" data-nama_barang="<?= $k['nama_barang'] ?>" data-nama_supplier="<?= $k['nama_supplier'] ?>" data-op_gudang="<?= $k['op_gudang'] ?>" data-dok_pendukung="<?= $k['dok_pendukung'] ?>" data-jenis_kemasan="<?= $k['jenis_kemasan'] ?>" data-jml_kemasan="<?= $k['jml_kemasan'] ?>" data-ditolak_kemasan="<?= $k['ditolak_kemasan'] ?>" data-qty="<?= $k['qty'] ?>" data-ditolak_qty="<?= $k['ditolak_qty'] ?>" data-exp="<?= $tgl_exp ?>" data-mfg="<?= $tgl_mfg ?>" data-tutup="<?= $k['tutup'] ?>" data-wadah="<?= $k['wadah'] ?>" data-label="<?= $k['label'] ?>" data-pemerian="<?= $k['pemerian'] ?>" data-kelarutan="<?= $k['kelarutan'] ?>" data-ident_air="<?= $k['ident_air'] ?>" data-ident_hcip="<?= $k['ident_hcip'] ?>" data-ident_naohp="<?= $k['ident_naohp'] ?>" data-ident_h2so4p="<?= $k['ident_h2so4p'] ?>" data-ident_t_larutan="<?= $k['ident_t_larutan'] ?>" data-s_pengeringan="<?= $k['s_pengeringan'] ?>" data-p_kadar="<?= $k['p_kadar'] ?>" data-kesamaan_std="<?= $k['kesamaan_std'] ?>" data-kondisi_py="<?= $k['kondisi_py'] ?>" data-penguji="<?= $k['penguji'] ?>">
+                                                                        <button type="button" class="btn btn-danger btn-square btn-sm" data-toggle="modal" data-target="#reject" data-id_ujipewarna="<?= $k['id_ujipewarna'] ?>" data-id_adm_bm="<?= $k['id_adm_bm'] ?>" data-id_barang="<?= $k['id_prc_master_barang'] ?>" data-op_gudang="<?= $k['op_gudang'] ?>" data-qty="<?= $k['jml_bm'] ?>"  data-pemerian="<?= $k['pemerian'] ?>" data-kelarutan="<?= $k['kelarutan'] ?>" data-ident_air="<?= $k['ident_air'] ?>" data-ident_hcip="<?= $k['ident_hcip'] ?>" data-ident_naohp="<?= $k['ident_naohp'] ?>" data-ident_h2so4p="<?= $k['ident_h2so4p'] ?>" data-ident_t_larutan="<?= $k['ident_t_larutan'] ?>" data-s_pengeringan="<?= $k['s_pengeringan'] ?>" data-p_kadar="<?= $k['p_kadar'] ?>" data-kesamaan_std="<?= $k['kesamaan_std'] ?>" data-kondisi_py="<?= $k['kondisi_py'] ?>" data-penguji="<?= $k['penguji'] ?>">
                                                                             <i class="feather icon-edit-2"></i>Reject
                                                                         </button>
                                                                     </div>
@@ -107,10 +110,10 @@
                                                                 
                                                             </td>
                                                             <td>
-                                                            <?php if ($k['status'] === "Proses") { ?>
-                                                                <?php if ($k['jenis_bahan'] === "Pewarna"  || $k['jenis_bahan'] === "PEWARNA" ) { ?>
+                                                            <?php if ($k['status_barang'] === "Proses") { ?>
+                                                                <?php if ($k['jenis_barang'] === "Pewarna"  || $k['jenis_barang'] === "PEWARNA" ) { ?>
                                                                     <div class="btn-group" role="group" aria-label="Basic example">
-                                                                        <button type="button" class="btn btn-primary btn-square btn-sm" data-toggle="modal" data-target="#edit_ujipw" data-id_ujipewarna="<?= $k['id_ujipewarna'] ?>" data-id_adm_bm="<?= $k['id_adm_bm'] ?>" data-id_barang="<?= $k['id_prc_master_barang'] ?>" data-id_supplier="<?= $k['id_supplier'] ?>" data-no_batch="<?= $k['no_batch'] ?>" data-no_surat_jalan="<?= $k['no_surat_jalan'] ?>" data-tgl="<?= $tgl_msk ?>" data-tgl_uji="<?= $tgl_uji ?>" data-no_analis="<?= $k['no_analis'] ?>" data-nama_barang="<?= $k['nama_barang'] ?>" data-nama_supplier="<?= $k['nama_supplier'] ?>" data-op_gudang="<?= $k['op_gudang'] ?>" data-dok_pendukung="<?= $k['dok_pendukung'] ?>" data-jenis_kemasan="<?= $k['jenis_kemasan'] ?>" data-jml_kemasan="<?= $k['jml_kemasan'] ?>" data-ditolak_kemasan="<?= $k['ditolak_kemasan'] ?>" data-qty="<?= $k['qty'] ?>" data-ditolak_qty="<?= $k['ditolak_qty'] ?>" data-exp="<?= $tgl_exp ?>" data-mfg="<?= $tgl_mfg ?>" data-tutup="<?= $k['tutup'] ?>" data-wadah="<?= $k['wadah'] ?>" data-label="<?= $k['label'] ?>" data-pemerian="<?= $k['pemerian'] ?>" data-kelarutan="<?= $k['kelarutan'] ?>" data-ident_air="<?= $k['ident_air'] ?>" data-ident_hcip="<?= $k['ident_hcip'] ?>" data-ident_naohp="<?= $k['ident_naohp'] ?>" data-ident_h2so4p="<?= $k['ident_h2so4p'] ?>" data-ident_t_larutan="<?= $k['ident_t_larutan'] ?>" data-s_pengeringan="<?= $k['s_pengeringan'] ?>" data-p_kadar="<?= $k['p_kadar'] ?>" data-kesamaan_std="<?= $k['kesamaan_std'] ?>" data-kondisi_py="<?= $k['kondisi_py'] ?>" data-penguji="<?= $k['penguji'] ?>">
+                                                                        <button type="button" class="btn btn-primary btn-square btn-sm" data-toggle="modal" data-target="#edit_ujipw" data-id_ujipewarna="<?= $k['id_ujipewarna'] ?>" data-id_adm_bm="<?= $k['id_adm_bm'] ?>" data-id_barang="<?= $k['id_prc_master_barang'] ?>" data-id_supplier="<?= $k['id_supplier'] ?>" data-no_batch="<?= $k['no_batch'] ?>" data-no_surat_jalan="<?= $k['no_surat_jalan'] ?>" data-tgl="<?= $tgl_msk ?>" data-tgl_uji="<?= $tgl_uji ?>" data-no_analis="<?= $k['no_analis'] ?>" data-nama_barang="<?= $k['nama_barang'] ?>"  data-op_gudang="<?= $k['op_gudang'] ?>" data-qty="<?= $k['jml_bm'] ?>" data-pemerian="<?= $k['pemerian'] ?>" data-kelarutan="<?= $k['kelarutan'] ?>" data-ident_air="<?= $k['ident_air'] ?>" data-ident_hcip="<?= $k['ident_hcip'] ?>" data-ident_naohp="<?= $k['ident_naohp'] ?>" data-ident_h2so4p="<?= $k['ident_h2so4p'] ?>" data-ident_t_larutan="<?= $k['ident_t_larutan'] ?>" data-s_pengeringan="<?= $k['s_pengeringan'] ?>" data-p_kadar="<?= $k['p_kadar'] ?>" data-kesamaan_std="<?= $k['kesamaan_std'] ?>" data-kondisi_py="<?= $k['kondisi_py'] ?>" data-penguji="<?= $k['penguji'] ?>">
                                                                             <i class="feather icon-edit-2"></i>Edit PW
                                                                         </button>
                                                                     </div>
@@ -123,23 +126,23 @@
                                                             <?php } ?>
                                                             </td>
                                                             <td class="text-center">
-                                                            <?php if ($k['status'] === "Released") { ?>
+                                                            <?php if ($k['status_barang'] === "Released") { ?>
                                                                     <div class="btn-group" role="group" aria-label="Basic example">
-                                                                        <a type="button" class="btn btn-success btn-square btn-sm text-light" onclick="window.open(`<?= base_url() ?>lab/Hasil_pemeriksaan_lab/Hasil_pemeriksaan_pw/pdf_label_released/<?= str_replace('/', '--', $k['no_surat_jalan']) ?>`, 'location=yes,height=700,width=1300,scrollbars=yes,status=yes'); " data-id_adm_bm="<?= $k['id_adm_bm'] ?>" data-no_batch="<?= $k['no_batch'] ?>" data-no_surat_jalan="<?= $k['no_surat_jalan'] ?>">
+                                                                        <a type="button" class="btn btn-success btn-square btn-sm text-light" onclick="window.open(`<?= base_url() ?>lab/Hasil_pemeriksaan_lab/Hasil_pemeriksaan_pw/pdf_label_released/<?= str_replace('/', '--', $k['no_sjl']) ?>`, 'location=yes,height=700,width=1300,scrollbars=yes,status=yes'); " data-id_adm_bm="<?= $k['id_adm_bm'] ?>" data-no_batch="<?= $k['no_batch'] ?>" data-no_surat_jalan="<?= $k['no_surat_jalan'] ?>">
                                                                             <i class="feather icon-file"></i>Print Label
                                                                         </a>
                                                                     </div>
                                                                 <?php } ?>
 
                                                                 <!-- Print Label Ditolak -->
-                                                                <?php if ($k['status'] === "Di Tolak") { ?>
+                                                                <?php if ($k['status_barang'] === "Di Tolak") { ?>
                                                                     <div class="btn-group" role="group" aria-label="Basic example">
                                                                         <a type="button" class="btn btn-danger btn-square btn-sm text-light" onclick="window.open(`<?= base_url() ?>lab/Hasil_pemeriksaan_lab/Hasil_pemeriksaan_pw/pdf_label_reject/<?= str_replace('/', '--', $k['no_surat_jalan']) ?>`, 'location=yes,height=700,width=1300,scrollbars=yes,status=yes'); " data-id_adm_bm="<?= $k['id_adm_bm'] ?>" data-no_batch="<?= $k['no_batch'] ?>" data-no_surat_jalan="<?= $k['no_surat_jalan'] ?>">
                                                                             <i class="feather icon-file"></i>Print Label
                                                                         </a>
                                                                     </div>
                                                                 <?php } ?>
-                                                                <?php if ($k['status'] === "Released" || $k['status'] === "Di Tolak") { ?>
+                                                                <?php if ($k['status_barang'] === "Released" || $k['status_barang'] === "Di Tolak") { ?>
                                                                     <div class="btn-group" role="group" aria-label="Basic example">
                                                                         <a type="button" class="btn btn-warning btn-square btn-sm text-light" onclick="window.open(`<?= base_url() ?>lab/Hasil_pemeriksaan_lab/Hasil_pemeriksaan_pw/pdf_label_hasil/<?= str_replace('/', '--', $k['no_surat_jalan']) ?>`, 'location=yes,height=700,width=1300,scrollbars=yes,status=yes'); " data-id_adm_bm="<?= $k['id_adm_bm'] ?>" data-no_batch="<?= $k['no_batch'] ?>" data-no_surat_jalan="<?= $k['no_surat_jalan'] ?>">
                                                                             <i class="feather icon-file"></i>Print Hasil
@@ -199,12 +202,7 @@
                         <td class="px-3">
                             <input type="text" class="form-control form-control-sm" id="v-no_surat_jalan" name="no_surat_jalan" placeholder="No. Po" maxlength="20" readonly>
                         </td>
-                        <td class="px-1 py-2">
-                            Dokumen Pendukung
-                        </td>
-                        <td class="px-4">
-                            <input type="text" class="form-control form-control-sm" id="v-dok_pendukung" name="dok_pendukung" placeholder="Dokumen Pendukung" maxlength="20" readonly>
-                        </td>
+                       
                     </tr>
                     <tr>
                         <td class="px-1 py-2">
@@ -219,21 +217,7 @@
                         <td class="px-4">
                             <input type="text" class="form-control form-control-sm" id="v-op_gudang" name="op_gudang" placeholder="Nama Operator" maxlength="20" readonly>
                         </td>
-                    </tr>
-                    <tr>
-                        <td class="px-1 py-2">
-                            Nama Supllier
-                        </td>
-                        <td class="px-3">
-                            <input type="text" class="form-control form-control-sm" id="v-nama_supplier" name="nama_supplier" placeholder="Nama Supllier" maxlength="20" readonly>
-                        </td>
-                        <td class="px-1 py-2">
-                            Jenis Kemasan
-                        </td>
-                        <td class="px-4">
-                            <input type="text" class="form-control form-control-sm" id="v-jenis_kemasan" name="jenis_kemasan" placeholder="Jenis Kemasan" maxlength="20" readonly>
-                        </td>
-                    </tr>
+                   
                     <tr>
                         <td class="px-1 py-2">
                             Jumlah Bahan <br> (Di Terima)
@@ -241,68 +225,19 @@
                         <td class="px-3">
                             <input type="text" class="form-control form-control-sm" id="v-qty" name="qty" placeholder="Jumlah Bahan (Di Terima)" maxlength="20" readonly>
                         </td>
-                        <td class="px-1 py-2">
-                            Jumlah Bahan <br> (Di Tolak)
-                        </td>
-                        <td class="px-4">
-                            <input type="text" class="form-control form-control-sm" id="v-ditolak_qty" name="ditolak_qty" placeholder="Jumlah Bahan (Di Tolak)" maxlength="20" readonly>
-                        </td>
+                        
                     </tr>
-                    <tr>
-                        <td class="px-1 py-2">
-                            Jumlah Kemasan <br> (Di Terima)
-                        </td>
-                        <td class="px-3">
-                            <input type="text" class="form-control form-control-sm" id="v-jml_kemasan" name="jml_kemasan" placeholder="Jumlah Kemasan (Di Terima)" maxlength="20" readonly>
-                        </td>
-                        <td class="px-1 py-2">
-                            Jumlah Kemasan <br> (Di Tolak)
-                        </td>
-                        <td class="px-4">
-                            <input type="text" class="form-control form-control-sm" id="v-ditolak_kemasan" name="ditolak_kemasan" placeholder="Jumlah Kemasan (Di Tolak)" maxlength="20" readonly>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="px-1 py-2">
-                            Mfg. date
-                        </td>
-                        <td class="px-3">
-                            <input type="text" class="form-control form-control-sm" id="v-mfg" name="mfg" placeholder="Mfg. date" maxlength="20" readonly>
-                        </td>
-                        <td class="px-1 py-2">
-                            Expired
-                        </td>
-                        <td class="px-4">
-                            <input type="text" class="form-control form-control-sm" id="v-exp" name="exp" placeholder="Expire" maxlength="20" readonly>
-                        </td>
-                    </tr>
+                  
+                    
+                    
                 </table>
                 <div class="row">
                     <div class="col-md-12 mt-5">
                         <div class="form-group">
-                            <center><label for="pemeriksaan" class="font-weight-bold">Hasil Pemeriksaan Fisik Kemasan</label></center>
-                            <table class="mt-2">
-                                <tr>
-                                    <td class="px-1 py-2">
-                                        Tutup
-                                    </td>
-                                    <td class="px-3">
-                                        <input type="text" class="form-control form-control-sm" id="v-tutup" name="tutup" placeholder="Tutup" size="15" maxlength="20" readonly>
-                                    </td>
-                                    <td class="px-2 py-2">
-                                        Wadah
-                                    </td>
-                                    <td class="px-3">
-                                        <input type="text" class="form-control form-control-sm" id="v-wadah" name="wadah" placeholder="Wadah" size="15" maxlength="20" readonly>
-                                    </td>
-                                    <td class="px-2 py-2">
-                                        Label
-                                    </td>
-                                    <td class="px-3">
-                                        <input type="text" class="form-control form-control-sm" id="v-label" name="label" placeholder="Label" size="15" maxlength="20" readonly>
-                                    </td>
-                                </tr>
-                            </table>
+                            
+                                   
+                                
+                            
 
                         </div>
                     </div>
@@ -452,12 +387,7 @@
                         <td class="px-3">
                             <input type="text" class="form-control form-control-sm" id="r-no_surat_jalan" name="no_surat_jalan" placeholder="No. Po" maxlength="20" readonly>
                         </td>
-                        <td class="px-1 py-2">
-                            Dokumen Pendukung
-                        </td>
-                        <td class="px-4">
-                            <input type="text" class="form-control form-control-sm" id="r-dok_pendukung" name="dok_pendukung" placeholder="Dokumen Pendukung" maxlength="20" readonly>
-                        </td>
+                        
                     </tr>
                     <tr>
                         <td class="px-1 py-2">
@@ -473,20 +403,7 @@
                             <input type="text" class="form-control form-control-sm" id="r-op_gudang" name="op_gudang" placeholder="Nama Operator" maxlength="20" readonly>
                         </td>
                     </tr>
-                    <tr>
-                        <td class="px-1 py-2">
-                            Nama Supllier
-                        </td>
-                        <td class="px-3">
-                            <input type="text" class="form-control form-control-sm" id="r-nama_supplier" name="nama_supplier" placeholder="Nama Supllier" maxlength="20" readonly>
-                        </td>
-                        <td class="px-1 py-2">
-                            Jenis Kemasan
-                        </td>
-                        <td class="px-4">
-                            <input type="text" class="form-control form-control-sm" id="r-jenis_kemasan" name="jenis_kemasan" placeholder="Jenis Kemasan" maxlength="20" readonly>
-                        </td>
-                    </tr>
+                    
                     <tr>
                         <td class="px-1 py-2">
                             Jumlah Bahan <br> (Di Terima)
@@ -494,68 +411,15 @@
                         <td class="px-3">
                             <input type="text" class="form-control form-control-sm" id="r-qty" name="qty" placeholder="Jumlah Bahan (Di Terima)" maxlength="20" readonly>
                         </td>
-                        <td class="px-1 py-2">
-                            Jumlah Bahan <br> (Di Tolak)
-                        </td>
-                        <td class="px-4">
-                            <input type="text" class="form-control form-control-sm" id="r-ditolak_qty" name="ditolak_qty" placeholder="Jumlah Bahan (Di Tolak)" maxlength="20" readonly>
-                        </td>
+                        
+                       
                     </tr>
-                    <tr>
-                        <td class="px-1 py-2">
-                            Jumlah Kemasan <br> (Di Terima)
-                        </td>
-                        <td class="px-3">
-                            <input type="text" class="form-control form-control-sm" id="r-jml_kemasan" name="jml_kemasan" placeholder="Jumlah Kemasan (Di Terima)" maxlength="20" readonly>
-                        </td>
-                        <td class="px-1 py-2">
-                            Jumlah Kemasan <br> (Di Tolak)
-                        </td>
-                        <td class="px-4">
-                            <input type="text" class="form-control form-control-sm" id="r-ditolak_kemasan" name="ditolak_kemasan" placeholder="Jumlah Kemasan (Di Tolak)" maxlength="20" readonly>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="px-1 py-2">
-                            Mfg. date
-                        </td>
-                        <td class="px-3">
-                            <input type="text" class="form-control form-control-sm" id="r-mfg" name="mfg" placeholder="Mfg. date" maxlength="20" readonly>
-                        </td>
-                        <td class="px-1 py-2">
-                            Expired
-                        </td>
-                        <td class="px-4">
-                            <input type="text" class="form-control form-control-sm" id="r-exp" name="exp" placeholder="Expire" maxlength="20" readonly>
-                        </td>
-                    </tr>
+                    
                 </table>
                 <div class="row">
                     <div class="col-md-12 mt-5">
                         <div class="form-group">
-                            <center><label for="pemeriksaan" class="font-weight-bold">Hasil Pemeriksaan Fisik Kemasan</label></center>
-                            <table class="mt-2">
-                                <tr>
-                                    <td class="px-1 py-2">
-                                        Tutup
-                                    </td>
-                                    <td class="px-3">
-                                        <input type="text" class="form-control form-control-sm" id="r-tutup" name="tutup" placeholder="Tutup" size="15" maxlength="20" readonly>
-                                    </td>
-                                    <td class="px-2 py-2">
-                                        Wadah
-                                    </td>
-                                    <td class="px-3">
-                                        <input type="text" class="form-control form-control-sm" id="r-wadah" name="wadah" placeholder="Wadah" size="15" maxlength="20" readonly>
-                                    </td>
-                                    <td class="px-2 py-2">
-                                        Label
-                                    </td>
-                                    <td class="px-3">
-                                        <input type="text" class="form-control form-control-sm" id="r-label" name="label" placeholder="Label" size="15" maxlength="20" readonly>
-                                    </td>
-                                </tr>
-                            </table>
+                            
 
                         </div>
                     </div>
@@ -710,12 +574,7 @@
                         <td class="px-3">
                             <input type="text" class="form-control form-control-sm" id="t-no_surat_jalan" name="no_surat_jalan" placeholder="No. Po" maxlength="20" readonly>
                         </td>
-                        <td class="px-1 py-2">
-                            Dokumen Pendukung
-                        </td>
-                        <td class="px-4">
-                            <input type="text" class="form-control form-control-sm" id="t-dok_pendukung" name="dok_pendukung" placeholder="Dokumen Pendukung" maxlength="20" readonly>
-                        </td>
+                       
                     </tr>
                     <tr>
                         <td class="px-1 py-2">
@@ -732,18 +591,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="px-1 py-2">
-                            Nama Supllier
-                        </td>
-                        <td class="px-3">
-                            <input type="text" class="form-control form-control-sm" id="t-nama_supplier" name="nama_supplier" placeholder="Nama Supllier" maxlength="20" readonly>
-                        </td>
-                        <td class="px-1 py-2">
-                            Jenis Kemasan
-                        </td>
-                        <td class="px-4">
-                            <input type="text" class="form-control form-control-sm" id="t-jenis_kemasan" name="jenis_kemasan" placeholder="Jenis Kemasan" maxlength="20" readonly>
-                        </td>
+                       
+                      
                     </tr>
                     <tr>
                         <td class="px-1 py-2">
@@ -752,68 +601,19 @@
                         <td class="px-3">
                             <input type="text" class="form-control form-control-sm" id="t-qty" name="qty" placeholder="Jumlah Bahan (Di Terima)" maxlength="20" readonly>
                         </td>
-                        <td class="px-1 py-2">
-                            Jumlah Bahan <br> (Di Tolak)
-                        </td>
-                        <td class="px-4">
-                            <input type="text" class="form-control form-control-sm" id="t-ditolak_qty" name="ditolak_qty" placeholder="Jumlah Bahan (Di Tolak)" maxlength="20" readonly>
-                        </td>
+                        
                     </tr>
                     <tr>
-                        <td class="px-1 py-2">
-                            Jumlah Kemasan <br> (Di Terima)
-                        </td>
-                        <td class="px-3">
-                            <input type="text" class="form-control form-control-sm" id="t-jml_kemasan" name="jml_kemasan" placeholder="Jumlah Kemasan (Di Terima)" maxlength="20" readonly>
-                        </td>
-                        <td class="px-1 py-2">
-                            Jumlah Kemasan <br> (Di Tolak)
-                        </td>
-                        <td class="px-4">
-                            <input type="text" class="form-control form-control-sm" id="t-ditolak_kemasan" name="ditolak_kemasan" placeholder="Jumlah Kemasan (Di Tolak)" maxlength="20" readonly>
-                        </td>
+                        
+                       
                     </tr>
-                    <tr>
-                        <td class="px-1 py-2">
-                            Mfg. date
-                        </td>
-                        <td class="px-3">
-                            <input type="text" class="form-control form-control-sm" id="t-mfg" name="mfg" placeholder="Mfg. date" maxlength="20" readonly>
-                        </td>
-                        <td class="px-1 py-2">
-                            Expired
-                        </td>
-                        <td class="px-4">
-                            <input type="text" class="form-control form-control-sm" id="t-exp" name="exp" placeholder="Expire" maxlength="20" readonly>
-                        </td>
-                    </tr>
+                   
                 </table>
                 <div class="row">
                     <div class="col-md-12 mt-5">
                         <div class="form-group">
-                            <center><label for="pemeriksaan" class="font-weight-bold">Hasil Pemeriksaan Fisik Kemasan</label></center>
-                            <table class="mt-2">
-                                <tr>
-                                    <td class="px-1 py-2">
-                                        Tutup
-                                    </td>
-                                    <td class="px-3">
-                                        <input type="text" class="form-control form-control-sm" id="t-tutup" name="tutup" placeholder="Tutup" size="15" maxlength="20" readonly>
-                                    </td>
-                                    <td class="px-2 py-2">
-                                        Wadah
-                                    </td>
-                                    <td class="px-3">
-                                        <input type="text" class="form-control form-control-sm" id="t-wadah" name="wadah" placeholder="Wadah" size="15" maxlength="20" readonly>
-                                    </td>
-                                    <td class="px-2 py-2">
-                                        Label
-                                    </td>
-                                    <td class="px-3">
-                                        <input type="text" class="form-control form-control-sm" id="t-label" name="label" placeholder="Label" size="15" maxlength="20" readonly>
-                                    </td>
-                                </tr>
-                            </table>
+                            
+                           
 
                         </div>
                     </div>

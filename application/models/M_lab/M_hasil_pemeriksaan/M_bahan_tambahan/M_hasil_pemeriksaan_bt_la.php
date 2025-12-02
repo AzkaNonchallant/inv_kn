@@ -15,7 +15,7 @@ class M_hasil_pemeriksaan_bt_la extends CI_Model
     {
         // $kode_user = $this->kode_user();
         $sql = "
-            SELECT a.*,b.id_prc_master_barang,b.id_adm_bm,b.no_batch,b.status,b.dok_pendukung,b.op_gudang,b.jenis_kemasan,b.jml_kemasan,b.ditolak_kemasan,b.qty,b.ditolak_qty,b.exp,b.mfg,b.tutup,b.wadah,b.label,c.nama_supplier,d.nama_barang,d.jenis_bahan FROM tb_lab_hasil_ujibt_lecithinadlec a
+            SELECT a.*,b.id_prc_master_barang,b.id_adm_bm,b.no_batch,b.status_barang,b.jml_bm,c.tgl_dpb,c.no_sjl,d.nama_barang,d.jenis_barang FROM tb_lab_hasil_ujibt_lecithinadlec a
             LEFT JOIN tb_adm_barang_masuk b ON a.id_adm_bm = b.id_adm_bm
             LEFT JOIN tb_prc_dpb_tf c ON b.no_dpb = c.no_dpb
             LEFT JOIN tb_prc_master_barang d ON a.id_prc_master_barang = d.id_prc_master_barang
