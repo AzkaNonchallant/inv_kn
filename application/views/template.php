@@ -157,6 +157,7 @@ if (empty($this->session->userdata('nama_operator'))) {
     <script src="<?= base_url() ?>assets/plugins/toastify/toastify.js"></script>
     <script src="<?= base_url() ?>assets/plugins/bs-timepicker/js/bootstrap-timepicker.min.js"></script>
     <script src="<?= base_url() ?>assets/plugins/bs-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script>
         function hanyaAngka(evt) {
             var charCode = (evt.which) ? evt.which : event.keyCode

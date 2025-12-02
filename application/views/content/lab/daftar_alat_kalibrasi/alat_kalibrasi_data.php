@@ -1,3 +1,10 @@
+<style>
+  .table-orange {
+    background-color: #FFA500 !important; /* oranye */
+  }
+</style>
+
+
 <!-- [ Main Content ] start -->
 <section class="pcoded-main-container">
   <div class="pcoded-wrapper">
@@ -30,11 +37,6 @@
                 <div class="card">
                   <div class="card-header">
                     <h5>Daftar Alat Kalibrasi</h5>
-
-                    <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-primary float-right btn-sm" data-toggle="modal" data-target="#add">
-                      <i class="feather icon-plus"></i>Tambah Data
-                    </button>
                   </div>
                   <div class="card-block table-border-style">
 
@@ -51,44 +53,59 @@
                             <th>No Sertifikat</th>
                             <th>Tanggal Kalibrasi</th>
                             <th>E.D Kalibrasi</th>
-                            <th class="text-center">Detail</th>
                             <th class="text-center">Aksi</th>
                           </tr>
                         </thead>
                         <tbody>
                           <?php
-                          $level = $this->session->userdata('level');
+                          $level = $this->session->userdata('departement');
                           $jabatan = $this->session->userdata('jabatan');
                           $no = 1;
                           foreach ($result as $k) {
-                            $tgl_kalibrasi =  explode('-', $k['tgl_kalibrasi'])[2] . "/" . explode('-', $k['tgl_kalibrasi'])[1] . "/" . explode('-', $k['tgl_kalibrasi'])[0];
-                            $ed_kalibrasi =  explode('-', $k['ed_kalibrasi'])[2] . "/" . explode('-', $k['ed_kalibrasi'])[1] . "/" . explode('-', $k['ed_kalibrasi'])[0]; ?>
+                            if ($k['tgl_kalibrasi'] == null) {
+                              $tgl_kalibrasi  = "-";
+                            } else {
+                              $tgl_kalibrasi =  explode('-', $k['tgl_kalibrasi'])[2] . "/" . explode('-', $k['tgl_kalibrasi'])[1] . "/" . explode('-', $k['tgl_kalibrasi'])[0];
+                            }
+                            if ($k['ed_kalibrasi'] == null) {
+                              $ed_kalibrasi = "-";
+                            } else {
+                              $ed_kalibrasi =  explode('-', $k['ed_kalibrasi'])[2] . "/" . explode('-', $k['ed_kalibrasi'])[1] . "/" . explode('-', $k['ed_kalibrasi'])[0];
+                            }
+                          ?>
                             <tr class="table-row">
                               <th scope="row"><?= $no++ ?></th>
-                              <td><?= $k['kode_alat'] ?></td>
-                              <td><?= $k['nama_alat'] ?></td>
+                              <td><?= $k['kode_barang'] ?></td>
+                              <td><?= $k['nama_barang'] ?></td>
                               <td><?= $k['no_sertif'] ?></td>
                               <td><?= $tgl_kalibrasi ?></td>
-                              <td id="ed"><?= $ed_kalibrasi ?></td>
-                              <td class="text-center">
-                                <div class="btn-group" role="group" aria-label="Basic example">
-                                  <button type="button" class="btn btn-info btn-square btn-sm" data-toggle="modal" data-target="#view" data-id_kalibrasi="<?= $k['id_kalibrasi'] ?>" data-kode_alat="<?= $k['kode_alat'] ?>" data-nama_alat="<?= $k['nama_alat'] ?>" data-no_sertif="<?= $k['no_sertif'] ?>" data-tgl_kalibrasi="<?= $tgl_kalibrasi ?>" data-ed_kalibrasi="<?= $ed_kalibrasi ?>">
-                                    <i class="feather icon-eye"></i>Detail
-                                  </button>
-                                </div>
-                              </td>
+                              <td class="ed"><?= $ed_kalibrasi ?></td>
                               <td class="text-center">
                                 <?php if ($jabatan === "admin" || $jabatan === "operator" || $jabatan === "supervisor") { ?>
-                                  <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-primary btn-square btn-sm" data-toggle="modal" data-target="#edit" data-id_kalibrasi="<?= $k['id_kalibrasi'] ?>" data-kode_alat="<?= $k['kode_alat'] ?>" data-nama_alat="<?= $k['nama_alat'] ?>" data-no_sertif="<?= $k['no_sertif'] ?>" data-tgl_kalibrasi="<?= $tgl_kalibrasi ?>" data-ed_kalibrasi="<?= $ed_kalibrasi ?>">
-                                      <i class=" feather icon-edit-2"></i>Edit
-                                    </button>
-                                  </div>
-                                  <div class="btn-group" role="group">
-                                    <a href="<?= base_url() ?>lab/Alat_kalibrasi/delete/<?= $k['id_kalibrasi'] ?>" class="btn btn-danger btn-square text-light btn-sm" onclick="if (! confirm('Apakah Anda Yakin?')) { return false; }">
-                                      <i class="feather icon-trash-2"></i>Hapus
-                                    </a>
-                                  </div>
+                                  <?php if ($k['no_sertif'] == null) :  ?>
+                                    <div class="btn-group" role="group">
+                                      <button type="button"
+                                        class="btn btn-primary btn-square btn-sm"
+                                        data-toggle="modal"
+                                        data-target="#add"
+                                        data-id_prc_master_barang="<?= $k['id_prc_master_barang'] ?>"
+                                        data-kode_alat="<?= $k['kode_barang'] ?>"
+                                        data-nama_alat="<?= $k['nama_barang'] ?>"> <i class=" feather icon-edit-2"></i> +
+                                      </button>
+                                    </div>
+                                  <?php else : ?>
+                                    <div class="btn-group" role="group">
+                                      <button type="button"
+                                        class="btn btn-success btn-square btn-sm"
+                                        data-toggle="modal"
+                                        data-target="#edit"
+                                        data-tgl_kalibrasi="<?php $k['tgl_kalibrasi'] ?>"
+                                        data-ed_kalibrasi="<?php $k['ed_kalibrasi'] ?>"
+                                        data-kode_alat="<?= $k['kode_barang'] ?>"
+                                        data-nama_alat="<?= $k['nama_barang'] ?>"> <i class=" feather icon-edit-2"></i> +
+                                      </button>
+                                    </div>
+                                  <?php endif; ?>
                                 <?php } ?>
                               </td>
                             </tr>
@@ -112,51 +129,131 @@
 
 
 <script type="text/javascript">
-  $(document).ready(function() {
-    $('.table-row').each((index, row) => {
-      let tgl = $(row).find('#ed').text()
-      const now = moment()
-      tgl = moment(tgl, "DD/MM/YYYY")
-      const duration = moment.duration(tgl.diff(now)).asDays()
-      if (duration <= 0) {
-        $(row).addClass('table-danger')
-      } else if (duration <= 7) {
-        $(row).addClass('table-warning')
+  $(document).ready(function () {
+
+    // INIT DATATABLES (WAJIB)
+    let table = $('.datatable').DataTable({
+      ordering: true,
+      paging: true,
+      searching: true,
+      info: true
+    });
+
+    let toastShown = false; // agar toast tidak muncul berkali-kali
+
+
+    // ================================
+    // FUNGSI HITUNG WARNA TANGGAL
+    // ================================
+    function warnaTanggalJS(tanggalInput, warnaAman = '#f1f1f1') {
+    // parsing dd/mm/YYYY dan normalisasi ke awal hari (00:00)
+    const tgl = moment(tanggalInput, "DD/MM/YYYY").startOf('day');
+    const now = moment().startOf('day');
+
+    if (!tgl.isValid()) return warnaAman;
+
+    // sekarang akan mengembalikan 0 untuk hari ini, 1 untuk besok, -1 untuk kemarin
+    const selisih = tgl.diff(now, "days");
+    console.log('selisih hari:', selisih);
+
+    // Pilihan: anggap expired hanya kalau selisih < 0 (kemarin atau lebih lama)
+    if (selisih < 0) return "red";      // sudah lewat (expired)
+    if (selisih <= 7) return "yellow";  // <= 7 hari
+    return warnaAman;                   // aman (>30 hari)
+  }
+
+
+    // ================================
+    // UPDATE ROW COLOR
+    // ================================
+    function updateRowStatus() {
+
+      $('.table-row').each(function () {
+        let tgl = $(this).find('.ed').text().trim();
+
+        if (!tgl || tgl === "-") return;
+
+        let warna = warnaTanggalJS(tgl, "#f1f1f1");
+
+        $(this).removeClass('table-danger table-warning table-orange');
+
+        if (warna === 'red') {
+          $(this).addClass('table-danger');
+        } else if (warna === 'yellow') {
+          $(this).addClass('table-warning');
+        } else {
+          $(this).css("background-color", warna); // warna aman custom
+        }
+      });
+    }
+
+
+    // ================================
+    // TAMPILKAN TOAST
+    // ================================
+    function showToastIfNeeded() {
+
+      if (toastShown) return; // agar tidak spam
+
+      if ($('.table-row.table-danger').length > 0) {
+        Toastify({
+          text: "⚠ Waktu ED Kalibrasi SUDAH HABIS!",
+          duration: 5000,
+          close: true,
+          gravity: "top",
+          position: "center",
+          style: { background: "#BD362F" }
+        }).showToast();
+        toastShown = true;
+        return;
       }
-    })
 
+      if ($('.table-row.table-warning').length > 0) {
+        Toastify({
+          text: "⏳ ED Kalibrasi tinggal beberapa hari lagi!",
+          duration: 5000,
+          close: true,
+          gravity: "top",
+          position: "center",
+          style: { background: "#F89406" }
+        }).showToast();
+        toastShown = true;
+        return;
+      }
 
-    if ($('.table-row.table-danger').length > 0) {
+      // Kalau semuanya aman
       Toastify({
-        text: "Waktu ED Kalibrasi sudah habis waktu",
-        duration: 5000,
+        text: "✅ Semua alat masih aman!",
+        duration: 4000,
         close: true,
-        gravity: "top", // `top` or `bottom`
-        position: "center", // `left`, `center` or `right`
-        stopOnFocus: true, // Prevents dismissing of toast on hover
-        style: {
-          background: "#BD362F",
-        },
-        onClick: function() {} // Callback after click
+        gravity: "top",
+        position: "center",
+        style: { background: "#00CCFF" }
       }).showToast();
+      toastShown = true;
     }
 
-    if ($('.table-row.table-warning').length > 0) {
-      Toastify({
-        text: "Waktu ED Kalibrasi tersisa beberapa hari lagi",
-        duration: 5000,
-        close: true,
-        gravity: "top", // `top` or `bottom`
-        position: "center", // `left`, `center` or `right`
-        stopOnFocus: true, // Prevents dismissing of toast on hover
-        style: {
-          background: "#F89406",
-        },
-        onClick: function() {} // Callback after click
-      }).showToast();
-    }
-  })
+
+    // ================================
+    // FIRST LOAD
+    // ================================
+    updateRowStatus();
+    showToastIfNeeded();
+
+    // ================================
+    // JALAN SAAT DATATABLE DRAW ULANG
+    // ================================
+    table.on('draw.dt', function () {
+      updateRowStatus();
+      showToastIfNeeded();
+    });
+
+  });
 </script>
+
+
+
+
 
 <!-- Modal -->
 <div class="modal fade" id="add" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -169,19 +266,19 @@
         </button>
       </div>
       <form method="post" action="<?= base_url() ?>lab/Alat_kalibrasi/add">
+        <input type="hidden" id="id_prc_master_barang" name="id_prc_master_barang">
         <div class="modal-body">
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
                 <label for="kode_alat">Kode Alat</label>
-                <input type="hidden" id="id_kalibrasi" name="id_kalibrasi">
-                <input type="text" class="form-control text-uppercase" id="kode_alat" name="kode_alat" placeholder="Kode Alat" required>
+                <input type="text" class="form-control text-uppercase" id="kode_alat" name="kode_alat" placeholder="Kode Alat" readonly>
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
                 <label for="nama_alat">Nama Alat</label>
-                <input type="text" class="form-control text-uppercase" id="nama_alat" name="nama_alat" placeholder="Nama Alat" autocomplete="off" required>
+                <input type="text" class="form-control text-uppercase" id="nama_alat" name="nama_alat" placeholder="Nama Alat" autocomplete="off" readonly>
               </div>
             </div>
             <div class="col-md-6">
@@ -218,8 +315,26 @@
     uppercase('#nama_alat');
     uppercase('#no_sertif');
 
-    $('#add').on('hidden.bs.modal', function() {
-      $(this).find('form')[0].reset();
+    $('#add').on('show.bs.modal', function(event) {
+      var nama_alat = $(event.relatedTarget).data('nama_alat')
+      $(this).find('#nama_alat').val(nama_alat);
+      var kode_alat = $(event.relatedTarget).data('kode_alat')
+      $(this).find('#kode_alat').val(kode_alat);
+      var id_prc_master_barang = $(event.relatedTarget).data('id_prc_master_barang')
+      $(this).find('#id_prc_master_barang').val(id_prc_master_barang)
+
+
+      $(this).find('#tgl_kalibrasi').datepicker().on('show.bs.modal', function(event) {
+        // prevent datepicker from firing bootstrap modal "show.bs.modal"
+        event.stopPropagation();
+      });
+
+
+      $(this).find('#ed_kalibrasi').datepicker().on('show.bs.modal', function(event) {
+        // prevent datepicker from firing bootstrap modal "show.bs.modal"
+        event.stopPropagation();
+      });
+
     });
   })
 </script>

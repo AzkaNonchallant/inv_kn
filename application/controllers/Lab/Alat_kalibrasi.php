@@ -22,8 +22,7 @@ class Alat_kalibrasi extends CI_Controller
 
 	public function add()
 	{
-		$data['kode_alat'] = $this->input->post('kode_alat', TRUE);
-		$data['nama_alat'] = $this->input->post('nama_alat', TRUE);
+		$data['id_prc_master_barang'] = $this->input->post('id_prc_master_barang', TRUE);
 		$data['no_sertif'] = $this->input->post('no_sertif', TRUE);
 		$data['tgl_kalibrasi'] = $this->convertDate($this->input->post('tgl_kalibrasi', TRUE));
 		$data['ed_kalibrasi'] = $this->convertDate($this->input->post('ed_kalibrasi', TRUE));
