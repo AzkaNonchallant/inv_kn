@@ -14,6 +14,7 @@ class Alat_kalibrasi extends CI_Controller
 	public function index()
 	{
 		// $data['row'] = $this->customer_m->get();
+		$this->M_alat_kalibrasi->checkExpired();
 		$data['result'] = $this->M_alat_kalibrasi->get()->result_array();
 		$this->template->load('template', 'content/lab/daftar_alat_kalibrasi/alat_kalibrasi_data', $data);
 		// print_r($data);
